@@ -1,0 +1,22 @@
+.columnDate {
+  font-size: 11pt;
+  float: left;
+
+  width: 35%;
+}
+
+.column {
+  font-size: 11pt;
+  float: left;
+  width: 60%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.row {
+  margin-left: 1px;
+}

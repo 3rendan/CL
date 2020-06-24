@@ -1,17 +1,56 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
+import Home from "./App"
+import Investment from './investments'
+import EventsTable from "./events"
+
+import {AccountTable, InvestmentTable} from './maintenance/AccountInvestment'
+import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
+import Calendar from './calendar'
+import FormSheet from './popup'
+
+// Data
+import {AccountData, InvestmentData, OwnerData,
+        AssetClassData, BenchmarkData, Events} from './Data'
+
+const NoMatch = () => {
+  return <h1> No Match </h1>
+}
+
+
+// render
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+    <Router>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/investments">
+            <Investment data={InvestmentData} name={'Investments'} />
+          </Route>
+          <Route path="/calendar" component={Calendar} />
+          <Route path="/transactions">
+            <EventsTable data={Events} name={'Events'} />
+          </Route>
+          <Route path="/maintenance/accountInvestment">
+            <InvestmentTable data={InvestmentData} name={'Investment Data'} />
+            <AccountTable data={AccountData} name={'Account Data'} />
+          </Route>
+          <Route path="/maintenance/AssetsBenchmarksOwners">
+            <MaintenanceTable name ="Asset Class" data = {AssetClassData}/>
+            <MaintenanceTable name ="Owner"  data = {OwnerData}/>
+            <MaintenanceTable name ="Benchmark"  data = {BenchmarkData}/>
+          </Route>
+          <Route path="/popup">
+            <FormSheet dropdownOptions={['Inflow', 'Outflow', 'NAV', 'DIV', 'GAIN', 'Transfer', 'Contribution', 'Distribution']} />,
+          </Route>
+          <Route path="/events">
+            <EventsTable data={Events} name={'Events'} />
+          </Route>
+          <Route path="/" component={NoMatch} />
+        </Switch>
+    </Router>,
+    document.getElementById("root")
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+)
