@@ -65,6 +65,8 @@ const BenchmarkData = {
     'Name': ['W5000', 'MSEAFE-NET', 'MSEM-NET', 'CambrUSPE']
 };
 
+
+// Events
 const Events = {
   'Type': ['INFLOW'],
   'Date': ['11/23/2012'],
@@ -73,6 +75,16 @@ const Events = {
   'Notes': ['hello'],
 };
 
+// NAV elements
+// ['Date', 'Investment', 'Amount', 'Notes']
+const NAVEvents = {
+  'Date': ['11/23/2012'],
+  'Investment': ['invest'],
+  'Amount': [200],
+  'Notes': ['hello'],
+};
 
 export {AccountData, InvestmentData, OwnerData,
-        AssetClassData, BenchmarkData, Events};
+        AssetClassData, BenchmarkData, Events, NAVEvents};
+
+        

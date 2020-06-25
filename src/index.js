@@ -14,7 +14,7 @@ import FormSheet from './popup'
 
 // Data
 import {AccountData, InvestmentData, OwnerData,
-        AssetClassData, BenchmarkData, Events} from './Data'
+        AssetClassData, BenchmarkData, Events, NAVEvents} from './Data'
 
 const NoMatch = () => {
   return <h1> No Match </h1>
@@ -32,6 +32,7 @@ ReactDOM.render(
           <Route path="/calendar" component={Calendar} />
           <Route path="/transactions">
             <EventsTable data={Events} name={'Events'} />
+            <EventsTable data={NAVEvents} name={'NAVEvents'} />
           </Route>
           <Route path="/maintenance/accountInvestment">
             <InvestmentTable data={InvestmentData} name={'Investment Data'} />

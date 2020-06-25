@@ -46,8 +46,7 @@ function createMainWindow() {
 
 app.on('ready', createMainWindow);
 
-ipcMain.on('viewEvents', () => {
-  console.log('HELLO EVENTS');
+ipcMain.on('viewEvents', (event, args) => {
   // Create new window
   let newWindow = new BrowserWindow({
     webPreferences: {
@@ -70,10 +69,13 @@ ipcMain.on('viewEvents', () => {
   newWindow.on('closed', ()=> newWindow=null);
 
   newWindow.webContents.openDevTools();
+  newWindow.webContents.on('did-finish-load', () => {
+    newWindow.webContents.send('message', args);
+  });
 
 });
 
-ipcMain.on('viewTransactions', () => {
+ipcMain.on('viewTransactions', (event, args) => {
   // Create new window
   let newWindow = new BrowserWindow({
     webPreferences: {
@@ -96,6 +98,9 @@ ipcMain.on('viewTransactions', () => {
   newWindow.on('closed', ()=> newWindow=null);
 
   newWindow.webContents.openDevTools();
+  newWindow.webContents.on('did-finish-load', () => {
+    newWindow.webContents.send('message', args);
+  });
 
 });
 
@@ -123,7 +128,7 @@ ipcMain.on('popup', (event, args) => {
 
   newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
-    newWindow.webContents.send('message', args);
+    newWindow.webContents.send('popupMessage', args);
   });
 
 });

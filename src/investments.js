@@ -31,7 +31,7 @@ const eventsCol = {
   formatter:function(cell, formatterParams, onRendered){ //plain text value
      return "<i class='fa fa-etsy' aria-hidden='true'></i>";
  }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
-   ViewEvents(cell.getRow());
+   ViewEvents(cell.getRow().getData());
 }};
 
 // a column that when clicked launches the transactions page
@@ -40,7 +40,7 @@ const transactionsCol = {
      return "<i class='fa fa-tumblr'></i>";
    }, minWidth: 40, width:40, headerSort:false,
    responsive:0, hozAlign:"center", cellClick:function(e, cell){
-      ViewTranscations(cell.getRow());
+      ViewTranscations(cell.getRow().getData());
     }
 };
 
@@ -73,11 +73,11 @@ function myMoney(value, showCents) {
 };
 
 function ViewEvents(props) {
- ipcRenderer.send('viewEvents', 'HELLO');
+ ipcRenderer.send('viewEvents', props);
 };
 
 function ViewTranscations(props) {
-  ipcRenderer.send('viewTransactions', 'HELLO');
+  ipcRenderer.send('viewTransactions', props);
 };
 
 

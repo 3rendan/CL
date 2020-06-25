@@ -9,7 +9,6 @@ const BrowserWindow  = electron.remote.BrowserWindow;
 const path = require('path');
 const url = require('url');
 
-var investmentName = null;
 
 const defaultTabulatorSettings = {
   movableRows: true,
@@ -19,8 +18,16 @@ const defaultTabulatorSettings = {
   layoutColumnsOnNewData:true,
 };
 
+var myRowData = null;
+var investmentName = null;
+ipcRenderer.on('message', (event, args) => {
+  console.log('NEW ARGS!');
+  console.log(args);
+  myRowData = args;
+  investmentName = args.Name;
+});
+
 function AddRow(props) {
-  console.log(props);
   props['id'] = BrowserWindow.getFocusedWindow().id;
   ipcRenderer.send('popup', props);
 };
@@ -51,8 +58,6 @@ const reformulateData = function reformulateData(data) {
   return newDataArr;
 };
 
-var myRowData = null;
-
 const renderTable = function renderTable(tableName, tableData, setTableData, element, tabulator) {
   return (<div>
             <div className="w3-show-inline-block" style= {{width: "100%"}}>
@@ -71,9 +76,8 @@ const renderTable = function renderTable(tableName, tableData, setTableData, ele
 };
 
 // table class
-const InvestmentTable = (props) => {
+const EventsTable = (props) => {
   const [tableData, setTableData] = useState(reformulateData(props.data));
-  const [tableDataOriginal, setTableDataOriginal] = useState(props.data);
   const [tableName, setTableName] = useState(props.name);
 
   const el = useRef();
@@ -81,18 +85,14 @@ const InvestmentTable = (props) => {
   const [tabulator, setTabulator] = useState(null); //variable to hold your table
 
   ipcRenderer.on('replyEvent', (event, message) => {
-    let copyTableData = tableData.map((dataElement) => {
-      let copyElement = Object.assign({},dataElement);
-      return copyElement;
-    });
-    copyTableData.push(message);
+    let copyTableData = [...tableData, message]
     setTableData(copyTableData);
   });
 
 
   // tableData = reformulateData(AccountData); //data for table to display
   useEffect(() => {
-    const columnNames = Object.keys(tableDataOriginal);
+    const columnNames = Object.keys(tableData[0]);
     let colNames = columnNames.map((colName) => {
       return {title: colName, field: colName, responsive: 0};
     });
@@ -114,31 +114,6 @@ const InvestmentTable = (props) => {
   //add table holder element to DOM
   return renderTable(tableName, tableData, setTableData, el, tabulator);
 }
-
-
-// NAV elements
-// ['Date', 'Investment', 'Amount', 'Notes']
-const NAVElements = {
-  'Date': ['11/23/2012'],
-  'Investment': ['invest'],
-  'Amount': [200],
-  'Notes': ['hello'],
-};
-
-const EventsTable = (props) => {
-  // Events
-  // ['Type', 'Date', 'Investment', 'Amount', 'Notes']
-  const Events = {
-    'Type': ['INFLOW'],
-    'Date': ['11/23/2012'],
-    'Investment': ['invest'],
-    'Amount': [200],
-    'Notes': ['hello'],
-  };
-
-  return (<InvestmentTable data={Events} name={'Events'}/>);
-}
-
 
 
 export default EventsTable;

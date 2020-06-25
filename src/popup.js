@@ -9,12 +9,12 @@ import Button from 'react-bootstrap/Button';
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
-const BrowserWindow  = electron.remote.BrowserWindow;
+const browserWindow  = electron.remote.BrowserWindow;
 
 var senderWindow = null;
 
-ipcRenderer.on('message', (event, message) => {
-    senderWindow = BrowserWindow.fromId(message.id);
+ipcRenderer.on('popupMessage', (event, message) => {
+  senderWindow = browserWindow.fromId(message.id);
 })
 
 const RowCurrencyNet = (props) => {
@@ -204,7 +204,7 @@ const FormSheet = (props) => {
 
   const onSubmit = () => {
     state['Type'] = transcationType;
-    senderWindow.send('replyEvent', state)
+    senderWindow.webContents.send('replyEvent', state)
   };
 
 
