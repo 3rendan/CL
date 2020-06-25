@@ -130,7 +130,6 @@ const CalendarButton = (props) => {
           const newState = {...state};
           newState.timeout = false;
           setState(newState);
-
       }, 1000);
       alert(e.target.id + " is not in valid date format");
       e.target.focus();
@@ -170,9 +169,9 @@ const CalendarListElement = (props) => {
   };
 
   const isSameDay = (date1, date2) => {
-    return (date1.getUTCDate() == date2.getUTCDate() &&
-        date1.getUTCFullYear() == date2.getUTCFullYear() &&
-        date1.getUTCMonth() == date2.getUTCMonth());
+    return (date1.getUTCDate() === date2.getUTCDate() &&
+        date1.getUTCFullYear() === date2.getUTCFullYear() &&
+        date1.getUTCMonth() === date2.getUTCMonth());
   }
 
   const date = props.date;
@@ -187,9 +186,10 @@ const CalendarListElement = (props) => {
           {title}
         </div>);
       }
+      return null;
     }
   );
-  calendarEvents = calendarEvents.filter(event => event != undefined);
+  calendarEvents = calendarEvents.filter(event => event !== undefined);
   if (calendarEvents.length <= 0) {
     return null;
   }
@@ -250,7 +250,7 @@ const CalenderListView = (props) => {
   }
 
   var listCalendarDatesAfter= [];
-  for (var d = new Date(midnight); d <= endDate; d.setDate(d.getDate() + 1)) {
+  for (d = new Date(midnight); d <= endDate; d.setDate(d.getDate() + 1)) {
     if (d < startDate) {
       break;
     }

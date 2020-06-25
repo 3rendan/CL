@@ -6,8 +6,6 @@ const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 const BrowserWindow  = electron.remote.BrowserWindow;
 
-const path = require('path');
-const url = require('url');
 
 
 const defaultTabulatorSettings = {
@@ -21,15 +19,19 @@ const defaultTabulatorSettings = {
 var myRowData = null;
 var investmentName = null;
 ipcRenderer.on('message', (event, args) => {
-  console.log('NEW ARGS!');
-  console.log(args);
   myRowData = args;
   investmentName = args.Name;
 });
 
 function AddRow(props) {
   props['id'] = BrowserWindow.getFocusedWindow().id;
-  ipcRenderer.send('popup', props);
+  if (props.name === 'Events') {
+    ipcRenderer.send('popupEvent', props);
+  }
+  else if (props.name === 'NAVEvents') {
+    ipcRenderer.send('popupNAVEvent', props);
+  }
+
 };
 
 // dataFormator
@@ -78,17 +80,25 @@ const renderTable = function renderTable(tableName, tableData, setTableData, ele
 // table class
 const EventsTable = (props) => {
   const [tableData, setTableData] = useState(reformulateData(props.data));
-  const [tableName, setTableName] = useState(props.name);
+  const tableName = props.name;
 
   const el = useRef();
 
   const [tabulator, setTabulator] = useState(null); //variable to hold your table
 
   ipcRenderer.on('replyEvent', (event, message) => {
-    let copyTableData = [...tableData, message]
-    setTableData(copyTableData);
+    if (tableName === 'Events') {
+      let copyTableData = [...tableData, message]
+      setTableData(copyTableData);
+    }
   });
 
+  ipcRenderer.on('replyNAVEvent', (event, message) => {
+    if (tableName === 'NAVEvents') {
+      let copyTableData = [...tableData, message]
+      setTableData(copyTableData);
+    }
+  });
 
   // tableData = reformulateData(AccountData); //data for table to display
   useEffect(() => {

@@ -12,8 +12,18 @@ const ipcRenderer  = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
 
 var senderWindow = null;
+var replyChannel = null;
 
 ipcRenderer.on('popupMessage', (event, message) => {
+  console.log('HHELLOEHLRELR');
+  replyChannel = 'replyEvent';
+  senderWindow = browserWindow.fromId(message.id);
+})
+
+
+ipcRenderer.on('popupNAVMessage', (event, message) => {
+  console.log('HHELLOEHLRELR');
+  replyChannel = 'replyNAVEvent';
   senderWindow = browserWindow.fromId(message.id);
 })
 
@@ -45,7 +55,7 @@ const RowCurrencyNet = (props) => {
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
-        <input readOnly type={'currency'}
+        <input readOnly type={'currency'} min={min}
                value={localStringToNumber(value).toLocaleString(undefined, options)}
                className="form-control"  />
     </div>
@@ -85,7 +95,6 @@ const RowCurrency = (props) => {
 
 
     if (props.setNetAmount != null) {
-      console.log('HELLO');
       props.setNetAmount(props.netAmount + localStringToNumber(value) - currMoney);
     }
     setCurrMoney(localStringToNumber(value));
@@ -181,13 +190,13 @@ const FormSheet = (props) => {
 
 
     const newRows = mainColumns.map((column) => {
-       if (column == 'Amount' || column.includes('$')) {
+       if (column === 'Amount' || column.includes('$')) {
          const a = <RowCurrency netAmount={netAmount} setNetAmount={passFunc}
                                 key={column} name={column} size={maxSize}
                                 state={state} setState={setState}/>;
          return a;
        }
-       else if (column == 'Net Amount') {
+       else if (column === 'Net Amount') {
          return <RowCurrencyNet netAmount={netAmount} key={column}
                                 name={column} size={maxSize}
                                 state={state} setState={setState}/>;
@@ -204,7 +213,7 @@ const FormSheet = (props) => {
 
   const onSubmit = () => {
     state['Type'] = transcationType;
-    senderWindow.webContents.send('replyEvent', state)
+    senderWindow.webContents.send(replyChannel, state)
   };
 
 

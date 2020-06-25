@@ -6,8 +6,6 @@ import Tabulator from "tabulator-tables"; //import Tabulator library
 // import {AccountData, InvestmentData, OwnerData, AssetClassData, BenchmarkData} from '../Data'
 
 // const BrowserWindow = require('electron').remote.BrowserWindow;
-const path = require('path');
-const url = require('url');
 
 function AddRow(data, tabulator) {
   return function() {
@@ -45,12 +43,6 @@ const reformulateData = function reformulateData(data) {
   return newDataArr;
 };
 
-const camelize = function camelize(str) {
-  return str.replace(/\W+(.)/g, function(match, chr)
-   {
-        return chr.toUpperCase();
-    });
-};
 
 // settings I use across tables
 const defaultTabulatorSettings = {
@@ -100,8 +92,7 @@ var showCents = false;
 
 const MaintenanceTable = (props) => {
   const [tableData, setTableData] = useState(reformulateData(props.data));
-  const [tableDataOriginal, setTableDataOriginal] = useState(props.data);
-  const [tableName, setTableName] = useState(props.name);
+  const tableName = props.name;
 
   const doesAutocomplete = ['Asset Class', 'Account'].includes(tableName);
 
@@ -109,7 +100,7 @@ const MaintenanceTable = (props) => {
   const [tabulator, setTabulator] = useState(null); //variable to hold your table
 
   useEffect(() => {
-    const columnNames = Object.keys(tableDataOriginal);
+    const columnNames = Object.keys(tableData[0]);
     let colNames;
     if (doesAutocomplete) {
       colNames = columnNames.map((colName) => {

@@ -29,7 +29,7 @@ function createMainWindow() {
       protocol: 'file',
       slashes: true,
   });
-  console.log(isDev);
+
   // Load html into window
   mainWindow.loadURL(isDev ? 'http://localhost:3000/#/investments' : fileURL);
 
@@ -62,7 +62,7 @@ ipcMain.on('viewEvents', (event, args) => {
       protocol: 'file',
       slashes: true,
   });
-  console.log(isDev);
+
   // Load html into window
   newWindow.loadURL(isDev ? 'http://localhost:3000/#/events' : fileURL);
 
@@ -104,7 +104,7 @@ ipcMain.on('viewTransactions', (event, args) => {
 
 });
 
-ipcMain.on('popup', (event, args) => {
+ipcMain.on('popupEvent', (event, args) => {
   // Create new window
   let newWindow = new BrowserWindow({
     webPreferences: {
@@ -116,19 +116,76 @@ ipcMain.on('popup', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: 'popup',
+      hash: 'popup/event',
       protocol: 'file',
       slashes: true,
   });
-
   // Load html into window
-  newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup' : fileURL);
+  newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/event' : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 
   newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('popupMessage', args);
+  });
+
+});
+
+ipcMain.on('popupNAVEvent', (event, args) => {
+  // Create new window
+  let newWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
+    minWidth: 780
+  });
+
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'popup/NAVevent',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/NAVevent' : fileURL);
+
+  newWindow.on('closed', ()=> newWindow=null);
+
+  newWindow.webContents.openDevTools();
+  newWindow.webContents.on('did-finish-load', () => {
+    newWindow.webContents.send('popupNAVMessage', args);
+  });
+
+});
+
+ipcMain.on('popupTransfer', (event, args) => {
+  // Create new window
+  let newWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
+    minWidth: 780
+  });
+
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'popup/transfer',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/transfer' : fileURL);
+
+  newWindow.on('closed', ()=> newWindow=null);
+
+  newWindow.webContents.openDevTools();
+  newWindow.webContents.on('did-finish-load', () => {
+    newWindow.webContents.send('popupTransferMessage', args);
   });
 
 });

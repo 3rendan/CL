@@ -30,10 +30,15 @@ ReactDOM.render(
             <Investment data={InvestmentData} name={'Investments'} />
           </Route>
           <Route path="/calendar" component={Calendar} />
-          <Route path="/transactions">
+          // EVENTS AND TRANSFERS
+          <Route path="/transfer">
+            <EventsTable data={Events} name={'Transfer'} />
+          </Route>
+          <Route path="/events">
             <EventsTable data={Events} name={'Events'} />
             <EventsTable data={NAVEvents} name={'NAVEvents'} />
           </Route>
+          // MAINTENANCE
           <Route path="/maintenance/accountInvestment">
             <InvestmentTable data={InvestmentData} name={'Investment Data'} />
             <AccountTable data={AccountData} name={'Account Data'} />
@@ -43,11 +48,15 @@ ReactDOM.render(
             <MaintenanceTable name ="Owner"  data = {OwnerData}/>
             <MaintenanceTable name ="Benchmark"  data = {BenchmarkData}/>
           </Route>
-          <Route path="/popup">
-            <FormSheet dropdownOptions={['INFLOW', 'OUTFLOW', 'NAV', 'DIV', 'GAIN', 'TRANSFER', 'CONTRIBUTION', 'DISTRIBUTION']} />,
+          // POPUPs
+          <Route path="/popup/event">
+            <FormSheet dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN', 'CONTRIBUTION', 'DISTRIBUTION']} />,
           </Route>
-          <Route path="/events">
-            <EventsTable data={Events} name={'Events'} />
+          <Route path="/popup/NAVevent">
+            <FormSheet dropdownOptions={['NAV']} />,
+          </Route>
+          <Route path="/popup/transfer">
+            <FormSheet dropdownOptions={['TRANSFER']} />,
           </Route>
           <Route path="/" component={NoMatch} />
         </Switch>

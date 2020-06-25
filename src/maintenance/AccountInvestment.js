@@ -8,10 +8,6 @@ import {
   AccountData, InvestmentData, OwnerData, AssetClassData, BenchmarkData
 } from '../Data';
 
-// const BrowserWindow = require('electron').remote.BrowserWindow;
-const path = require('path');
-const url = require('url');
-
 function AddRow(data, tabulator, setIsTrue) {
   return function() {
       if (setIsTrue != null) {
@@ -32,7 +28,6 @@ function myMoney(value, showCents) {
   var decimalSym = ".";
   var thousandSym = ",";
   var symbol = "$";
-  var after = after;
   var precision = showCents ? 0 : 2;
 
   number = precision !== false ? floatVal.toFixed(precision) : floatVal;
@@ -47,7 +42,7 @@ function myMoney(value, showCents) {
     integer = integer.replace(rgx, "$1" + thousandSym + "$2");
   }
 
-  return after ? integer + decimal + symbol : symbol + integer + decimal;
+  return symbol + integer + decimal;
 };
 
 
@@ -79,14 +74,6 @@ const reformulateData = function reformulateData(data) {
     newDataArr.push(element);
   }
   return newDataArr;
-};
-
-// camelize the string
-const camelize = function camelize(str) {
-  return str.replace(/\W+(.)/g, function(match, chr)
-   {
-        return chr.toUpperCase();
-    });
 };
 
 // settings I use across tables
@@ -219,7 +206,7 @@ function InvestmentTable(props) {
   useEffect(() => {
     const columnNames = Object.keys(tableDataOriginal);
     let colNames = columnNames.map((colName) => {
-      if (colName == 'Commitment? (Y/N)') {
+      if (colName === 'Commitment? (Y/N)') {
         return {title:colName, field:colName, editor:"tickCross",
           formatter:"tickCross", formatterParams:{
               allowEmpty:false,
@@ -237,7 +224,7 @@ function InvestmentTable(props) {
             }, editor:"textarea", variableHeight:true, headerSort:false,
             minWidth: 300, width: 350, resizable:true};
       }
-      else if (colName == 'Commitment' || colName == 'Size (M)') {
+      else if (currencyColumns.includes(colName)) {
         return {title: colName +' $',
           field: colName, responsive: 0, minWidth: 80,
           formatter: "money", formatterParams:{

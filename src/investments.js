@@ -9,9 +9,6 @@ import 'font-awesome/css/font-awesome.min.css';
 
 import {copyCol} from './SpecialColumn';
 
-const path = require('path');
-const url = require('url');
-
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
@@ -54,7 +51,6 @@ function myMoney(value, showCents) {
   var decimalSym = ".";
   var thousandSym = ",";
   var symbol = "$";
-  var after = after;
   var precision = showCents ? 0 : 2;
 
   number = precision !== false ? floatVal.toFixed(precision) : floatVal;
@@ -69,7 +65,7 @@ function myMoney(value, showCents) {
     integer = integer.replace(rgx, "$1" + thousandSym + "$2");
   }
 
-  return after ? integer + decimal + symbol : symbol + integer + decimal;
+  return symbol + integer + decimal;
 };
 
 function ViewEvents(props) {
