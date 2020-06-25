@@ -37,12 +37,13 @@ const transactionsCol = {
      return "<i class='fa fa-tumblr'></i>";
    }, minWidth: 40, width:40, headerSort:false,
    responsive:0, hozAlign:"center", cellClick:function(e, cell){
-      ViewTranscations(cell.getRow().getData());
+      ViewTransfers(cell.getRow().getData());
     }
 };
 
 const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
                      'Sponsor Investment',	'Notes'];
+const currencyColumns = ['Commitment',	'Size (M)'];
 
 // my special money formatter
 function myMoney(value, showCents) {
@@ -72,8 +73,8 @@ function ViewEvents(props) {
  ipcRenderer.send('viewEvents', props);
 };
 
-function ViewTranscations(props) {
-  ipcRenderer.send('viewTransactions', props);
+function ViewTransfers(props) {
+  ipcRenderer.send('viewTransfers', props);
 };
 
 
@@ -148,7 +149,7 @@ const InvestmentTable = (props) => {
             }, variableHeight:true, headerSort:false,
             minWidth: 300, width: 350, resizable:true};
       }
-      else if (colName == 'Commitment' || colName == 'Size (M)') {
+      else if (currencyColumns.includes(colName)) {
         return {title: colName +' $',
           field: colName, responsive: 0, minWidth: 80,
           formatter: "money", formatterParams:{

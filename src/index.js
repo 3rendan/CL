@@ -31,8 +31,8 @@ ReactDOM.render(
           </Route>
           <Route path="/calendar" component={Calendar} />
           // EVENTS AND TRANSFERS
-          <Route path="/transfer">
-            <EventsTable data={Events} name={'Transfer'} />
+          <Route path="/transfers">
+            <EventsTable data={Events} name={'Transfers'} />
           </Route>
           <Route path="/events">
             <EventsTable data={Events} name={'Events'} />

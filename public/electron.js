@@ -75,7 +75,7 @@ ipcMain.on('viewEvents', (event, args) => {
 
 });
 
-ipcMain.on('viewTransactions', (event, args) => {
+ipcMain.on('viewTransfers', (event, args) => {
   // Create new window
   let newWindow = new BrowserWindow({
     webPreferences: {
@@ -87,13 +87,13 @@ ipcMain.on('viewTransactions', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: 'transactions',
+      hash: 'transfers',
       protocol: 'file',
       slashes: true,
   });
 
   // Load html into window
-  newWindow.loadURL(isDev ? 'http://localhost:3000/#/transactions' : fileURL);
+  newWindow.loadURL(isDev ? 'http://localhost:3000/#/transfers' : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 
