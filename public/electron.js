@@ -182,7 +182,7 @@ ipcMain.on('popupTransfer', (event, args) => {
   newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/transfer' : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
-
+  console.log('HELLI IS HERE!');
   newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('popupTransferMessage', args);

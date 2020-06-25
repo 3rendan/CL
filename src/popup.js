@@ -15,15 +15,17 @@ var senderWindow = null;
 var replyChannel = null;
 
 ipcRenderer.on('popupMessage', (event, message) => {
-  console.log('HHELLOEHLRELR');
   replyChannel = 'replyEvent';
   senderWindow = browserWindow.fromId(message.id);
 })
 
-
 ipcRenderer.on('popupNAVMessage', (event, message) => {
-  console.log('HHELLOEHLRELR');
   replyChannel = 'replyNAVEvent';
+  senderWindow = browserWindow.fromId(message.id);
+})
+
+ipcRenderer.on('popupTransferMessage', (event, message) => {
+  replyChannel = 'replyTransfer';
   senderWindow = browserWindow.fromId(message.id);
 })
 
@@ -166,18 +168,20 @@ const FormSheet = (props) => {
   const [netAmount, setNetAmount] = useState(0.0);
 
   useEffect(()=> {
+    console.log(transcationType);
+
     let mainColumns = null;
     let passFunc = null;
     switch (transcationType) {
-      case 'Contribution':
+      case 'CONTRIBUTION':
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Fees $',	'Tax $',	'Outside $', 'Other $', 'From Investment', 'Notes'];
         passFunc = setNetAmount;
         break;
-      case 'Distribution':
+      case 'DISTRIBUTION':
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Withhold $',	'Recallable $',	'Other $', 'From Investment', 'Notes'];
         passFunc = setNetAmount;
         break;
-      case 'Transfer':
+      case 'TRANSFER':
         mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];
         break;
       default: // single entry transaction details

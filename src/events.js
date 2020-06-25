@@ -31,6 +31,10 @@ function AddRow(props) {
   else if (props.name === 'NAVEvents') {
     ipcRenderer.send('popupNAVEvent', props);
   }
+  else if (props.name === 'Transfers') {
+    console.log('try adding')
+    ipcRenderer.send('popupTransfer', props);
+  }
 
 };
 
@@ -88,6 +92,13 @@ const EventsTable = (props) => {
 
   ipcRenderer.on('replyEvent', (event, message) => {
     if (tableName === 'Events') {
+      let copyTableData = [...tableData, message]
+      setTableData(copyTableData);
+    }
+  });
+
+  ipcRenderer.on('replyTransfer', (event, message) => {
+    if (tableName === 'Transfers') {
       let copyTableData = [...tableData, message]
       setTableData(copyTableData);
     }
