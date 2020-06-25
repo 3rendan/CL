@@ -35,18 +35,18 @@ ReactDOM.render(
         <EventsTable data={Events} name={'Transfers'} />
       </Route>
       <Route path="/events">
-        <EventsTable data={Events} name={'Events'} />
+        <EventsTable data={Events}    name={'Events'} />
         <EventsTable data={NAVEvents} name={'NAVEvents'} />
       </Route>
       // MAINTENANCE
       <Route path="/maintenance/accountInvestment">
         <InvestmentTable data={InvestmentData} name={'Investment Data'} />
-        <AccountTable data={AccountData} name={'Account Data'} />
+        <AccountTable    data={AccountData}    name={'Account Data'} />
       </Route>
       <Route path="/maintenance/AssetsBenchmarksOwners">
-        <MaintenanceTable name ="Asset Class" data = {AssetClassData}/>
-        <MaintenanceTable name ="Owner"  data = {OwnerData}/>
-        <MaintenanceTable name ="Benchmark"  data = {BenchmarkData}/>
+        <MaintenanceTable name={"Asset Class"} data={AssetClassData}/>
+        <MaintenanceTable name={"Owner"}       data={OwnerData}/>
+        <MaintenanceTable name={"Benchmark"}   data={BenchmarkData}/>
       </Route>
       // POPUPs
       <Route path="/popup/event">
@@ -62,5 +62,4 @@ ReactDOM.render(
     </Switch>
   </Router>,
   document.getElementById("root")
-
-)
+){
