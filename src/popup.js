@@ -156,8 +156,9 @@ const RowBland = (props) => {
 };
 
 const FormSheet = (props) => {
-  const [hasSelected, setSelected] = useState(false);
-  const [transcationType, setTranscationType] = useState(null);
+  const isSelected = props.transcationType !== undefined;
+  const [hasSelected, setSelected] = useState(isSelected);
+  const [transcationType, setTranscationType] = useState(props.transcationType);
   const [rows, setRows] = useState(null);
 
   const [state, setState] = useState({});
@@ -221,6 +222,7 @@ const FormSheet = (props) => {
      <div>
        <MyDropdown dropdownOptions={props.dropdownOptions}
                    setSelected={setSelected}
+                   transcationType={transcationType}
                    setTranscationType={setTranscationType}/>
        <br />
        <form style={{visibility: hasSelected ? 'visible' : 'hidden'}}
@@ -234,9 +236,10 @@ const FormSheet = (props) => {
 
 const MyDropdown = (props) => {
   const setSelected = props.setSelected;
+  const defaultTitleText = props.transcationType ? props.transcationType : 'Choose...' ;
   const setTranscationType = props.setTranscationType;
 
-  const [titleText, setTitleText] = useState('Choose...');
+  const [titleText, setTitleText] = useState(defaultTitleText);
   const myTitle = <div> {titleText} <span style={{borderLeft: "8px solid transparent",
     borderRight: "8px solid transparent", borderTop: "8px solid #FFFFFF"}} className="caret"></span> </div>;
   // const myTitle = "Hello";
