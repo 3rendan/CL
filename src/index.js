@@ -43,7 +43,7 @@ ReactDOM.render(
             <MaintenanceTable name ="Benchmark"  data = {BenchmarkData}/>
           </Route>
           <Route path="/popup">
-            <FormSheet dropdownOptions={['Inflow', 'Outflow', 'NAV', 'DIV', 'GAIN', 'Transfer', 'Contribution', 'Distribution']} />,
+            <FormSheet dropdownOptions={['INFLOW', 'OUTFLOW', 'NAV', 'DIV', 'GAIN', 'TRANSFER', 'CONTRIBUTION', 'DISTRIBUTION']} />,
           </Route>
           <Route path="/events">
             <EventsTable data={Events} name={'Events'} />

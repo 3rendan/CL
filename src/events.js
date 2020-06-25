@@ -4,9 +4,12 @@ import Tabulator from "tabulator-tables"; //import Tabulator library
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
+const BrowserWindow  = electron.remote.BrowserWindow;
 
 const path = require('path');
 const url = require('url');
+
+var investmentName = null;
 
 const defaultTabulatorSettings = {
   movableRows: true,
@@ -17,6 +20,8 @@ const defaultTabulatorSettings = {
 };
 
 function AddRow(props) {
+  console.log(props);
+  props['id'] = BrowserWindow.getFocusedWindow().id;
   ipcRenderer.send('popup', props);
 };
 
@@ -46,16 +51,15 @@ const reformulateData = function reformulateData(data) {
   return newDataArr;
 };
 
-
 var myRowData = null;
 
-const renderTable = function renderTable(tableName, setTableData, element, tabulator) {
+const renderTable = function renderTable(tableName, tableData, setTableData, element, tabulator) {
   return (<div>
             <div className="w3-show-inline-block" style= {{width: "100%"}}>
                 <br />
                 <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
                 <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-                  <button type="button" onClick={() => { AddRow(setTableData)}}
+                  <button type="button" onClick={() => { AddRow({data: tableData, name: tableName, investmentName: investmentName})}}
                         className="btn btn-success btn-lg">Add Row</button>
                 </div>
                 <br />
@@ -76,6 +80,15 @@ const InvestmentTable = (props) => {
 
   const [tabulator, setTabulator] = useState(null); //variable to hold your table
 
+  ipcRenderer.on('replyEvent', (event, message) => {
+    let copyTableData = tableData.map((dataElement) => {
+      let copyElement = Object.assign({},dataElement);
+      return copyElement;
+    });
+    copyTableData.push(message);
+    setTableData(copyTableData);
+  });
+
 
   // tableData = reformulateData(AccountData); //data for table to display
   useEffect(() => {
@@ -94,12 +107,12 @@ const InvestmentTable = (props) => {
         ]//define table columns
     });
     setTabulator(newTabulator);
-  }, []); // add max length vars here if immediately refresh
+  }, [tableData]); // add max length vars here if immediately refresh
 
 
 
   //add table holder element to DOM
-  return renderTable(tableName, setTableData, el, tabulator);
+  return renderTable(tableName, tableData, setTableData, el, tabulator);
 }
 
 

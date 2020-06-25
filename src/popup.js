@@ -9,14 +9,12 @@ import Button from 'react-bootstrap/Button';
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
+const BrowserWindow  = electron.remote.BrowserWindow;
 
-var setTableData = null;
+var senderWindow = null;
 
 ipcRenderer.on('message', (event, message) => {
-    // myRowData = message;
-    console.log('MESSAGE!!!')
-    console.log(message);
-    setTableData = message;
+    senderWindow = BrowserWindow.fromId(message.id);
 })
 
 const RowCurrencyNet = (props) => {
@@ -29,10 +27,11 @@ const RowCurrencyNet = (props) => {
     return Number(String(s).replace(/[^0-9.-]+/g,""))
   }
 
+
   var investmentData = null;
-  if (props.name == "Investment") {
-    investmentData = JSON.stringify(myRowData);
-  }
+  // if (props.name == "Investment") {
+  //   investmentData = JSON.stringify(myRowData);
+  // }
 
   var options = {
       maximumFractionDigits : 2,
@@ -91,14 +90,10 @@ const RowCurrency = (props) => {
     }
     setCurrMoney(localStringToNumber(value));
 
+    props.state[props.name] = value;
+    props.setState(props.state);
+
   }
-
-
-  var investmentData = null;
-  if (props.name == "Investment") {
-    investmentData = JSON.stringify(myRowData);
-  }
-
 
   const size = props.size * 10 + "px";
 
@@ -132,11 +127,11 @@ const RowBland = (props) => {
     type="text";
   }
 
-  var investmentData = null;
-  if (props.name == "Investment") {
-    investmentData = JSON.stringify(myRowData);
-  }
 
+  const onChange = (e) => {
+    props.state[props.name] = e.target.value;
+    props.setState(props.state)
+  }
 
   const size = props.size * 10 + "px";
 
@@ -146,7 +141,7 @@ const RowBland = (props) => {
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
-        <input type={type} min={min} className="form-control" defaultValue={investmentData} placeholder={placeholder} required />
+        <input type={type} min={min} onChange={onChange.bind(this)} className="form-control" placeholder={placeholder} required />
     </div>
   );
 };
@@ -155,6 +150,8 @@ const FormSheet = (props) => {
   const [hasSelected, setSelected] = useState(false);
   const [transcationType, setTranscationType] = useState(null);
   const [rows, setRows] = useState(null);
+
+  const [state, setState] = useState({});
 
   const [netAmount, setNetAmount] = useState(0.0);
 
@@ -182,25 +179,34 @@ const FormSheet = (props) => {
         return Math.max(a, b);
     });
 
-    const currencyAmounts = [];
 
     const newRows = mainColumns.map((column) => {
        if (column == 'Amount' || column.includes('$')) {
          const a = <RowCurrency netAmount={netAmount} setNetAmount={passFunc}
-                                key={column} name={column} size={maxSize} />;
-         currencyAmounts.push(a);
+                                key={column} name={column} size={maxSize}
+                                state={state} setState={setState}/>;
          return a;
        }
        else if (column == 'Net Amount') {
-         return <RowCurrencyNet netAmount={netAmount} key={column} name={column} size={maxSize} />;
+         return <RowCurrencyNet netAmount={netAmount} key={column}
+                                name={column} size={maxSize}
+                                state={state} setState={setState}/>;
        }
        else {
-         return <RowBland key={column} name={column} size={maxSize} />;
+         return <RowBland key={column} name={column} size={maxSize}
+                          state={state} setState={setState}/>;
        }
     });
     setRows(newRows);
 
-  }, [transcationType, netAmount]);
+  }, [transcationType, netAmount, state]);
+
+
+  const onSubmit = () => {
+    state['Type'] = transcationType;
+    senderWindow.send('replyEvent', state)
+  };
+
 
   return (
      <div>
@@ -208,7 +214,8 @@ const FormSheet = (props) => {
                    setSelected={setSelected}
                    setTranscationType={setTranscationType}/>
        <br />
-       <form style={{visibility: hasSelected ? 'visible' : 'hidden'}} >
+       <form style={{visibility: hasSelected ? 'visible' : 'hidden'}}
+              onSubmit={onSubmit}>
          {rows}
          <input id="submitForm" type="submit" />
        </form>
