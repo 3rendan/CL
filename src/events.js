@@ -6,18 +6,18 @@ const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 const BrowserWindow  = electron.remote.BrowserWindow;
 
-
-
 const defaultTabulatorSettings = {
   movableRows: true,
   columnMinWidth:100,
   resizableColumns:false,
   resizableRows:true,
   layoutColumnsOnNewData:true,
+  initialSort:[{column:"date", dir:"asc"}]
 };
 
 var myRowData = null;
 var investmentName = null;
+
 ipcRenderer.on('message', (event, args) => {
   myRowData = args;
   investmentName = args.Name;
@@ -32,7 +32,6 @@ function AddRow(props) {
     ipcRenderer.send('popupNAVEvent', props);
   }
   else if (props.name === 'Transfers') {
-    console.log('try adding')
     ipcRenderer.send('popupTransfer', props);
   }
 

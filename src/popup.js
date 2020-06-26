@@ -6,6 +6,59 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 
+import AsyncSelect from 'react-select/async';
+
+import {InvestmentData} from './Data';
+
+// dataFormator
+const reformulateData = function reformulateData(data) {
+  const keys = Object.keys(data);
+  const maxLength = Math.max(...keys.map( (key) => {
+      return data[key].length;
+  }));
+  var newDataArr = [];
+
+  var i;
+  for (i = 0; i < maxLength; i++) {
+    var element = {};
+    var key;
+    for (key of keys) {
+      if (i <= data[key].length) {
+          element[key] = data[key][i];
+      }
+      else {
+
+        element[key] = "";
+      }
+    }
+    newDataArr.push(element);
+  }
+  return newDataArr;
+};
+
+const investmentOptions = reformulateData(InvestmentData).map((data) => {
+  console.log(data)
+  const label = data['Long Name'] + " " + data['Account'] + " " + data['Account Owner'] + " " + data['Commitment']
+  return {label: label, value: data};
+})
+
+const filterInvestmentOptions = (inputValue: string) => {
+  const a = investmentOptions.filter(i =>
+    i.label.toLowerCase().includes(inputValue.toLowerCase())
+  );
+  return a;
+};
+
+
+const loadOptions = inputValue =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve(filterInvestmentOptions(inputValue));
+    }, 1000);
+  });
+
+
+
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
@@ -122,6 +175,28 @@ const RowCurrency = (props) => {
   );
 };
 
+const RowInvestment = (props) => {
+  const onChange = (inputText) => {
+    props.state[props.name] = inputText;
+    props.setState(props.state)
+  }
+
+  const size = props.size * 10 + "px";
+
+
+  return (
+    <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
+        <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
+        <AsyncSelect
+          cacheOptions
+          loadOptions={loadOptions}
+          onInputChange={onChange.bind(this)}
+          reuired
+        />
+    </div>
+  );
+};
+
 const RowBland = (props) => {
   let placeholder = props.name;
 
@@ -168,8 +243,6 @@ const FormSheet = (props) => {
   const [netAmount, setNetAmount] = useState(0.0);
 
   useEffect(()=> {
-    console.log(transcationType);
-
     let mainColumns = null;
     let passFunc = null;
     switch (transcationType) {
@@ -205,6 +278,10 @@ const FormSheet = (props) => {
          return <RowCurrencyNet netAmount={netAmount} key={column}
                                 name={column} size={maxSize}
                                 state={state} setState={setState}/>;
+       }
+       else if (column.includes('Investment')) {
+         return <RowInvestment name={column} key={column} size={maxSize}
+                                  state={state} setState={setState}/>
        }
        else {
          return <RowBland key={column} name={column} size={maxSize}

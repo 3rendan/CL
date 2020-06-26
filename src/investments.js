@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import Tabulator from "tabulator-tables"; //import Tabulator library
 
 
-// const BrowserWindow = require('electron').remote.BrowserWindow;
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -12,7 +11,6 @@ import {copyCol} from './SpecialColumn';
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
-
 const defaultTabulatorSettings = {
   movableRows: true,
   columnMinWidth:100,
@@ -20,8 +18,6 @@ const defaultTabulatorSettings = {
   resizableRows:true,
   layoutColumnsOnNewData:true,
 };
-
-
 
 // // a column that when clicked launches the events page
 const eventsCol = {
