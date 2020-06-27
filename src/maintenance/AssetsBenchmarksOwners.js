@@ -6,6 +6,13 @@ import Tabulator from "tabulator-tables"; //import Tabulator library
 // import {AccountData, InvestmentData, OwnerData, AssetClassData, BenchmarkData} from '../Data'
 
 // const BrowserWindow = require('electron').remote.BrowserWindow;
+
+function AddRow(setTabulator, setData, data, tabulator) {
+  return function() {
+    tabulator.addData({})
+  }
+};
+
 // dataFormator
 const reformulateData = function reformulateData(data) {
   const keys = Object.keys(data);
@@ -82,7 +89,6 @@ var showCents = false;
 const MaintenanceTable = (props) => {
   const [tableData, setTableData] = useState(reformulateData(props.data));
   const tableName = props.name;
-  const columnNames = props.columns;
 
   const doesAutocomplete = ['Asset Class', 'Account'].includes(tableName);
 
@@ -90,25 +96,18 @@ const MaintenanceTable = (props) => {
   const [tabulator, setTabulator] = useState(null); //variable to hold your table
 
   useEffect(() => {
-    let cols;
+    const columnNames = Object.keys(tableData[0]);
+    let colNames;
     if (doesAutocomplete) {
-      cols = columnNames.map((colName) => {
+      colNames = columnNames.map((colName) => {
         return {title: colName, field: colName, responsive: 0, editor:"autocomplete",
-                editorParams:{freetext: true, allowEmpty: true, values:true},
-                cellEdited:function(cell){
-                  console.log("cell edited!");
-                  setTableData(cell.getTable().getData())
-                }};
+                editorParams:{freetext: true, allowEmpty: true, values:true}};
         });
     }
     else {
-      cols = columnNames.map((colName) => {
+      colNames = columnNames.map((colName) => {
         return {title: colName, field: colName, responsive: 0,
-               editor:"input",
-               cellEdited:function(cell){
-                console.log("cell edited!");
-                setTableData(cell.getTable().getData())
-              }
+               editor:"input"
             };
       });
     }
@@ -119,14 +118,19 @@ const MaintenanceTable = (props) => {
        ...defaultTabulatorSettings,
        layout:"fitColumns",
       data: tableData, //link data to table
+      dataEdited:function(data){
+          //data - the updated table data
+          setTableData(data);
+      },
       columns: [
         {rowHandle:true, formatter:"handle", headerSort:false, responsive:0, width:30, minWidth:30},
-        ...cols,
+        ...colNames,
         {formatter:function(cell, formatterParams, onRendered){ //plain text value
              return "<i class='fa fa-trash'></i>";
          }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+           console.log(cell);
+           console.log(cell.getRow().getData());
           cell.getRow().delete();
-          setTableData(cell.getTable().getData())
         }}
       ]//define table columns
     });
@@ -139,12 +143,9 @@ const MaintenanceTable = (props) => {
           <br />
           <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
           <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-            <button type="button" onClick={() => {
-              const newTableData = [...tableData, {}]
-              console.log(newTableData)
-              setTableData(newTableData);
-              tabulator.replaceData(newTableData);
-            }} id="myButton" className="btn btn-success btn-lg">Add Row</button>
+            <button type="button" onClick={AddRow(setTabulator, setTableData, tableData, tabulator) }
+             id="myButton"
+            className="btn btn-success btn-lg">Add Row</button>
           </div>
           <br />
           <br />
