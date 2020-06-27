@@ -9,7 +9,7 @@ import EventsTable from "./events"
 
 import {AccountTable, InvestmentTable} from './maintenance/AccountInvestment'
 import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
-import Calendar from './calendar'
+import Calendar from './calendar/calendar'
 import FormSheet from './popup'
 
 // Data

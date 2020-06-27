@@ -23,16 +23,17 @@ const defaultTabulatorSettings = {
 const eventsCol = {
   formatter:function(cell, formatterParams, onRendered){ //plain text value
      return "<i class='fa fa-etsy' aria-hidden='true'></i>";
- }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+ }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell) {
    ViewEvents(cell.getRow().getData());
-}};
+ }
+};
 
 // a column that when clicked launches the transactions page
 const transactionsCol = {
   formatter:function(cell, formatterParams, onRendered){ //plain text value
      return "<i class='fa fa-tumblr'></i>";
    }, minWidth: 40, width:40, headerSort:false,
-   responsive:0, hozAlign:"center", cellClick:function(e, cell){
+   responsive:0, hozAlign:"center", cellClick:function(e, cell) {
       ViewTransfers(cell.getRow().getData());
     }
 };
@@ -74,7 +75,7 @@ function ViewTransfers(props) {
 };
 
 
-const renderTable = function renderTable(tableName, element) {
+function renderTable(tableName, element){
   return (<div>
             <div className="w3-show-inline-block" style= {{width: "100%"}}>
                 <br />
@@ -88,7 +89,7 @@ const renderTable = function renderTable(tableName, element) {
 };
 
 // dataFormator
-const reformulateData = function reformulateData(data) {
+function reformulateData(data) {
   const keys = Object.keys(data);
   const maxLength = Math.max(...keys.map( (key) => {
       return data[key].length;

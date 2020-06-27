@@ -12,7 +12,7 @@ const defaultTabulatorSettings = {
   resizableColumns:false,
   resizableRows:true,
   layoutColumnsOnNewData:true,
-  initialSort:[{column:"date", dir:"asc"}]
+  initialSort:[{column:"date", dir:"asc"}, {column:"date due", dir:"asc"}]
 };
 
 var myRowData = null;

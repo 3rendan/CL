@@ -11,7 +11,7 @@ import AsyncSelect from 'react-select/async';
 import {InvestmentData} from './Data';
 
 // dataFormator
-const reformulateData = function reformulateData(data) {
+function reformulateData(data) {
   const keys = Object.keys(data);
   const maxLength = Math.max(...keys.map( (key) => {
       return data[key].length;
@@ -323,7 +323,6 @@ const MyDropdown = (props) => {
   const [titleText, setTitleText] = useState(defaultTitleText);
   const myTitle = <div> {titleText} <span style={{borderLeft: "8px solid transparent",
     borderRight: "8px solid transparent", borderTop: "8px solid #FFFFFF"}} className="caret"></span> </div>;
-  // const myTitle = "Hello";
 
   const selectOption = (e) => {
     setSelected(true);
