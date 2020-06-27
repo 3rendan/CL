@@ -118,15 +118,18 @@ function reformulateData(data) {
 // table class
 const InvestmentTable = (props) => {
   const [tableData, setTableData] = useState(reformulateData(props.data));
-  const [tableDataOriginal, setTableDataOriginal] = useState(props.data);
   const [tableName, setTableName] = useState(props.name);
+  const columnNames = ['Name', 'Long Name', 'Asset Class',
+      'Sub Asset Class', 'Account', 'Account Owner', 'Commitment? (Y/N)',
+      'Primary Benchmark', 'Secondary Benchmark', 'Commitment', 'Size (M)',
+      'End of Term', 'Management Fee', 'Preferred Return',
+      'Carried Interest', 'Close Date', 'Sponsor Investment', 'Notes'];
 
   const el = useRef();
   const [tabulator, setTabulator] = useState(null); //variable to hold your table
 
   // tableData = reformulateData(AccountData); //data for table to display
   useEffect(() => {
-    const columnNames = Object.keys(tableDataOriginal);
     let colNames = columnNames.map((colName) => {
       if (colName == 'Commitment? (Y/N)') {
         return {title:colName, field:colName,
