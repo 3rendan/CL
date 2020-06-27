@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
-import Home from "./App"
 import Investment from './investments'
 import EventsTable from "./events"
 
@@ -26,7 +25,6 @@ const NoMatch = () => {
 ReactDOM.render(
   <Router>
     <Switch>
-      <Route exact path="/" component={Home} />
       <Route path="/investments">
         <Investment data={InvestmentData} name={'Investments'} />
       </Route>
