@@ -11,6 +11,11 @@ import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
 import Calendar from './calendar/calendar'
 import FormSheet from './popup'
 
+
+import {getOwners, OwnerColumns} from './serverAPI/owners.js'
+
+
+
 // Data
 import {AccountData, InvestmentData, OwnerData,
         AssetClassData, BenchmarkData, Events, NAVEvents,
@@ -20,6 +25,9 @@ const NoMatch = () => {
   return <h1> No Match </h1>
 }
 
+// const OwnerData = Promise.resolve(getOwners()).then(e => console.log(e));
+const AssetClassColumns = ['Name', 'Long Name', 'Super Asset Class', 'Primary Benchmark', 'Secondary Benchmark']
+const BenchmarkColumns = ['Name']
 
 // render
 ReactDOM.render(
@@ -43,9 +51,9 @@ ReactDOM.render(
         <AccountTable    data={AccountData}    name={'Account Data'} />
       </Route>
       <Route path="/maintenance/AssetsBenchmarksOwners">
-        <MaintenanceTable name={"Asset Class"} data={AssetClassData}/>
-        <MaintenanceTable name={"Owner"}       data={OwnerData}/>
-        <MaintenanceTable name={"Benchmark"}   data={BenchmarkData}/>
+        <MaintenanceTable name={"Asset Class"} data={AssetClassData}  columns={AssetClassColumns}/>
+        <MaintenanceTable name={"Owner"}       data={OwnerData}       columns={OwnerColumns}/>
+        <MaintenanceTable name={"Benchmark"}   data={BenchmarkData}   columns={BenchmarkColumns}/>
       </Route>
       // POPUPs
       <Route path="/popup/event">

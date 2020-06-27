@@ -37,7 +37,6 @@ function reformulateData(data) {
 };
 
 const investmentOptions = reformulateData(InvestmentData).map((data) => {
-  console.log(data)
   const label = data['Long Name'] + " " + data['Account'] + " " + data['Account Owner'] + " " + data['Commitment']
   return {label: label, value: data};
 })
