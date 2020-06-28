@@ -11164,6 +11164,11 @@ tabulator-tables@^4.7.0:
   resolved "https://registry.yarnpkg.com/tabulator-tables/-/tabulator-tables-4.7.0.tgz#e168f94a3a1c773427fd27611f6ca0256f0abd60"
   integrity sha512-FOFn13Vxuv0qJXZkwfEVBvT8fjm+VOdpcryclftCvf8i+8P1hJhKftyBfVtOqlPLWM0B0o8pNHZaV+JKY/IJSA==
 
+tabulator-tables@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/tabulator-tables/-/tabulator-tables-4.7.1.tgz#daf55b14f915d763a4bcfa63abd3026c889a109c"
+  integrity sha512-YsQkWmwJw2msNKmBQ9OWsYDU6S2jOK6menbpP6d+NExe4S/D22Itp8ikCCLs7Vuwh8cpo5W+VqbTWbo+L4lITA==
+
 tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-1.1.3.tgz#a1fccc06b58db61fd7a45da2da44f5f3a3e67ba2"

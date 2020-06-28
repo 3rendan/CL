@@ -20,7 +20,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
-    "tabulator-tables": "^4.7.0"
+    "react-tabulator": "^0.13.0",
+    "tabulator-tables": "^4.7.1"
   },
   "build": {
     "appId": "com.example.electron-cra",

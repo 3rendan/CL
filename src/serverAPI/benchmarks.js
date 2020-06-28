@@ -1,24 +1,23 @@
-class Owner {
-  constructor(id, name, long_name) {
+class Benchmark {
+  constructor(id, name) {
     this.name = name;
-    this.long_name = long_name;
     this.id = id;
   }
 
   body() {
-    return {name: this.name, long_name: this.long_name}
+    return {name: this.name}
   }
 }
 
-Owner.prototype.toString = function() {
+Benchmark.prototype.toString = function() {
   return JSON.stringify(this.body());
 }
 
-const updateOwner = async (owner) => {
+const updateBenchmark = async (benchmark) => {
     try {
-      const body = owner.body();
+      const body = benchmark.body();
       const response = await fetch(
-        `http://localhost:5000/owners/${owner.id}`,
+        `http://localhost:5000/benchmarks/${benchmark.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -32,14 +31,17 @@ const updateOwner = async (owner) => {
     }
   };
 
-const insertOwner = async (owner) => {
+const insertBenchmark = async (benchmark) => {
   try {
-    const body = owner.body();
-    const response = await fetch("http://localhost:5000/owners", {
+    const body = benchmark.body();
+    console.log(body)
+    console.log('attempt insert benchmark')
+    const response = await fetch("http://localhost:5000/benchmarks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
+    console.log(response)
     console.log('COMPLETED INSERT')
     return true;
   } catch (err) {
@@ -48,9 +50,9 @@ const insertOwner = async (owner) => {
   }
 };
 
-const deleteOwner = async id => {
+const deleteBenchmark = async id => {
   try {
-    const deleteOwner = await fetch(`http://localhost:5000/owners/${id}`, {
+    const deleteBenchmark = await fetch(`http://localhost:5000/benchmarks/${id}`, {
       method: "DELETE"
     });
 
@@ -61,9 +63,9 @@ const deleteOwner = async id => {
   }
 };
 
-const getOwners = async () => {
+const getBenchmarks = async () => {
   try {
-    const response = await fetch("http://localhost:5000/owners");
+    const response = await fetch("http://localhost:5000/benchmarks");
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -72,10 +74,10 @@ const getOwners = async () => {
   }
 };
 
-const getOwner = async id => {
+const getBenchmark = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/owners/${id}`,
+      `http://localhost:5000/benchmarks/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -90,13 +92,13 @@ const getOwner = async id => {
   }
 };
 
-const OwnerColumns = ['Name', 'Long Name'];
+const BenchmarkColumns = ['Name'];
 export {
-  Owner,
-  OwnerColumns,
-  updateOwner,
-  insertOwner,
-  deleteOwner,
-  getOwners,
-  getOwner
+  Benchmark,
+  BenchmarkColumns,
+  updateBenchmark,
+  insertBenchmark,
+  deleteBenchmark,
+  getBenchmarks,
+  getBenchmark
 }

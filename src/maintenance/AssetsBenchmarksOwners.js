@@ -2,16 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Tabulator from "tabulator-tables"; //import Tabulator library
 
+import {Owner, getOwners, insertOwner, updateOwner, deleteOwner} from '../serverAPI/owners';
+import {Benchmark, getBenchmarks, insertBenchmark, updateBenchmark, deleteBenchmark} from '../serverAPI/benchmarks';
+
 // data and info
-// import {AccountData, InvestmentData, OwnerData, AssetClassData, BenchmarkData} from '../Data'
+import "react-tabulator/lib/styles.css"; // default theme
+import "react-tabulator/css/bootstrap/tabulator_bootstrap.min.css"; // use Theme(s)
 
-// const BrowserWindow = require('electron').remote.BrowserWindow;
-
-function AddRow(setTabulator, setData, data, tabulator) {
-  return function() {
-    tabulator.addData({})
-  }
-};
+// for React 16.4.x use: import { ReactTabulator } - example in github repo.
+import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
 // dataFormator
 const reformulateData = function reformulateData(data) {
@@ -39,103 +38,90 @@ const reformulateData = function reformulateData(data) {
   return newDataArr;
 };
 
-
 // settings I use across tables
 const defaultTabulatorSettings = {
   movableRows: true,
   columnMinWidth:100,
   resizableColumns:false,
-  layoutColumnsOnNewData:true,
+  layoutColumnsOnNewData:true
 };
 
-// add my special money formatter
-Tabulator.prototype.extendModule("format", "formatters", {
-    myMoney:function(cell, formatterParams){
-      var floatVal = parseFloat(cell.getValue()),
-          number,
-          integer,
-          decimal,
-          rgx;
-
-      var decimalSym = formatterParams.decimal || ".";
-      var thousandSym = formatterParams.thousand || ",";
-      var symbol = formatterParams.symbol || "";
-      var after = !!formatterParams.symbolAfter;
-      var precision = showCents ? 0 : 2;
-
-      if (isNaN(floatVal)) {
-        return this.emptyToSpace(this.sanitizeHTML(cell.getValue()));
-      }
-
-      number = precision !== false ? floatVal.toFixed(precision) : floatVal;
-      number = String(number).split(".");
-
-      integer = number[0];
-      decimal = number.length > 1 ? decimalSym + number[1] : "";
-
-      rgx = /(\d+)(\d{3})/;
-
-      while (rgx.test(integer)) {
-        integer = integer.replace(rgx, "$1" + thousandSym + "$2");
-      }
-
-      return after ? integer + decimal + symbol : symbol + integer + decimal;
-    },
-});
-
-
-var showCents = false;
-
 const MaintenanceTable = (props) => {
-  const [tableData, setTableData] = useState(reformulateData(props.data));
+  const [tableData, setTableData] = useState(props.data);
+  const columnNames = props.columns;
   const tableName = props.name;
 
   const doesAutocomplete = ['Asset Class', 'Account'].includes(tableName);
 
-  const el = useRef();
-  const [tabulator, setTabulator] = useState(null); //variable to hold your table
+  const ref = useRef();
 
-  useEffect(() => {
-    const columnNames = Object.keys(tableData[0]);
-    let colNames;
+
+  let colNames = columnNames.map((colName) => {
+    const fieldName = colName.toLowerCase().replace(' ', '_');
     if (doesAutocomplete) {
-      colNames = columnNames.map((colName) => {
-        return {title: colName, field: colName, responsive: 0, editor:"autocomplete",
-                editorParams:{freetext: true, allowEmpty: true, values:true}};
-        });
+      return {title: colName, field: fieldName, responsive: 0, editor:"autocomplete",
+              editorParams:{freetext: true, allowEmpty: true, values:true},
+              cellEdited:function(cell) {
+                const newData = cell.getData();
+                if (tableName === 'Owner') {
+                  const newOwner = new Owner(newData.id, newData.name, newData.long_name)
+                  updateOwner(newOwner)
+                }
+                else if (tableName === 'Benchmark') {
+                  const newBenchmark = new Benchmark(newData.id, newData.name)
+                  console.log(newBenchmark)
+                  console.log(newBenchmark.id)
+                  updateBenchmark(newBenchmark)
+                }
+              }};
     }
     else {
-      colNames = columnNames.map((colName) => {
-        return {title: colName, field: colName, responsive: 0,
-               editor:"input"
-            };
-      });
+      return {title: colName, field: fieldName, responsive: 0,
+             editor:"input", cellEdited:function(cell) {
+               const newData = cell.getData();
+               if (tableName === 'Owner') {
+                 const newOwner = new Owner(newData.id, newData.name, newData.long_name)
+                 updateOwner(newOwner)
+               }
+               else if (tableName === 'Benchmark') {
+                 const newBenchmark = new Benchmark(newData.id, newData.name)
+                 console.log(newBenchmark.id)
+                 updateBenchmark(newBenchmark)
+               }
+             }
+          };
     }
+  });
 
-    // const currMaxHeight = BrowserWindow.getFocusedWindow().getSize()[1] * 0.50;
-    //instantiate Tabulator when element is mounted
-    const newTabulator = new Tabulator(el.current, {
-       ...defaultTabulatorSettings,
-       layout:"fitColumns",
-      data: tableData, //link data to table
-      dataEdited:function(data){
-          //data - the updated table data
-          setTableData(data);
-      },
-      columns: [
-        {rowHandle:true, formatter:"handle", headerSort:false, responsive:0, width:30, minWidth:30},
-        ...colNames,
-        {formatter:function(cell, formatterParams, onRendered){ //plain text value
-             return "<i class='fa fa-trash'></i>";
-         }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
-           console.log(cell);
-           console.log(cell.getRow().getData());
-          cell.getRow().delete();
-        }}
-      ]//define table columns
+  useEffect(()=>{
+    return (() => {
+      setTableData(ref.current.table.getData())
     });
-    setTabulator(newTabulator);
-  }, []);
+  }, [])
+
+  const columns = [
+    {rowHandle:true, formatter:"handle", headerSort:false,
+      responsive:0, width:30, minWidth:30},
+    ...colNames,
+    {formatter:function(cell, formatterParams, onRendered){ //plain text value
+         return "<i class='fa fa-trash'></i>";
+     }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+       const deletedData = cell.getData();
+       if (tableName === 'Owner') {
+         deleteOwner(deletedData.id)
+       }
+       else if (tableName === 'Benchmark') {
+         deleteBenchmark(deletedData.id)
+       }
+
+       cell.getRow().delete().then(function(){
+            //run code after table has been successfuly updated
+        })
+        .catch(function(error){
+        });;
+    }}
+  ];
+
 
   return (
     <div>
@@ -143,18 +129,43 @@ const MaintenanceTable = (props) => {
           <br />
           <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
           <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-            <button type="button" onClick={AddRow(setTabulator, setTableData, tableData, tabulator) }
+            <button type="button" onClick={() =>
+              {
+                let newData = null;
+                if (tableName === 'Owner') {
+                  const newOwner = new Owner(null, "", "");
+                  newData = newOwner.body();
+                  insertOwner(newOwner);
+                }
+                else if (tableName === 'Benchmark') {
+                  const newBenchmark = new Benchmark(null, "");
+                  newData = newBenchmark.body();
+                  insertBenchmark(newBenchmark);
+                }
+                console.log(newData)
+                ref.current.table.addData(newData);
+              }
+              }
              id="myButton"
             className="btn btn-success btn-lg">Add Row</button>
           </div>
           <br />
           <br />
       </div>
-      <div id={tableName} ref={el}/>
+      <React15Tabulator
+        ref={ref}
+        columns={columns}
+        data={tableData}
+        options={defaultTabulatorSettings}
+        data-custom-attr="test-custom-attribute"
+        className="custom-css-class"
+      />
       <br />
     </div>
   );
 
 };
+
+
 
 export default MaintenanceTable;
