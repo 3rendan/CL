@@ -4,6 +4,7 @@ import Tabulator from "tabulator-tables"; //import Tabulator library
 
 import {Owner, getOwners, insertOwner, updateOwner, deleteOwner} from '../serverAPI/owners';
 import {Benchmark, getBenchmarks, insertBenchmark, updateBenchmark, deleteBenchmark} from '../serverAPI/benchmarks';
+import {AssetClass, getAssetClasss, insertAssetClass, updateAssetClass, deleteAssetClass} from '../serverAPI/assetClass';
 
 // data and info
 import "react-tabulator/lib/styles.css"; // default theme
@@ -11,32 +12,6 @@ import "react-tabulator/css/bootstrap/tabulator_bootstrap.min.css"; // use Theme
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
-
-// dataFormator
-const reformulateData = function reformulateData(data) {
-  const keys = Object.keys(data);
-  const maxLength = Math.max(...keys.map( (key) => {
-      return data[key].length;
-  }));
-  var newDataArr = [];
-
-  var i;
-  for (i = 0; i < maxLength; i++) {
-    var element = {};
-    var key;
-    for (key of keys) {
-      if (i <= data[key].length) {
-          element[key] = data[key][i];
-      }
-      else {
-
-        element[key] = "";
-      }
-    }
-    newDataArr.push(element);
-  }
-  return newDataArr;
-};
 
 // settings I use across tables
 const defaultTabulatorSettings = {
@@ -57,7 +32,7 @@ const MaintenanceTable = (props) => {
 
 
   let colNames = columnNames.map((colName) => {
-    const fieldName = colName.toLowerCase().replace(' ', '_');
+    const fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (doesAutocomplete) {
       return {title: colName, field: fieldName, responsive: 0, editor:"autocomplete",
               editorParams:{freetext: true, allowEmpty: true, values:true},
@@ -65,15 +40,17 @@ const MaintenanceTable = (props) => {
                 const newData = cell.getData();
                 if (tableName === 'Owner') {
                   const newOwner = new Owner(newData.id, newData.name, newData.long_name)
-                  console.log(newOwner)
-                  console.log('UPDATE OWNER')
                   updateOwner(newOwner)
                 }
                 else if (tableName === 'Benchmark') {
                   const newBenchmark = new Benchmark(newData.id, newData.name)
-                  console.log(newBenchmark)
-                  console.log(newBenchmark.id)
                   updateBenchmark(newBenchmark)
+                }
+                else if (tableName === 'Asset Class') {
+                  const newAssetClass = new AssetClass(newData.id, newData.name,
+                     newData.long_name, newData.super_asset_class,
+                     newData.primary_benchmark, newData.secondary_benchmark)
+                  updateAssetClass(newAssetClass)
                 }
               }};
     }
@@ -83,14 +60,18 @@ const MaintenanceTable = (props) => {
                const newData = cell.getData();
                if (tableName === 'Owner') {
                  const newOwner = new Owner(newData.id, newData.name, newData.long_name)
-                 console.log(newOwner)
-                 console.log('UPDATE OWNER')
                  updateOwner(newOwner)
                }
                else if (tableName === 'Benchmark') {
                  const newBenchmark = new Benchmark(newData.id, newData.name)
-                 console.log(newBenchmark.id)
                  updateBenchmark(newBenchmark)
+               }
+               else if (tableName === 'Asset Class') {
+                 console.log(newData)
+                 const newAssetClass = new AssetClass(newData.id, newData.name,
+                    newData.long_name, newData.super_asset_class,
+                    newData.primary_benchmark, newData.secondary_benchmark)
+                 updateAssetClass(newAssetClass)
                }
              }
           };
@@ -140,6 +121,10 @@ const MaintenanceTable = (props) => {
                 else if (tableName === 'Benchmark') {
                   data = new Benchmark(null, "");
                   insertFunc = insertBenchmark;
+                }
+                else if (tableName === 'Asset Class') {
+                  data = new AssetClass(null, "", "", "", "", "");
+                  insertFunc = insertAssetClass;
                 }
                 insertFunc(data).then((response) => {
                   console.log(response)

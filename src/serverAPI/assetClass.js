@@ -1,11 +1,11 @@
 class AssetClass {
-  constructor(id, name, long_name, super_asset_class, primary_benchmark_id, secondary_benchmark_id) {
+  constructor(id, name, long_name, super_asset_class, primary_benchmark, secondary_benchmark) {
+    this.id = id;
     this.name = name
     this.long_name = long_name
     this.super_asset_class = super_asset_class
-    this.primary_benchmark_id = primary_benchmark_id
-    this.secondary_benchmark_id = secondary_benchmark_id
-    this.id = id;
+    this.primary_benchmark = primary_benchmark
+    this.secondary_benchmark = secondary_benchmark
   }
 
   body() {
@@ -13,8 +13,8 @@ class AssetClass {
       name : this.name,
       long_name : this.long_name,
       super_asset_class : this.super_asset_class,
-      primary_benchmark_id : this.primary_benchmark_id,
-      secondary_benchmark_id : this.secondary_benchmark_id
+      primary_benchmark : this.primary_benchmark,
+      secondary_benchmark : this.secondary_benchmark
     }
   }
 }
@@ -26,6 +26,7 @@ AssetClass.prototype.toString = function() {
 const updateAssetClass = async (assetClass) => {
     try {
       const body = assetClass.body();
+      console.log(body)
       const response = await fetch(
         `http://localhost:5000/assetClasses/${assetClass.id}`,
         {
@@ -51,9 +52,8 @@ const insertAssetClass = async (assetClass) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
-    console.log(response)
-    console.log('COMPLETED INSERT')
-    return true;
+    const jsonData = await response.json();
+    return jsonData;
   } catch (err) {
     console.error(err.message);
     return false;
@@ -76,6 +76,7 @@ const deleteAssetClass = async id => {
 const getAssetClasses = async () => {
   try {
     const response = await fetch("http://localhost:5000/assetClasses");
+    console.log('HELO');
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {

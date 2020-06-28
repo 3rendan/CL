@@ -14,7 +14,7 @@ import FormSheet from './popup'
 
 import {getOwners, OwnerColumns} from './serverAPI/owners.js'
 import {getBenchmarks, BenchmarkColumns} from './serverAPI/benchmarks.js'
-
+import {getAssetClasses, AssetClassColumns} from './serverAPI/assetClass.js'
 
 // Data
 import {AccountData, InvestmentData,
@@ -26,12 +26,7 @@ const NoMatch = () => {
 }
 
 
-// const OwnerData = myResult;
-// const OwnerData = Promise.resolve(getOwners()).then(e => console.log(e));
-const AssetClassColumns = ['Name', 'Long Name', 'Super Asset Class', 'Primary Benchmark', 'Secondary Benchmark']
-
-
-function render(OwnerData, BenchmarkData) {
+function render(OwnerData, BenchmarkData, AssetClassData) {
   // render
   ReactDOM.render(
     <Router>
@@ -75,8 +70,11 @@ function render(OwnerData, BenchmarkData) {
   )
 }
 
+
 (async () => {
    const OwnerData = await getOwners();
    const BenchmarkData = await getBenchmarks();
-   render(OwnerData, BenchmarkData);
+   const AssetClassData = await getAssetClasses();
+   console.log('HELLO DATA FETCHED')
+   render(OwnerData, BenchmarkData, AssetClassData);
 })()

@@ -34,16 +34,13 @@ const updateBenchmark = async (benchmark) => {
 const insertBenchmark = async (benchmark) => {
   try {
     const body = benchmark.body();
-    console.log(body)
-    console.log('attempt insert benchmark')
     const response = await fetch("http://localhost:5000/benchmarks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
-    console.log(response)
-    console.log('COMPLETED INSERT')
-    return true;
+    const jsonData = await response.json();
+    return jsonData;
   } catch (err) {
     console.error(err.message);
     return false;
