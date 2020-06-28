@@ -78,12 +78,6 @@ const MaintenanceTable = (props) => {
     }
   });
 
-  useEffect(()=>{
-    return (() => {
-      setTableData(ref.current.table.getData())
-    });
-  }, [])
-
   const columns = [
     {rowHandle:true, formatter:"handle", headerSort:false,
       responsive:0, width:30, minWidth:30},
