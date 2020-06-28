@@ -98,6 +98,9 @@ const MaintenanceTable = (props) => {
        else if (tableName === 'Benchmark') {
          deleteBenchmark(deletedData.id)
        }
+       else if (tableName === 'Asset Class') {
+         deleteAssetClass(deletedData.id)
+       }
 
        cell.getRow().delete();
     }}
