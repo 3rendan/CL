@@ -9766,17 +9766,17 @@ react-select@^3.1.0:
     react-input-autosize "^2.2.2"
     react-transition-group "^4.3.0"
 
-react-tabulator@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/react-tabulator/-/react-tabulator-0.13.0.tgz#389b7b7365dc578acff630c78993abb433ca9d28"
-  integrity sha512-P1f/PtOYwxgELYMk7gufg/TBXmRaWjD+xCjCjgyYCliGvgDv6SfAZDVRqpxZ1ov/uAQLEzct+mci9hFZ7RohSA==
+react-tabulator@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/react-tabulator/-/react-tabulator-0.13.1.tgz#8ce0b962393b6f3568a6798c601f6a6fa7a43287"
+  integrity sha512-qV9mdI/x+MkJZIH/X3IPemni3+wxUAIR04PkHklKRqXf5iVhVBa3nCB9t77/bWY60p0Dk+htpbEai15AESWjpQ==
   dependencies:
     "@types/react-tag-autocomplete" "^5.6.0"
     dotenv "^8.2.0"
     es6-promise "^4.2.8"
     pick-react-known-prop "^0.1.5"
     react-tag-autocomplete "^5.7.1"
-    tabulator-tables "^4.7.0"
+    tabulator-tables "^4.7.1"
 
 react-tag-autocomplete@^5.7.1:
   version "5.13.1"
@@ -11158,11 +11158,6 @@ table@^5.2.3:
     lodash "^4.17.14"
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
-
-tabulator-tables@^4.7.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/tabulator-tables/-/tabulator-tables-4.7.0.tgz#e168f94a3a1c773427fd27611f6ca0256f0abd60"
-  integrity sha512-FOFn13Vxuv0qJXZkwfEVBvT8fjm+VOdpcryclftCvf8i+8P1hJhKftyBfVtOqlPLWM0B0o8pNHZaV+JKY/IJSA==
 
 tabulator-tables@^4.7.1:
   version "4.7.1"

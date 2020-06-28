@@ -65,6 +65,8 @@ const MaintenanceTable = (props) => {
                 const newData = cell.getData();
                 if (tableName === 'Owner') {
                   const newOwner = new Owner(newData.id, newData.name, newData.long_name)
+                  console.log(newOwner)
+                  console.log('UPDATE OWNER')
                   updateOwner(newOwner)
                 }
                 else if (tableName === 'Benchmark') {
@@ -81,6 +83,8 @@ const MaintenanceTable = (props) => {
                const newData = cell.getData();
                if (tableName === 'Owner') {
                  const newOwner = new Owner(newData.id, newData.name, newData.long_name)
+                 console.log(newOwner)
+                 console.log('UPDATE OWNER')
                  updateOwner(newOwner)
                }
                else if (tableName === 'Benchmark') {
@@ -114,11 +118,7 @@ const MaintenanceTable = (props) => {
          deleteBenchmark(deletedData.id)
        }
 
-       cell.getRow().delete().then(function(){
-            //run code after table has been successfuly updated
-        })
-        .catch(function(error){
-        });;
+       cell.getRow().delete();
     }}
   ];
 
@@ -131,19 +131,20 @@ const MaintenanceTable = (props) => {
           <div style ={{float: "right", width: "130px", display: "inline-block"}}>
             <button type="button" onClick={() =>
               {
-                let newData = null;
+                let insertFunc = null;
+                let data = null;
                 if (tableName === 'Owner') {
-                  const newOwner = new Owner(null, "", "");
-                  newData = newOwner.body();
-                  insertOwner(newOwner);
+                  insertFunc = insertOwner;
+                  data = new Owner(null, "", "");
                 }
                 else if (tableName === 'Benchmark') {
-                  const newBenchmark = new Benchmark(null, "");
-                  newData = newBenchmark.body();
-                  insertBenchmark(newBenchmark);
+                  data = new Benchmark(null, "");
+                  insertFunc = insertBenchmark;
                 }
-                console.log(newData)
-                ref.current.table.addData(newData);
+                insertFunc(data).then((response) => {
+                  console.log(response)
+                  ref.current.table.addData(response)
+                })
               }
               }
              id="myButton"
