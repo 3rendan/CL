@@ -6,7 +6,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import Investment from './investments'
 import EventsTable from "./events"
 
-import {AccountTable, InvestmentTable} from './maintenance/AccountInvestment'
+import {InvestmentTable} from './maintenance/AccountInvestment'
 import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
 import Calendar from './calendar/calendar'
 import FormSheet from './popup'
@@ -15,10 +15,11 @@ import FormSheet from './popup'
 import {getOwners, OwnerColumns} from './serverAPI/owners.js'
 import {getBenchmarks, BenchmarkColumns} from './serverAPI/benchmarks.js'
 import {getAssetClasses, AssetClassColumns} from './serverAPI/assetClass.js'
+import {getAccounts, AccountColumns} from './serverAPI/accounts.js'
+import {getInvestments, InvestmentColumns} from './serverAPI/investments.js'
 
 // Data
-import {AccountData, InvestmentData,
-        AssetClassData, Events, NAVEvents,
+import {Events, NAVEvents,
         Transfers} from './Data'
 
 const NoMatch = () => {
@@ -26,7 +27,7 @@ const NoMatch = () => {
 }
 
 
-function render(OwnerData, BenchmarkData, AssetClassData) {
+function render(OwnerData, BenchmarkData, AssetClassData, AccountData, InvestmentData) {
   // render
   ReactDOM.render(
     <Router>
@@ -45,8 +46,8 @@ function render(OwnerData, BenchmarkData, AssetClassData) {
         </Route>
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
-          <InvestmentTable data={InvestmentData} name={'Investment Data'} />
-          <AccountTable    data={AccountData}    name={'Account Data'} />
+          <InvestmentTable     data={InvestmentData} name={'Investment Data'} columns={InvestmentColumns} />
+          <MaintenanceTable    data={AccountData}    name={'Account Data'}    columns={AccountColumns} />
         </Route>
         <Route path="/maintenance/AssetsBenchmarksOwners">
           <MaintenanceTable name={"Asset Class"} data={AssetClassData}  columns={AssetClassColumns}/>
@@ -75,6 +76,8 @@ function render(OwnerData, BenchmarkData, AssetClassData) {
    const OwnerData = await getOwners();
    const BenchmarkData = await getBenchmarks();
    const AssetClassData = await getAssetClasses();
+   const AccountData = await getAccounts();
+   const InvestmentData = await getInvestments();
    console.log('HELLO DATA FETCHED')
-   render(OwnerData, BenchmarkData, AssetClassData);
+   render(OwnerData, BenchmarkData, AssetClassData, AccountData, InvestmentData);
 })()
