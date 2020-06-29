@@ -1,8 +1,15 @@
 class Owner {
-  constructor(id, name, long_name) {
-    this.name = name;
-    this.long_name = long_name;
-    this.id = id;
+  constructor(data) {
+    if (data === undefined || data === null) {
+      this.name = null;
+      this.long_name = "";
+      this.id = "";
+    }
+    else {
+      this.name = data.name;
+      this.long_name = data.long_name;
+      this.id = data.id;
+    }
   }
 
   body() {

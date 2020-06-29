@@ -1,7 +1,13 @@
 class Benchmark {
-  constructor(id, name) {
-    this.name = name;
-    this.id = id;
+  constructor(data) {
+    if (data === undefined || data === null) {
+      this.id = null;
+      this.name = "";
+    }
+    else {
+      this.name = data.name;
+      this.id = data.id;
+    }
   }
 
   body() {

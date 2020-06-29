@@ -1,11 +1,21 @@
 class AssetClass {
-  constructor(id, name, long_name, super_asset_class, primary_benchmark, secondary_benchmark) {
-    this.id = id;
-    this.name = name
-    this.long_name = long_name
-    this.super_asset_class = super_asset_class
-    this.primary_benchmark = primary_benchmark
-    this.secondary_benchmark = secondary_benchmark
+  constructor(data) {
+    if (data === undefined || data === null) {
+      this.id = null;
+      this.name = "";
+      this.long_name = "";
+      this.super_asset_class = "";
+      this.primary_benchmark = "";
+      this.secondary_benchmark = "";
+    }
+    else {
+      this.id = data.id;
+      this.name = data.name
+      this.long_name = data.long_name
+      this.super_asset_class = data.super_asset_class
+      this.primary_benchmark = data.primary_benchmark
+      this.secondary_benchmark = data.secondary_benchmark
+    }
   }
 
   body() {
@@ -76,7 +86,6 @@ const deleteAssetClass = async id => {
 const getAssetClasses = async () => {
   try {
     const response = await fetch("http://localhost:5000/assetClasses");
-    console.log('HELO');
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {

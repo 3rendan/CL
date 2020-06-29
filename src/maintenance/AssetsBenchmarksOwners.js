@@ -39,17 +39,15 @@ const MaintenanceTable = (props) => {
               cellEdited:function(cell) {
                 const newData = cell.getData();
                 if (tableName === 'Owner') {
-                  const newOwner = new Owner(newData.id, newData.name, newData.long_name)
+                  const newOwner = new Owner(newData)
                   updateOwner(newOwner)
                 }
                 else if (tableName === 'Benchmark') {
-                  const newBenchmark = new Benchmark(newData.id, newData.name)
+                  const newBenchmark = new Benchmark(newData)
                   updateBenchmark(newBenchmark)
                 }
                 else if (tableName === 'Asset Class') {
-                  const newAssetClass = new AssetClass(newData.id, newData.name,
-                     newData.long_name, newData.super_asset_class,
-                     newData.primary_benchmark, newData.secondary_benchmark)
+                  const newAssetClass = new AssetClass(newData)
                   updateAssetClass(newAssetClass)
                 }
               }};
@@ -59,18 +57,16 @@ const MaintenanceTable = (props) => {
              editor:"input", cellEdited:function(cell) {
                const newData = cell.getData();
                if (tableName === 'Owner') {
-                 const newOwner = new Owner(newData.id, newData.name, newData.long_name)
+                 const newOwner = new Owner(newData)
                  updateOwner(newOwner)
                }
                else if (tableName === 'Benchmark') {
-                 const newBenchmark = new Benchmark(newData.id, newData.name)
+                 const newBenchmark = new Benchmark(newData)
                  updateBenchmark(newBenchmark)
                }
                else if (tableName === 'Asset Class') {
                  console.log(newData)
-                 const newAssetClass = new AssetClass(newData.id, newData.name,
-                    newData.long_name, newData.super_asset_class,
-                    newData.primary_benchmark, newData.secondary_benchmark)
+                 const newAssetClass = new AssetClass(newData)
                  updateAssetClass(newAssetClass)
                }
              }
@@ -113,14 +109,14 @@ const MaintenanceTable = (props) => {
                 let data = null;
                 if (tableName === 'Owner') {
                   insertFunc = insertOwner;
-                  data = new Owner(null, "", "");
+                  data = new Owner(null);
                 }
                 else if (tableName === 'Benchmark') {
-                  data = new Benchmark(null, "");
+                  data = new Benchmark(null);
                   insertFunc = insertBenchmark;
                 }
                 else if (tableName === 'Asset Class') {
-                  data = new AssetClass(null, "", "", "", "", "");
+                  data = new AssetClass(null);
                   insertFunc = insertAssetClass;
                 }
                 insertFunc(data).then((response) => {
