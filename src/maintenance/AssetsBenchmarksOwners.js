@@ -9,7 +9,7 @@ import {Account, getAccounts, insertAccount, updateAccount, deleteAccount} from 
 
 // data and info
 import "react-tabulator/lib/styles.css"; // default theme
-import "react-tabulator/css/bootstrap/tabulator_bootstrap.min.css"; // use Theme(s)
+import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
@@ -52,7 +52,6 @@ const MaintenanceTable = (props) => {
                   updateAssetClass(newAssetClass)
                 }
                 else if (tableName === 'Account') {
-                  console.log(newData)
                   const newAccount = new Account(newData)
                   updateAccount(newAccount)
                 }

@@ -7,11 +7,16 @@ import {getOwners} from '../serverAPI/owners.js'
 import {getBenchmarks} from '../serverAPI/benchmarks.js'
 import {getAssetClasses} from '../serverAPI/assetClass.js'
 import {getAccounts} from '../serverAPI/accounts.js'
-import {getInvestments, colToInvestmentFields} from '../serverAPI/investments.js'
+import {Investment, getInvestments, updateInvestment, insertInvestment, deleteInvestment, colToInvestmentFields} from '../serverAPI/investments.js'
+
+import 'font-awesome/css/font-awesome.css';
+import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
+
 
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
-const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest', 'Sponsor Investment',	'Notes'];
+const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
+                    'Sponsor Investment',	'Notes'];
 
 const currencyColumns = ['Commitment',	'Size (M)'];
 
@@ -25,13 +30,15 @@ const defaultTabulatorSettings = {
 };
 
 // a column that when pressed deletes the row
-// const trashCol = {
-//   formatter:function(cell, formatterParams, onRendered){ //plain text value
-//      return "<i class='fa fa-trash'></i>";
-//    }, minWidth: 40, width:40, headerSort:false,
-//    responsive:0, hozAlign:"center", cellClick:function(e, cell){
-//   cell.getRow().delete();
-// }};
+const trashCol = {
+  formatter:function(cell, formatterParams, onRendered){ //plain text value
+     return "<i class='fa fa-trash'></i>";
+   }, minWidth: 40, width:40, headerSort:false,
+   responsive:0, hozAlign:"center", cellClick:function(e, cell){
+     const deletedData = cell.getData();
+     deleteInvestment(deletedData);
+     cell.getRow().delete();
+}};
 
 // table class
 function InvestmentTable(props) {
@@ -50,32 +57,44 @@ function InvestmentTable(props) {
   const ref = useRef();
 
   // get the current maximum length for all the commitment values
-  let tempMaxCommitment = InvestmentData.length !== 0 ? InvestmentData['Commitment'].reduce(function(a, b) {
-      return Math.max(a.length, b.length) ;
-  }) : 0;
+  let tempMaxCommitment = InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
+    try {
+      return i.commitment.length;
+    }
+    catch(err) {
+      return 0;
+    }
+  }
+  )) : 0;
   tempMaxCommitment = Math.max(tempMaxCommitment, 25); // allow a minimum of 25 digits
   const [maxLengthCommitment, setMaxLengthCommitment] = useState(tempMaxCommitment);
 
   // get the current maximum length for all the Size (M) values
-  let tempMaxSize =  InvestmentData.length !== 0 ? InvestmentData['Size (M)'].reduce(function(a, b) {
-      return Math.max(a.length, b.length);
-  }) : 0;
+  let tempMaxSize =  InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
+    try {
+      return i.size.length;
+    }
+    catch(err) {
+      return 0;
+    }
+  }
+  )) : 0;
   tempMaxSize = Math.max(tempMaxSize, 25); // allow a minimum of 25 digits
   const [maxLengthSize, setMaxLengthSize] = useState(tempMaxSize);
 
   // get the values that each column should display
   const myValues = function(colName) {
     if (colName.includes('Asset Class')) {
-      return AssetClassData['name'];
+      return AssetClassData.map(i => i.name);
     }
     else if (colName.includes('Benchmark')) {
-      return BenchmarkData['name'];
+      return BenchmarkData.map(i => i.name);
     }
     else if (colName == 'Account') {
-      return AccountData['name'];
+      return AccountData.map(i => i.name);
     }
     else if (colName == 'Account Owner') {
-      return OwnerData['name'];
+      return OwnerData.map(i => i.name);
     }
     else {
       return true;
@@ -84,14 +103,20 @@ function InvestmentTable(props) {
 
   let columns = columnNames.map((colName) => {
     const fieldName = colToInvestmentFields(colName);
-    if (colName === 'Commitment? (Y/N)') {
+    if (colName === 'Commitment (Y/N)') {
       return {title:colName, field:fieldName, editor:"tickCross",
+        minWidth: 175,
         formatter:"tickCross", formatterParams:{
             allowEmpty:false,
             allowTruthy:true,
             tickElement:"<i class='fa fa-check'></i>",
             crossElement:"<i class='fa fa-times'></i>",
-      }};
+      }, cellEdited:function(cell) {
+          const newData = cell.getData();
+          const newInvestment = new Investment(newData);
+          updateInvestment(newInvestment);
+      }
+      };
     }
     else if (textColumns.includes(colName)) {
       return {title: colName, field:fieldName, responsive: 0,
@@ -100,11 +125,22 @@ function InvestmentTable(props) {
                       maxLength:"300", //set the maximum character length of the textarea element to 10 characters
                   }
           }, editor:"textarea", variableHeight:true, headerSort:false,
+          cellEdited:function(cell) {
+              const newData = cell.getData();
+              const newInvestment = new Investment(newData);
+              updateInvestment(newInvestment);
+          },
           minWidth: 300, width: 350, resizable:true};
     }
     else if (currencyColumns.includes(colName)) {
       return {title: colName +' $',
-        field: fieldName, responsive: 0, minWidth: 80,
+        field: fieldName, responsive: 0, minWidth: 150,
+        editor: "number",
+        cellEdited:function(cell) {
+            const newData = cell.getData();
+            const newInvestment = new Investment(newData);
+            updateInvestment(newInvestment);
+        },
         formatter: "money", formatterParams:{
           decimal:".",
           thousand:",",
@@ -123,10 +159,18 @@ function InvestmentTable(props) {
         }};
     }
     return {title: colName, field: fieldName, responsive: 0,
+            minWidth: 200,
             editor:"autocomplete",
+            cellEdited:function(cell) {
+                const newData = cell.getData();
+                const newInvestment = new Investment(newData);
+                updateInvestment(newInvestment);
+            },
             editorParams:{
+              showListOnEmpty:true,
               freetext: true,
               allowEmpty: true,
+              searchingPlaceholder:"Filtering ...", //set the search placeholder
               values:myValues(colName)
             }
           };
@@ -143,7 +187,11 @@ function InvestmentTable(props) {
           <div style ={{float: "right", width: "130px", display: "inline-block"}}>
             <button type="button" onClick={() =>
               {
-                setTableData([...tableData, {}])
+                const data = new Investment(null);
+                insertInvestment(data).then((response) => {
+                  console.log(response)
+                  ref.current.table.addData(response)
+                });
               }
               }
              id="myButton"
