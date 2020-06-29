@@ -103,7 +103,7 @@ const getAccount = async id => {
   }
 };
 
-const AccountColumns = ['Name',	'Long Name',	'Institituion',	'Account Number']
+const AccountColumns = ['Name',	'Long Name',	'Institution',	'Account Number']
 
 export {
   Account,
