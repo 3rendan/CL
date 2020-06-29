@@ -223,16 +223,28 @@ function ViewInvestmentTable(props) {
   const ref = useRef();
 
   // get the current maximum length for all the commitment values
-  let tempMaxCommitment = InvestmentData.length !== 0 ? InvestmentData['Commitment'].reduce(function(a, b) {
-      return Math.max(a.length, b.length) ;
-  }) : 0;
+  let tempMaxCommitment = InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
+    try {
+      return i.commitment.length;
+    }
+    catch(err) {
+      return 0;
+    }
+  }
+  )) : 0;
   tempMaxCommitment = Math.max(tempMaxCommitment, 25); // allow a minimum of 25 digits
   const [maxLengthCommitment, setMaxLengthCommitment] = useState(tempMaxCommitment);
 
   // get the current maximum length for all the Size (M) values
-  let tempMaxSize =  InvestmentData.length !== 0 ? InvestmentData['Size (M)'].reduce(function(a, b) {
-      return Math.max(a.length, b.length);
-  }) : 0;
+  let tempMaxSize =  InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
+    try {
+      return i.size.length;
+    }
+    catch(err) {
+      return 0;
+    }
+  }
+  )) : 0;
   tempMaxSize = Math.max(tempMaxSize, 25); // allow a minimum of 25 digits
   const [maxLengthSize, setMaxLengthSize] = useState(tempMaxSize);
 
