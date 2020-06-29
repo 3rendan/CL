@@ -1,18 +1,25 @@
 class Account {
   constructor(data) {
     if (data === undefined || data === null) {
-      this.name = "";
       this.id = null;
+      this.name = "";
+      this.long_name = "";
+      this.institution = "";
+      this.account_number = "";
     }
     else {
-      this.name = data.name;
       this.id = data.id;
+      this.name = data.name;
+      this.long_name = data.long_name;
+      this.institution = data.institution;
+      this.account_number = data.account_number;
     }
 
   }
 
   body() {
-    return {name: this.name}
+    return {name: this.name, long_name: this.long_name,
+      institution: this.institution, account_number: this.account_number}
   }
 }
 
@@ -96,7 +103,7 @@ const getAccount = async id => {
   }
 };
 
-const AccountColumns = ['Name',	'LongName',	'Institituion',	'AccountNumber']
+const AccountColumns = ['Name',	'Long Name',	'Institituion',	'Account Number']
 
 export {
   Account,
