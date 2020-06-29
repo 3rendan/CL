@@ -7,7 +7,7 @@ import {getOwners} from '../serverAPI/owners.js'
 import {getBenchmarks} from '../serverAPI/benchmarks.js'
 import {getAssetClasses} from '../serverAPI/assetClass.js'
 import {getAccounts} from '../serverAPI/accounts.js'
-import {getInvestments} from '../serverAPI/investments.js'
+import {getInvestments, colToInvestmentFields} from '../serverAPI/investments.js'
 
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
@@ -39,7 +39,7 @@ function InvestmentTable(props) {
   const OwnerData = props.OwnerData;
   const AssetClassData = props.AssetClassData;
   const BenchmarkData = props.BenchmarkData;
-  const InvestmentData = props.InvestmentData;
+  const InvestmentData = props.data;
 
 
   const [tableData, setTableData] = useState(props.data);
@@ -50,14 +50,14 @@ function InvestmentTable(props) {
   const ref = useRef();
 
   // get the current maximum length for all the commitment values
-  let tempMaxCommitment = InvestmentData ? InvestmentData['Commitment'].reduce(function(a, b) {
+  let tempMaxCommitment = InvestmentData.length !== 0 ? InvestmentData['Commitment'].reduce(function(a, b) {
       return Math.max(a.length, b.length) ;
   }) : 0;
   tempMaxCommitment = Math.max(tempMaxCommitment, 25); // allow a minimum of 25 digits
   const [maxLengthCommitment, setMaxLengthCommitment] = useState(tempMaxCommitment);
 
   // get the current maximum length for all the Size (M) values
-  let tempMaxSize = InvestmentData ? InvestmentData['Size (M)'].reduce(function(a, b) {
+  let tempMaxSize =  InvestmentData.length !== 0 ? InvestmentData['Size (M)'].reduce(function(a, b) {
       return Math.max(a.length, b.length);
   }) : 0;
   tempMaxSize = Math.max(tempMaxSize, 25); // allow a minimum of 25 digits
@@ -65,27 +65,27 @@ function InvestmentTable(props) {
 
   // get the values that each column should display
   const myValues = function(colName) {
-      // console.log('HERE WITH ' + colName);
-      if (colName.includes('Asset Class')) {
-        return AssetClassData['Name'];
-      }
-      else if (colName.includes('Benchmark')) {
-        return BenchmarkData['Name'];
-      }
-      else if (colName == 'Account') {
-        return AccountData['Name'];
-      }
-      else if (colName == 'Account Owner') {
-        return OwnerData['Name'];
-      }
-      else {
-        return true;
-      }
+    if (colName.includes('Asset Class')) {
+      return AssetClassData['name'];
+    }
+    else if (colName.includes('Benchmark')) {
+      return BenchmarkData['name'];
+    }
+    else if (colName == 'Account') {
+      return AccountData['name'];
+    }
+    else if (colName == 'Account Owner') {
+      return OwnerData['name'];
+    }
+    else {
+      return true;
+    }
   };
 
   let columns = columnNames.map((colName) => {
+    const fieldName = colToInvestmentFields(colName);
     if (colName === 'Commitment? (Y/N)') {
-      return {title:colName, field:colName, editor:"tickCross",
+      return {title:colName, field:fieldName, editor:"tickCross",
         formatter:"tickCross", formatterParams:{
             allowEmpty:false,
             allowTruthy:true,
@@ -94,7 +94,7 @@ function InvestmentTable(props) {
       }};
     }
     else if (textColumns.includes(colName)) {
-      return {title: colName, field: colName, responsive: 0,
+      return {title: colName, field:fieldName, responsive: 0,
               formatter:"textarea",  formatterParams:{
                   elementAttributes:{
                       maxLength:"300", //set the maximum character length of the textarea element to 10 characters
@@ -104,7 +104,7 @@ function InvestmentTable(props) {
     }
     else if (currencyColumns.includes(colName)) {
       return {title: colName +' $',
-        field: colName, responsive: 0, minWidth: 80,
+        field: fieldName, responsive: 0, minWidth: 80,
         formatter: "money", formatterParams:{
           decimal:".",
           thousand:",",
@@ -122,7 +122,7 @@ function InvestmentTable(props) {
           });
         }};
     }
-    return {title: colName, field: colName, responsive: 0,
+    return {title: colName, field: fieldName, responsive: 0,
             editor:"autocomplete",
             editorParams:{
               freetext: true,
@@ -165,4 +165,94 @@ function InvestmentTable(props) {
   );
 }
 
-export { InvestmentTable };
+// table class
+function ViewInvestmentTable(props) {
+  const InvestmentData = props.data;
+  const [tableData, setTableData] = useState(props.data);
+  const tableName = props.name;
+  const columnNames = props.columns;
+
+  const ref = useRef();
+
+  // get the current maximum length for all the commitment values
+  let tempMaxCommitment = InvestmentData.length !== 0 ? InvestmentData['Commitment'].reduce(function(a, b) {
+      return Math.max(a.length, b.length) ;
+  }) : 0;
+  tempMaxCommitment = Math.max(tempMaxCommitment, 25); // allow a minimum of 25 digits
+  const [maxLengthCommitment, setMaxLengthCommitment] = useState(tempMaxCommitment);
+
+  // get the current maximum length for all the Size (M) values
+  let tempMaxSize =  InvestmentData.length !== 0 ? InvestmentData['Size (M)'].reduce(function(a, b) {
+      return Math.max(a.length, b.length);
+  }) : 0;
+  tempMaxSize = Math.max(tempMaxSize, 25); // allow a minimum of 25 digits
+  const [maxLengthSize, setMaxLengthSize] = useState(tempMaxSize);
+
+
+  let columns = columnNames.map((colName) => {
+    if (colName === 'Commitment? (Y/N)') {
+      return {title:colName, field:colName,
+        formatter:"tickCross", formatterParams:{
+            allowEmpty:false,
+            allowTruthy:true,
+            tickElement:"<i class='fa fa-check'></i>",
+            crossElement:"<i class='fa fa-times'></i>",
+      }};
+    }
+    else if (textColumns.includes(colName)) {
+      return {title: colName, field: colName, responsive: 0,
+              formatter:"textarea",  formatterParams:{
+                  elementAttributes:{
+                      maxLength:"300", //set the maximum character length of the textarea element to 10 characters
+                  }
+          }, variableHeight:true,
+          minWidth: 300, width: 350, resizable:true};
+    }
+    else if (currencyColumns.includes(colName)) {
+      return {title: colName +' $',
+        field: colName, responsive: 0, minWidth: 80,
+        formatter: "money", formatterParams:{
+          decimal:".",
+          thousand:",",
+          symbol:"$",
+          precision:0,
+        }, headerTooltip: 'Right Click to toggle cents',
+        headerContext:function(e, column){
+          const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
+          const currSymbol = showCents ? ' ¢' : ' $';
+          column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = colName + currSymbol;
+
+          var cells = column.getCells();
+          cells.forEach((cell, _) => {
+            cell.getElement().innerText = myMoneyFormatter(cell.getValue(), !showCents);
+          });
+        }};
+    }
+    return {title: colName, field: colName, responsive: 0};
+  });
+
+
+
+  //add table holder element to DOM
+  return (
+    <div>
+      <div className="w3-show-inline-block" style= {{width: "100%"}}>
+          <br />
+          <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
+          <br />
+          <br />
+      </div>
+      <React15Tabulator
+        ref={ref}
+        columns={columns}
+        data={tableData}
+        options={defaultTabulatorSettings}
+        data-custom-attr="test-custom-attribute"
+        className="custom-css-class"
+      />
+      <br />
+    </div>
+  );
+}
+
+export { InvestmentTable, ViewInvestmentTable };

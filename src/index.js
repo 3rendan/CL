@@ -3,10 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
-import Investment from './investments'
 import EventsTable from "./events"
 
-import {InvestmentTable} from './maintenance/AccountInvestment'
+import {InvestmentTable, ViewInvestmentTable} from './maintenance/AccountInvestment'
 import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
 import Calendar from './calendar/calendar'
 import FormSheet from './popup'
@@ -33,7 +32,9 @@ function render(OwnerData, BenchmarkData, AssetClassData, AccountData, Investmen
     <Router>
       <Switch>
         <Route path="/investments">
-          <Investment data={InvestmentData} name={'Investments'} />
+          <ViewInvestmentTable data={InvestmentData}
+            name={'Investment Data'}
+           columns={InvestmentColumns} />
         </Route>
         <Route path="/calendar" component={Calendar} />
         // EVENTS AND TRANSFERS
@@ -81,6 +82,5 @@ function render(OwnerData, BenchmarkData, AssetClassData, AccountData, Investmen
    const AssetClassData = await getAssetClasses();
    const AccountData = await getAccounts();
    const InvestmentData = await getInvestments();
-   console.log('HELLO DATA FETCHED')
    render(OwnerData, BenchmarkData, AssetClassData, AccountData, InvestmentData);
 })()

@@ -133,15 +133,25 @@ const getInvestment = async id => {
 
 const InvestmentColumns = [
   'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Investment',	'Owner',
-  'Commitment  (Y/N)', 'Primary Benchmark',	'Secondary Benchmark',
+  'Commitment (Y/N)', 'Primary Benchmark',	'Secondary Benchmark',
   'Commitment',	'Size (M)',	'End of Term',	'Management Fee',
   'Preferred Return',	'Carried Interest',
   'Close Date',	'Sponsor Investment',	'Notes']
 
+const colToInvestmentFields = (columnName) => {
+  if (columnName === 'Commitment (Y/N)') {
+    return 'has_commitment';
+  }
+  else if (columnName === 'Size (M)') {
+    return 'size';
+  }
+  return columnName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
+}
 
   export {
     Investment,
     InvestmentColumns,
+    colToInvestmentFields,
     updateInvestment,
     insertInvestment,
     deleteInvestment,
