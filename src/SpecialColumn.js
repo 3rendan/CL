@@ -38,4 +38,30 @@ const copyCol = {
   document.execCommand("copy");
 }};
 
-export {copyCol};
+// my special money formatter
+function myMoneyFormatter(value, showCents) {
+  var floatVal = parseFloat(value), number, integer, decimal, rgx;
+
+  var decimalSym = ".";
+  var thousandSym = ",";
+  var symbol = "$";
+  var precision = showCents ? 0 : 2;
+
+  number = precision !== false ? floatVal.toFixed(precision) : floatVal;
+  number = String(number).split(".");
+
+  integer = number[0];
+  decimal = number.length > 1 ? decimalSym + number[1] : "";
+
+  rgx = /(\d+)(\d{3})/;
+
+  while (rgx.test(integer)) {
+    integer = integer.replace(rgx, "$1" + thousandSym + "$2");
+  }
+
+  return symbol + integer + decimal;
+};
+
+
+
+export {copyCol, myMoneyFormatter};
