@@ -5,6 +5,7 @@ import Tabulator from "tabulator-tables"; //import Tabulator library
 import {Owner, getOwners, insertOwner, updateOwner, deleteOwner} from '../serverAPI/owners';
 import {Benchmark, getBenchmarks, insertBenchmark, updateBenchmark, deleteBenchmark} from '../serverAPI/benchmarks';
 import {AssetClass, getAssetClasss, insertAssetClass, updateAssetClass, deleteAssetClass} from '../serverAPI/assetClass';
+import {Account, getAccounts, insertAccount, updateAccount, deleteAccount} from '../serverAPI/accounts';
 
 // data and info
 import "react-tabulator/lib/styles.css"; // default theme
@@ -50,6 +51,11 @@ const MaintenanceTable = (props) => {
                   const newAssetClass = new AssetClass(newData)
                   updateAssetClass(newAssetClass)
                 }
+                else if (tableName === 'Account') {
+                  console.log(newData)
+                  const newAccount = new Account(newData)
+                  updateAccount(newAccount)
+                }
               }};
     }
     else {
@@ -65,9 +71,13 @@ const MaintenanceTable = (props) => {
                  updateBenchmark(newBenchmark)
                }
                else if (tableName === 'Asset Class') {
-                 console.log(newData)
                  const newAssetClass = new AssetClass(newData)
                  updateAssetClass(newAssetClass)
+               }
+               else if (tableName === 'Account') {
+                 console.log(newData)
+                 const newAccount = new Account(newData)
+                 updateAccount(newAccount)
                }
              }
           };
@@ -118,6 +128,10 @@ const MaintenanceTable = (props) => {
                 else if (tableName === 'Asset Class') {
                   data = new AssetClass(null);
                   insertFunc = insertAssetClass;
+                }
+                else if (tableName === 'Account') {
+                  insertFunc = insertAccount;
+                  data = new Account(null);
                 }
                 insertFunc(data).then((response) => {
                   console.log(response)

@@ -8,35 +8,9 @@ import Button from 'react-bootstrap/Button';
 
 import AsyncSelect from 'react-select/async';
 
-import {InvestmentData} from './Data';
+var InvestmentData = [];
 
-// dataFormator
-function reformulateData(data) {
-  const keys = Object.keys(data);
-  const maxLength = Math.max(...keys.map( (key) => {
-      return data[key].length;
-  }));
-  var newDataArr = [];
-
-  var i;
-  for (i = 0; i < maxLength; i++) {
-    var element = {};
-    var key;
-    for (key of keys) {
-      if (i <= data[key].length) {
-          element[key] = data[key][i];
-      }
-      else {
-
-        element[key] = "";
-      }
-    }
-    newDataArr.push(element);
-  }
-  return newDataArr;
-};
-
-const investmentOptions = reformulateData(InvestmentData).map((data) => {
+const investmentOptions = InvestmentData.map((data) => {
   const label = data['Long Name'] + " " + data['Account'] + " " + data['Account Owner'] + " " + data['Commitment']
   return {label: label, value: data};
 })
@@ -91,11 +65,6 @@ const RowCurrencyNet = (props) => {
     return Number(String(s).replace(/[^0-9.-]+/g,""))
   }
 
-
-  var investmentData = null;
-  // if (props.name == "Investment") {
-  //   investmentData = JSON.stringify(myRowData);
-  // }
 
   var options = {
       maximumFractionDigits : 2,
@@ -232,6 +201,8 @@ const RowBland = (props) => {
 };
 
 const FormSheet = (props) => {
+  InvestmentData = props.InvestmentData;
+
   const isSelected = props.transcationType !== undefined;
   const [hasSelected, setSelected] = useState(isSelected);
   const [transcationType, setTranscationType] = useState(props.transcationType);

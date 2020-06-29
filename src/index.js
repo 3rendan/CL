@@ -46,8 +46,11 @@ function render(OwnerData, BenchmarkData, AssetClassData, AccountData, Investmen
         </Route>
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
-          <InvestmentTable     data={InvestmentData} name={'Investment Data'} columns={InvestmentColumns} />
-          <MaintenanceTable    data={AccountData}    name={'Account Data'}    columns={AccountColumns} />
+          <InvestmentTable     data={InvestmentData}
+              AssetClassData={AssetClassData}  OwnerData={OwnerData}
+              BenchmarkData={BenchmarkData} AccountData={AccountData}
+            name={'Investment Data'} columns={InvestmentColumns} />
+          <MaintenanceTable name={'Account'}     data={AccountData}    columns={AccountColumns} />
         </Route>
         <Route path="/maintenance/AssetsBenchmarksOwners">
           <MaintenanceTable name={"Asset Class"} data={AssetClassData}  columns={AssetClassColumns}/>
@@ -56,13 +59,13 @@ function render(OwnerData, BenchmarkData, AssetClassData, AccountData, Investmen
         </Route>
         // POPUPs
         <Route path="/popup/event">
-          <FormSheet dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN', 'CONTRIBUTION', 'DISTRIBUTION']} />,
+          <FormSheet InvestmentData={InvestmentData} dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN', 'CONTRIBUTION', 'DISTRIBUTION']} />,
         </Route>
         <Route path="/popup/NAVevent">
-          <FormSheet transcationType={'NAV'} dropdownOptions={['NAV']} />,
+          <FormSheet InvestmentData={InvestmentData} transcationType={'NAV'} dropdownOptions={['NAV']} />,
         </Route>
         <Route path="/popup/transfer">
-          <FormSheet transcationType={'TRANSFER'} dropdownOptions={['TRANSFER']} />,
+          <FormSheet InvestmentData={InvestmentData} transcationType={'TRANSFER'} dropdownOptions={['TRANSFER']} />,
         </Route>
         <Route path="/" component={NoMatch} />
       </Switch>
