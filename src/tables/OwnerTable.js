@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {getOwners, OwnerColumns} from './serverAPI/owners.js'
+import {getOwners, OwnerColumns} from '../serverAPI/owners.js'
 
 import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 

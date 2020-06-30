@@ -7,7 +7,7 @@ import {getOwners} from '../serverAPI/owners.js'
 import {getBenchmarks} from '../serverAPI/benchmarks.js'
 import {getAssetClasses} from '../serverAPI/assetClass.js'
 import {getAccounts} from '../serverAPI/accounts.js'
-import {Investment, getInvestments, updateInvestment, insertInvestment, deleteInvestment, colToInvestmentFields} from '../serverAPI/investments.js'
+import {Investment, updateInvestment, insertInvestment, deleteInvestment, colToInvestmentFields} from '../serverAPI/investments.js'
 
 import 'font-awesome/css/font-awesome.css';
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
@@ -29,199 +29,138 @@ const defaultTabulatorSettings = {
   layoutColumnsOnNewData:true,
 };
 
-// a column that when pressed deletes the row
-const trashCol = {
-  formatter:function(cell, formatterParams, onRendered){ //plain text value
-     return "<i class='fa fa-trash'></i>";
-   }, minWidth: 40, width:40, headerSort:false,
-   responsive:0, hozAlign:"center", cellClick:function(e, cell){
-     const deletedData = cell.getData();
-     deleteInvestment(deletedData);
-     cell.getRow().delete();
-}};
-
-// table class
-function InvestmentTable(props) {
-  const AccountData = props.AccountData;
-  const OwnerData = props.OwnerData;
-  const AssetClassData = props.AssetClassData;
-  const BenchmarkData = props.BenchmarkData;
-  const InvestmentData = props.data;
+// get the values that each column should display
+const myValues = function(colName, dataDictionary) {
+  const AssetClassData = dataDictionary['AssetClassData'];
+  const BenchmarkData = dataDictionary['BenchmarkData'];
+  const AccountData = dataDictionary['AccountData'];
+  const OwnerData = dataDictionary['OwnerData'];
 
 
-  const [tableData, setTableData] = useState(props.data);
-  const tableName = props.name;
-  const columnNames = props.columns;
-
-  const [isTrue, setIsTrue] = useState(true);
-  const ref = useRef();
-
-  // get the current maximum length for all the commitment values
-  let tempMaxCommitment = InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
-    try {
-      return i.commitment.length;
-    }
-    catch(err) {
-      return 0;
-    }
+  if (colName.includes('Asset Class')) {
+    return AssetClassData.map(i => i.name);
   }
-  )) : 0;
-  tempMaxCommitment = Math.max(tempMaxCommitment, 25); // allow a minimum of 25 digits
-  const [maxLengthCommitment, setMaxLengthCommitment] = useState(tempMaxCommitment);
-
-  // get the current maximum length for all the Size (M) values
-  let tempMaxSize =  InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
-    try {
-      return i.size.length;
-    }
-    catch(err) {
-      return 0;
-    }
+  else if (colName.includes('Benchmark')) {
+    return BenchmarkData.map(i => i.name);
   }
-  )) : 0;
-  tempMaxSize = Math.max(tempMaxSize, 25); // allow a minimum of 25 digits
-  const [maxLengthSize, setMaxLengthSize] = useState(tempMaxSize);
+  else if (colName == 'Account') {
+    return AccountData.map(i => i.name);
+  }
+  else if (colName == 'Account Owner') {
+    return OwnerData.map(i => i.name);
+  }
+  else {
+    return true;
+  }
+};
 
-  // get the values that each column should display
-  const myValues = function(colName) {
-    if (colName.includes('Asset Class')) {
-      return AssetClassData.map(i => i.name);
-    }
-    else if (colName.includes('Benchmark')) {
-      return BenchmarkData.map(i => i.name);
-    }
-    else if (colName == 'Account') {
-      return AccountData.map(i => i.name);
-    }
-    else if (colName == 'Account Owner') {
-      return OwnerData.map(i => i.name);
-    }
-    else {
-      return true;
-    }
-  };
-
-  let columns = columnNames.map((colName) => {
-    const fieldName = colToInvestmentFields(colName);
-    if (colName === 'Commitment (Y/N)') {
-      return {title:colName, field:fieldName, editor:"tickCross",
-        minWidth: 175,
-        formatter:"tickCross", formatterParams:{
-            allowEmpty:false,
-            allowTruthy:true,
-            tickElement:"<i class='fa fa-check'></i>",
-            crossElement:"<i class='fa fa-times'></i>",
-      }, cellEdited:function(cell) {
+function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) {
+  const fieldName = colToInvestmentFields(colName);
+  if (colName === 'Commitment (Y/N)') {
+    const column = {title:colName, field:fieldName,
+      minWidth: 175,
+      formatter:"tickCross", formatterParams:{
+          allowEmpty:false,
+          allowTruthy:true,
+          tickElement:"<i class='fa fa-check'></i>",
+          crossElement:"<i class='fa fa-times'></i>"
+      }
+    };
+    if (!readOnly) {
+      column['editor'] = 'tickCross';
+      column['cellEdited'] = function(cell) {
           const newData = cell.getData();
           const newInvestment = new Investment(newData);
           updateInvestment(newInvestment);
-      }
       };
     }
-    else if (textColumns.includes(colName)) {
-      return {title: colName, field:fieldName, responsive: 0,
-              formatter:"textarea",  formatterParams:{
-                  elementAttributes:{
-                      maxLength:"300", //set the maximum character length of the textarea element to 10 characters
-                  }
-          }, editor:"textarea", variableHeight:true, headerSort:false,
-          cellEdited:function(cell) {
-              const newData = cell.getData();
-              const newInvestment = new Investment(newData);
-              updateInvestment(newInvestment);
-          },
-          minWidth: 300, width: 350, resizable:true};
+    return column;
+  }
+  else if (textColumns.includes(colName)) {
+    const column = {title: colName, field:fieldName, responsive: 0,
+            formatter:"textarea",  formatterParams:{
+                elementAttributes:{
+                    maxLength:"300", //set the maximum character length of the textarea element to 10 characters
+                }
+        }, variableHeight:true, headerSort:false,
+        minWidth: 300, width: 350, resizable:true};
+    if (!readOnly) {
+      column['editor'] = 'textarea';
+      column['cellEdited'] = function(cell) {
+          const newData = cell.getData();
+          const newInvestment = new Investment(newData);
+          updateInvestment(newInvestment);
+      };
     }
-    else if (currencyColumns.includes(colName)) {
-      return {title: colName +' $',
-        field: fieldName, responsive: 0, minWidth: 150,
-        editor: "number",
-        cellEdited:function(cell) {
+    return column;
+  }
+  else if (currencyColumns.includes(colName)) {
+    const column = {title: colName +' $',
+      field: fieldName, responsive: 0, minWidth: 150,
+      formatter: "money", formatterParams:{
+        decimal:".",
+        thousand:",",
+        symbol:"$",
+        precision:0,
+      }, headerTooltip: 'Right Click to toggle cents',
+      headerContext:function(e, column){
+        const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
+        const currSymbol = showCents ? ' ¢' : ' $';
+        column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = colName + currSymbol;
+
+        var cells = column.getCells();
+        cells.forEach((cell, _) => {
+          cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
+        });
+      }};
+
+      if (!readOnly) {
+        column['cellEdited'] = function(cell) {
             const newData = cell.getData();
             const newInvestment = new Investment(newData);
             updateInvestment(newInvestment);
-        },
-        formatter: "money", formatterParams:{
-          decimal:".",
-          thousand:",",
-          symbol:"$",
-          precision:0,
-        }, headerTooltip: 'Right Click to toggle cents',
-        headerContext:function(e, column){
-          const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
-          const currSymbol = showCents ? ' ¢' : ' $';
-          column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = colName + currSymbol;
-
-          var cells = column.getCells();
-          cells.forEach((cell, _) => {
-            cell.getElement().innerText = myMoneyFormatter(cell.getValue(), !showCents);
-          });
-        }};
+        };
+        column['editor'] = "number";
+      }
+      return column;
+  }
+  const column = {title: colName, field: fieldName, responsive: 0, minWidth: 200};
+  if (!readOnly) {
+    column['editor'] = 'autocomplete';
+    column['cellEdited'] = function(cell) {
+        const newData = cell.getData();
+        console.log('HELLO!!!!!')
+        const newInvestment = new Investment(newData);
+        updateInvestment(newInvestment);
+    };
+    column['editorParams'] = {
+      showListOnEmpty:true,
+      freetext: true,
+      allowEmpty: true,
+      searchingPlaceholder:"Filtering ...", //set the search placeholder
+      values:myValues(colName, dataDictionary)
     }
-    return {title: colName, field: fieldName, responsive: 0,
-            minWidth: 200,
-            editor:"autocomplete",
-            cellEdited:function(cell) {
-                const newData = cell.getData();
-                const newInvestment = new Investment(newData);
-                updateInvestment(newInvestment);
-            },
-            editorParams:{
-              showListOnEmpty:true,
-              freetext: true,
-              allowEmpty: true,
-              searchingPlaceholder:"Filtering ...", //set the search placeholder
-              values:myValues(colName)
-            }
-          };
-  });
-
-
-
-  //add table holder element to DOM
-  return (
-    <div>
-      <div className="w3-show-inline-block" style= {{width: "100%"}}>
-          <br />
-          <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
-          <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-            <button type="button" onClick={() =>
-              {
-                const data = new Investment(null);
-                insertInvestment(data).then((response) => {
-                  console.log(response)
-                  ref.current.table.addData(response)
-                });
-              }
-              }
-             id="myButton"
-            className="btn btn-success btn-lg">Add Row</button>
-          </div>
-          <br />
-          <br />
-      </div>
-      <React15Tabulator
-        ref={ref}
-        columns={columns}
-        data={tableData}
-        options={defaultTabulatorSettings}
-        data-custom-attr="test-custom-attribute"
-        className="custom-css-class"
-      />
-      <br />
-    </div>
-  );
+  }
+  return column;
 }
 
 // table class
-function ViewInvestmentTable(props) {
+const InvestmentTable = (props) => {
   const InvestmentData = props.data;
+  const readOnly = props.readOnly;
+
   const [tableData, setTableData] = useState(props.data);
-  console.log(tableData)
   const tableName = props.name;
   const columnNames = props.columns;
-
   const ref = useRef();
+
+
+  const dataDictionary = {
+    AccountData : props.AccountData,
+    OwnerData : props.OwnerData,
+    AssetClassData : props.AssetClassData,
+    BenchmarkData : props.BenchmarkData,
+  };
 
   // get the current maximum length for all the commitment values
   let tempMaxCommitment = InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
@@ -251,49 +190,23 @@ function ViewInvestmentTable(props) {
 
 
   let columns = columnNames.map((colName) => {
-    const fieldName = colToInvestmentFields(colName);
-    if (colName === 'Commitment? (Y/N)') {
-      return {title:colName, field: fieldName,
-        formatter:"tickCross", formatterParams:{
-            allowEmpty:false,
-            allowTruthy:true,
-            tickElement:"<i class='fa fa-check'></i>",
-            crossElement:"<i class='fa fa-times'></i>",
-      }};
-    }
-    else if (textColumns.includes(colName)) {
-      return {title: colName, field: fieldName, responsive: 0,
-              formatter:"textarea",  formatterParams:{
-                  elementAttributes:{
-                      maxLength:"300", //set the maximum character length of the textarea element to 10 characters
-                  }
-          }, variableHeight:true,
-          minWidth: 300, width: 350, resizable:true};
-    }
-    else if (currencyColumns.includes(colName)) {
-      return {title: colName +' $',
-        field: fieldName, responsive: 0, minWidth: 80,
-        formatter: "money", formatterParams:{
-          decimal:".",
-          thousand:",",
-          symbol:"$",
-          precision:0,
-        }, headerTooltip: 'Right Click to toggle cents',
-        headerContext:function(e, column){
-          const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
-          const currSymbol = showCents ? ' ¢' : ' $';
-          column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = colName + currSymbol;
-
-          var cells = column.getCells();
-          cells.forEach((cell, _) => {
-            cell.getElement().innerText = myMoneyFormatter(cell.getValue(), !showCents);
-          });
-        }};
-    }
-    return {title: colName, field: fieldName, responsive: 0};
+    return columnNameToDefintion(colName, readOnly, dataDictionary);
   });
 
-
+  const addButton = readOnly ? null : (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() =>
+      {
+        const data = new Investment(null);
+        insertInvestment(data).then((response) => {
+          console.log(response)
+          ref.current.table.addData(response)
+        });
+        setIsTrue(false);
+      }
+      }
+     id="myButton"
+    className="btn btn-success btn-lg">Add Row</button>
+  </div>);
 
   //add table holder element to DOM
   return (
@@ -301,6 +214,7 @@ function ViewInvestmentTable(props) {
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
           <br />
           <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
+          {addButton}
           <br />
           <br />
       </div>
@@ -317,4 +231,4 @@ function ViewInvestmentTable(props) {
   );
 }
 
-export { InvestmentTable as DetailInvestmentTable, ViewInvestmentTable };
+export { InvestmentTable as DetailInvestmentTable };

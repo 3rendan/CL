@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {ViewInvestmentTable} from '../maintenance/AccountInvestment'
+import {DetailInvestmentTable} from '../maintenance/AccountInvestment'
 import {getInvestments, InvestmentColumns} from '../serverAPI/investments.js'
 
 const ViewOnlyInvestmentTable = () => {
@@ -17,9 +17,9 @@ const ViewOnlyInvestmentTable = () => {
   if (InvestmentData === null) {
     return null;
   }
-  return (<ViewInvestmentTable data={InvestmentData}
+  return (<DetailInvestmentTable data={InvestmentData}
     name={'Investment Data'}
-   columns={InvestmentColumns}/>);
+   columns={InvestmentColumns} readOnly={true}/>);
 }
 
 export default ViewOnlyInvestmentTable;

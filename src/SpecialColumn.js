@@ -40,15 +40,19 @@ const copyCol = {
 
 // my special money formatter
 function myMoneyFormatter(value, showCents) {
-  var floatVal = parseFloat(value), number, integer, decimal, rgx;
+  var floatVal = parseFloat(value.substring(1)), number, integer, decimal, rgx;
 
   var decimalSym = ".";
   var thousandSym = ",";
   var symbol = "$";
   var precision = showCents ? 0 : 2;
 
-  number = precision !== false ? floatVal.toFixed(precision) : floatVal;
+
+
+  number = floatVal.toFixed(precision);
   number = String(number).split(".");
+
+
 
   integer = number[0];
   decimal = number.length > 1 ? decimalSym + number[1] : "";
