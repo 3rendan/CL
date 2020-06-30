@@ -251,8 +251,9 @@ function ViewInvestmentTable(props) {
 
 
   let columns = columnNames.map((colName) => {
+    const fieldName = colToInvestmentFields(colName);
     if (colName === 'Commitment? (Y/N)') {
-      return {title:colName, field:colName,
+      return {title:colName, field: fieldName,
         formatter:"tickCross", formatterParams:{
             allowEmpty:false,
             allowTruthy:true,
@@ -261,7 +262,7 @@ function ViewInvestmentTable(props) {
       }};
     }
     else if (textColumns.includes(colName)) {
-      return {title: colName, field: colName, responsive: 0,
+      return {title: colName, field: fieldName, responsive: 0,
               formatter:"textarea",  formatterParams:{
                   elementAttributes:{
                       maxLength:"300", //set the maximum character length of the textarea element to 10 characters
@@ -271,7 +272,7 @@ function ViewInvestmentTable(props) {
     }
     else if (currencyColumns.includes(colName)) {
       return {title: colName +' $',
-        field: colName, responsive: 0, minWidth: 80,
+        field: fieldName, responsive: 0, minWidth: 80,
         formatter: "money", formatterParams:{
           decimal:".",
           thousand:",",
@@ -289,7 +290,7 @@ function ViewInvestmentTable(props) {
           });
         }};
     }
-    return {title: colName, field: colName, responsive: 0};
+    return {title: colName, field: fieldName, responsive: 0};
   });
 
 

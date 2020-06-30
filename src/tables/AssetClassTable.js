@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {getAssetClasses, AssetClassColumns} from './serverAPI/assetClass.js'
+import {getAssetClasses, AssetClassColumns} from '../serverAPI/assetClass.js'
 
-import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
+import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 
 const AssetClassTable = (props) => {
   const [AssetClassData, setAssetClassData]  = useState(null);

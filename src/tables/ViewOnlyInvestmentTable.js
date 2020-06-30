@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {ViewInvestmentTable} from './maintenance/AccountInvestment'
-
-
-import {getInvestments, InvestmentColumns} from './serverAPI/investments.js'
+import {ViewInvestmentTable} from '../maintenance/AccountInvestment'
+import {getInvestments, InvestmentColumns} from '../serverAPI/investments.js'
 
 const ViewOnlyInvestmentTable = () => {
   const [InvestmentData, setInvestmentData]  = useState(null);

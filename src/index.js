@@ -9,14 +9,14 @@ import {ViewInvestmentTable} from './maintenance/AccountInvestment'
 import Calendar from './calendar/calendar'
 import FormSheet from './popup'
 
-import {getInvestments, InvestmentColumns} from './serverAPI/investments.js'
+import {getInvestments} from './serverAPI/investments.js'
 
-import AssetClassTable from './AssetClassTable';
-import AccountTable from './AccountTable';
-import BenchmarkTable from './BenchmarkTable';
-import InvestmentTable from './InvestmentTable';
-import ViewOnlyInvestmentTable from './ViewOnlyInvestmentTable';
-import OwnerTable from './OwnerTable';
+import AssetClassTable from './tables/AssetClassTable';
+import AccountTable from './tables/AccountTable';
+import BenchmarkTable from './tables/BenchmarkTable';
+import InvestmentTable from './tables/InvestmentTable';
+import ViewOnlyInvestmentTable from './tables/ViewOnlyInvestmentTable';
+import OwnerTable from './tables/OwnerTable';
 
 // Data
 import {Events, NAVEvents, Transfers} from './Data'

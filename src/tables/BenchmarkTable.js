@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {getBenchmarks, BenchmarkColumns} from './serverAPI/benchmarks.js'
+import {getBenchmarks, BenchmarkColumns} from '../serverAPI/benchmarks.js'
 
-import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
+import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 
 const BenchmarkTable = (props) => {
   const [BenchmarkData, setBenchmarkData]  = useState(null);

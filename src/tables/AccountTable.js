@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {getAccounts, AccountColumns} from './serverAPI/accounts.js'
+import {getAccounts, AccountColumns} from '../serverAPI/accounts.js'
 
-import MaintenanceTable from './maintenance/AssetsBenchmarksOwners'
+import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 
 const AccountTable = (props) => {
   const [AccountData, setAccountData]  = useState(null);
