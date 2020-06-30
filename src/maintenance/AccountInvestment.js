@@ -217,6 +217,7 @@ function InvestmentTable(props) {
 function ViewInvestmentTable(props) {
   const InvestmentData = props.data;
   const [tableData, setTableData] = useState(props.data);
+  console.log(tableData)
   const tableName = props.name;
   const columnNames = props.columns;
 
@@ -315,4 +316,4 @@ function ViewInvestmentTable(props) {
   );
 }
 
-export { InvestmentTable, ViewInvestmentTable };
+export { InvestmentTable as DetailInvestmentTable, ViewInvestmentTable };

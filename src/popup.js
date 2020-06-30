@@ -201,7 +201,8 @@ const RowBland = (props) => {
 };
 
 const FormSheet = (props) => {
-  InvestmentData = props.InvestmentData;
+  const [InvestmentData, setInvestmentData] = useState(null);
+  const getInvestmentData = props.getInvestmentData;
 
   const isSelected = props.transcationType !== undefined;
   const [hasSelected, setSelected] = useState(isSelected);
@@ -213,6 +214,12 @@ const FormSheet = (props) => {
   const [netAmount, setNetAmount] = useState(0.0);
 
   useEffect(()=> {
+    async function fetchData() {
+      const result = await getInvestmentData();
+      setInvestmentData(result);
+    }
+    fetchData();
+
     let mainColumns = null;
     let passFunc = null;
     switch (transcationType) {
