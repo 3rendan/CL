@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import {copyCol, myMoneyFormatter} from '../SpecialColumn';
 
+import moment from 'moment';
+
 import {getOwners} from '../serverAPI/owners.js'
 import {getBenchmarks} from '../serverAPI/benchmarks.js'
 import {getAssetClasses} from '../serverAPI/assetClass.js'
@@ -27,6 +29,56 @@ const defaultTabulatorSettings = {
   resizableColumns:false,
   resizableRows:true,
   layoutColumnsOnNewData:true,
+};
+
+
+//Create Date Editor
+var dateEditor = function(cell, onRendered, success, cancel){
+    //cell - the cell component for the editable cell
+    //onRendered - function to call when the editor has been rendered
+    //success - function to call to pass the successfuly updated value to Tabulator
+    //cancel - function to call to abort the edit and return to a normal cell
+
+    //create and style input
+    var cellValue = moment(cell.getValue(), "DD/MM/YYYY").format("YYYY-MM-DD"),
+    input = document.createElement("input");
+
+    input.setAttribute("type", "date");
+
+    input.style.padding = "4px";
+    input.style.width = "100%";
+    input.style.boxSizing = "border-box";
+
+    input.value = cellValue;
+
+    onRendered(function(){
+        input.focus();
+        input.style.height = "100%";
+    });
+
+    function onChange(){
+        if(input.value != cellValue){
+            success(moment(input.value, "YYYY-MM-DD").format("DD/MM/YYYY"));
+        }else{
+            cancel();
+        }
+    }
+
+    //submit new value on blur or change
+    input.addEventListener("blur", onChange);
+
+    //submit new value on enter
+    input.addEventListener("keydown", function(e){
+        if(e.keyCode == 13){
+            onChange();
+        }
+
+        if(e.keyCode == 27){
+            cancel();
+        }
+    });
+
+    return input;
 };
 
 // get the values that each column should display
@@ -124,12 +176,30 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
       }
       return column;
   }
+  else if (colName === 'Close Date') {
+    const column = {title: colName, field: fieldName, responsive: 0, minWidth: 200};
+    if (!readOnly) {
+      column['editor'] = dateEditor;
+      column['cellEdited'] = function(cell) {
+          const newData = cell.getData();
+          const newInvestment = new Investment(newData);
+          updateInvestment(newInvestment);
+      };
+      column['editorParams'] = {
+        showListOnEmpty:true,
+        freetext: true,
+        allowEmpty: true,
+        searchingPlaceholder:"Filtering ...", //set the search placeholder
+        values:myValues(colName, dataDictionary)
+      }
+    }
+    return column;
+  }
   const column = {title: colName, field: fieldName, responsive: 0, minWidth: 200};
   if (!readOnly) {
     column['editor'] = 'autocomplete';
     column['cellEdited'] = function(cell) {
         const newData = cell.getData();
-        console.log('HELLO!!!!!')
         const newInvestment = new Investment(newData);
         updateInvestment(newInvestment);
     };
@@ -145,7 +215,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
 }
 
 // table class
-const InvestmentTable = (props) => {
+const DetailInvestmentTable = (props) => {
   const InvestmentData = props.data;
   const readOnly = props.readOnly;
 
@@ -201,7 +271,6 @@ const InvestmentTable = (props) => {
           console.log(response)
           ref.current.table.addData(response)
         });
-        setIsTrue(false);
       }
       }
      id="myButton"
@@ -231,4 +300,4 @@ const InvestmentTable = (props) => {
   );
 }
 
-export { InvestmentTable as DetailInvestmentTable };
+export default DetailInvestmentTable;

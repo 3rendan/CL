@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {DetailInvestmentTable} from '../maintenance/AccountInvestment'
+import DetailInvestmentTable from '../maintenance/AccountInvestment'
 import {getInvestments, InvestmentColumns} from '../serverAPI/investments.js'
 
 const ViewOnlyInvestmentTable = () => {

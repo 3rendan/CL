@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {DetailInvestmentTable} from '../maintenance/AccountInvestment'
+import DetailInvestmentTable from '../maintenance/AccountInvestment'
 
 import {getAccounts, AccountColumns} from '../serverAPI/accounts.js'
 import {getAssetClasses, AssetClassColumns} from '../serverAPI/assetClass.js'
