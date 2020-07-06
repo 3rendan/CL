@@ -1,3 +1,9 @@
+import React from 'react';
+import { Redirect } from 'react-router-dom'
+
+const electron = window.require('electron');
+const ipcRenderer  = electron.ipcRenderer;
+
 const copyCol = {
   formatter:function(cell, formatterParams, onRendered){ //plain text value
      return "<i class='fa fa-clipboard'></i>";
@@ -67,5 +73,25 @@ function myMoneyFormatter(value, showCents) {
 };
 
 
+// // a column that when clicked launches the events page
+const eventsCol = {
+  formatter:function(cell, formatterParams, onRendered){ //plain text value
+     return "<i class='fa fa-etsy' aria-hidden='true'></i>";
+ }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+   ipcRenderer.send('viewEvents', cell.getRow().getData());
+   // ViewEvents(cell.getRow().getData());
+}};
 
-export {copyCol, myMoneyFormatter};
+// a column that when clicked launches the transactions page
+const transactionsCol = {
+  formatter:function(cell, formatterParams, onRendered){ //plain text value
+     return "<i class='fa fa-tumblr'></i>";
+   }, minWidth: 40, width:40, headerSort:false,
+   responsive:0, hozAlign:"center", cellClick:function(e, cell){
+     ipcRenderer.send('viewTransfers', cell.getRow().getData());
+      // ViewTranscations(cell.getRow().getData());
+    }
+};
+
+
+export {copyCol, myMoneyFormatter, eventsCol, transactionsCol};

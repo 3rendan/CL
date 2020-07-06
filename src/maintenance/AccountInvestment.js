@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
-import {copyCol, myMoneyFormatter} from '../SpecialColumn';
+import {copyCol, myMoneyFormatter, eventsCol, transactionsCol} from '../SpecialColumn';
 
 import moment from 'moment';
 
@@ -276,6 +276,12 @@ const DetailInvestmentTable = (props) => {
      id="myButton"
     className="btn btn-success btn-lg">Add Row</button>
   </div>);
+
+  if (readOnly) {
+    columns = [eventsCol, transactionsCol, ...columns];
+  }
+
+
 
   //add table holder element to DOM
   return (

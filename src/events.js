@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef} from "react";
 import ReactDOM from "react-dom";
 import Tabulator from "tabulator-tables"; //import Tabulator library
 
+import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
+
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 const BrowserWindow  = electron.remote.BrowserWindow;

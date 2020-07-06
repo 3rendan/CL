@@ -6,6 +6,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 
+import {createEvent} from './serverAPI/eventsAndTransfers'
+
 import AsyncSelect from 'react-select/async';
 
 var InvestmentData = [];
@@ -272,6 +274,11 @@ const FormSheet = (props) => {
 
   const onSubmit = () => {
     state['Type'] = transcationType;
+    console.log('HELLO!');
+    createEvent({
+      state: state,
+      netAmount: netAmount
+    });
     senderWindow.webContents.send(replyChannel, state)
   };
 
