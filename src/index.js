@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Fragment, Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom';
 
 import Spinner from 'react-bootstrap/Spinner'
@@ -20,10 +20,34 @@ const BenchmarkTable = lazy(() => import('./tables/BenchmarkTable'));
 const InvestmentTable = lazy(() => import('./tables/InvestmentTable'));
 const ViewOnlyInvestmentTable = lazy(() => import('./tables/ViewOnlyInvestmentTable'));
 const OwnerTable = lazy(() => import('./tables/OwnerTable'));
-const EventsTable = lazy(() => import("./events"));
+
+
+const EventsTable = lazy(() => import("./events/eventsTable"));
+const NAVEventsTable = lazy(() => import("./events/navEventsTable"));
+const TransfersTable = lazy(() => import("./events/transfersTable"));
+
 const Calendar = lazy(() => import('./calendar/calendar'));
 const FormSheet = lazy(() => import('./popup'));
 
+const EventsPage = (props) => {
+  return (
+    <Fragment>
+      <h1> Investment = {props.match.params.investment} </h1>
+      <EventsTable investment={props.match.params.investment}/>
+      <NAVEventsTable investment={props.match.params.investment}/>
+    </Fragment>
+  )
+}
+
+const TransferPage = (props) => {
+  return (
+    <Fragment>
+      <h1> Investment = {props.match.params.investment} </h1>
+      <TransfersTable data={Transfers} name={'Transfers'}
+      investmentName={props.match.params.investment}  />
+    </Fragment>
+  );
+}
 
 // render
 ReactDOM.render(
@@ -35,22 +59,17 @@ ReactDOM.render(
         </Route>
         <Route path="/calendar" component={Calendar} />
         // EVENTS AND TRANSFERS
-        <Route path="/transfers">
-          <EventsTable data={Transfers} name={'Transfers'} />
-        </Route>
-        <Route path="/events">
-          <EventsTable data={Events}    name={'Events'} />
-          <EventsTable data={NAVEvents} name={'NAVEvents'} />
-        </Route>
+        <Route path="/transfers/:investment" component={TransferPage} />
+        <Route path="/events/:investment"    component={EventsPage}   />
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
           <InvestmentTable />
-          <AccountTable />
+          <AccountTable    />
         </Route>
         <Route path="/maintenance/AssetsBenchmarksOwners">
           <AssetClassTable />
-          <OwnerTable />
-          <BenchmarkTable />
+          <OwnerTable      />
+          <BenchmarkTable  />
         </Route>
         // POPUPs
         <Route path="/popup/event">

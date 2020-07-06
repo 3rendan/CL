@@ -91,6 +91,20 @@ const getSingleEntrys = async () => {
   }
 };
 
+const getNAVEvents = async investment => {
+  try {
+    const response = await fetch(`http://localhost:5000/navEvents/${investment}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+};
+
 const getSingleEntry = async id => {
   try {
     const response = await fetch(
@@ -110,12 +124,17 @@ const getSingleEntry = async id => {
 };
 
 const SingleEntryColumns = [
-  'amount', 'date',
-'investment', 'notes', 'type'
+  'amount', 'date', 'notes', 'type'
 ];
+const NAVColumns = [
+  'amount', 'date', 'notes'
+];
+
 export {
   SingleEntry,
   SingleEntryColumns,
+  NAVColumns,
+  getNAVEvents,
   updateSingleEntry,
   insertSingleEntry,
   deleteSingleEntry,
