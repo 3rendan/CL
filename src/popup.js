@@ -10,17 +10,33 @@ import {createEvent} from './serverAPI/eventsAndTransfers'
 
 import AsyncSelect from 'react-select/async';
 
+import {getInvestments} from './serverAPI/investments.js'
 var InvestmentData = [];
+var investmentOptions = [];
 
-const investmentOptions = InvestmentData.map((data) => {
-  const label = data['Long Name'] + " " + data['Account'] + " " + data['Account Owner'] + " " + data['Commitment']
-  return {label: label, value: data};
-})
+async function fetchData() {
+  InvestmentData = await getInvestments();
+  investmentOptions = InvestmentData.map((data) => {
+    const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
+    return {label: label, value: data};
+  })
+  console.log(InvestmentData)
+}
+fetchData();
+
+
+
+console.log(investmentOptions)
 
 const filterInvestmentOptions = (inputValue: string) => {
+  console.log(investmentOptions)
+  if (inputValue === undefined || inputValue === null || inputValue.length === 0) {
+    return investmentOptions;
+  }
   const a = investmentOptions.filter(i =>
-    i.label.toLowerCase().includes(inputValue.toLowerCase())
+    i.value.name.toLowerCase().includes(inputValue.toLowerCase())
   );
+  console.log(a)
   return a;
 };
 
@@ -29,7 +45,7 @@ const loadOptions = inputValue =>
   new Promise(resolve => {
     setTimeout(() => {
       resolve(filterInvestmentOptions(inputValue));
-    }, 1000);
+    }, 500);
   });
 
 
@@ -159,9 +175,14 @@ const RowInvestment = (props) => {
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
         <AsyncSelect
           cacheOptions
+          styles={{
+            // Fixes the overlapping problem of the component
+            menu: provided => ({ ...provided, zIndex: 9999 })
+          }}
           loadOptions={loadOptions}
+          defaultOptions={investmentOptions}
           onInputChange={onChange.bind(this)}
-          reuired
+          required={true}
         />
     </div>
   );
@@ -273,8 +294,12 @@ const FormSheet = (props) => {
 
 
   const onSubmit = () => {
+    console.log(state)
+    console.log(rows)
+    if (rows.length >= Object.keys(state).length) {
+      alert('MAKE SURE EVERYTHING IS FILLED IN!')
+    }
     state['Type'] = transcationType;
-    console.log('HELLO!');
     createEvent({
       state: state,
       netAmount: netAmount

@@ -2,29 +2,29 @@ class Transfer {
   constructor(data) {
     if (data === undefined || data === null) {
       this.id = null;
-      this.amount = 0;
       this.date = "";
-      this.investment = "";
+      this.from_invest = "";
+      this.to_invest = "";
+      this.amount = 0;
       this.notes = "";
-      this.type = "";
     }
     else {
       this.id = data.id;
-      this.amount = data.Amount;
-      this.date = data.Date;
-      this.investment = data.Investmemt;
-      this.notes = data.Notes;
-      this.type = data.Type;
+      this.date = data.date;
+      this.from_invest = data.from_invest;
+      this.to_invest = data.to_invest;
+      this.amount = data.amount;
+      this.notes = data.notes;
     }
   }
 
   body() {
     return {
-      amount: this.amount,
       date: this.date,
-      investment: this.investment,
-      notes: this.notes,
-      type: this.type
+      from_invest: this.from_invest,
+      to_invest: this.to_invest,
+      amount: this.amount,
+      notes: this.notes
     };
   }
 }
@@ -34,22 +34,22 @@ Transfer.prototype.toString = function() {
 }
 
 const updateTransfer = async (transfer) => {
-    try {
-      const body = transfer.body();
-      const response = await fetch(
-        `http://localhost:5000/transfer/${transfer.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
-      return true;
-    } catch (err) {
-      console.error(err.message);
-      return false;
-    }
-  };
+  try {
+    const body = transfer.body();
+    const response = await fetch(
+      `http://localhost:5000/transfer/${transfer.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+    return true;
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
 const insertTransfer = async (transfer) => {
   try {
@@ -80,9 +80,10 @@ const deleteTransfer = async id => {
   }
 };
 
-const getTransfers = async () => {
+const getTransfers = async investment => {
   try {
-    const response = await fetch("http://localhost:5000/transfers");
+    console.log(investment);
+    const response = await fetch(`http://localhost:5000/transfers/${investment}`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {

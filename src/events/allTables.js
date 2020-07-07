@@ -14,14 +14,14 @@ import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
-const BrowserWindow = electron.BrowserWindow;
+const BrowserWindow = electron.remote.BrowserWindow;
 
 function AddRow(props) {
   props['id'] = BrowserWindow.getFocusedWindow().id;
-  if (props.name === 'Events') {
+  if (props.name === 'Event') {
     ipcRenderer.send('popupEvent', props);
   }
-  else if (props.name === 'NAVEvents') {
+  else if (props.name === 'NAVEvent') {
     ipcRenderer.send('popupNAVEvent', props);
   }
   else if (props.name === 'Transfers') {
@@ -55,9 +55,9 @@ const MaintenanceTable = (props) => {
        if (tableName === 'Event') {
          deleteSingleEntry(deletedData.id)
        }
-       else if (tableName === 'NAVEvents') {
+       else if (tableName === 'NAVEvent') {
        }
-       else if (tableName === 'Transactions') {
+       else if (tableName === 'Transaction') {
        }
 
        cell.getRow().delete();

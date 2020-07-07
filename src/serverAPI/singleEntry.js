@@ -80,9 +80,9 @@ const deleteSingleEntry = async id => {
   }
 };
 
-const getSingleEntrys = async () => {
+const getSingleEntrys = async investment => {
   try {
-    const response = await fetch("http://localhost:5000/singleEntrys");
+    const response = await fetch(`http://localhost:5000/singleEntrys/${investment}`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {

@@ -21,8 +21,6 @@ const NAVEventTable = (props) => {
     async function fetchData() {
       console.log(investmentName)
       const result = await getNAVEvents(investmentName);
-      console.log('HELLO!!!')
-      console.log(result)
       setNAVEventData(result);
     }
     fetchData();
