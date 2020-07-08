@@ -5,6 +5,7 @@ import {copyCol, myMoneyFormatter, eventsCol, transactionsCol} from '../SpecialC
 
 import moment from 'moment';
 
+
 import {getOwners} from '../serverAPI/owners.js'
 import {getBenchmarks} from '../serverAPI/benchmarks.js'
 import {getAssetClasses} from '../serverAPI/assetClass.js'
@@ -16,6 +17,8 @@ import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
+
+window.moment = moment;
 
 const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
                     'Sponsor Investment',	'Notes'];
@@ -40,7 +43,7 @@ var dateEditor = function(cell, onRendered, success, cancel){
     //cancel - function to call to abort the edit and return to a normal cell
 
     //create and style input
-    var cellValue = moment(cell.getValue(), "DD/MM/YYYY").format("YYYY-MM-DD"),
+    var cellValue = moment(cell.getValue(), "MM/DD/YYYY").format("YYYY-MM-DD"),
     input = document.createElement("input");
 
     input.setAttribute("type", "date");
@@ -58,7 +61,7 @@ var dateEditor = function(cell, onRendered, success, cancel){
 
     function onChange(){
         if(input.value != cellValue){
-            success(moment(input.value, "YYYY-MM-DD").format("DD/MM/YYYY"));
+            success(moment(input.value, "YYYY-MM-DD").format("MM/DD/YYYY"));
         }else{
             cancel();
         }
@@ -177,7 +180,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
       return column;
   }
   else if (colName === 'Close Date') {
-    const column = {title: colName, field: fieldName, responsive: 0, minWidth: 200};
+    const column = {title: colName, field: fieldName, formatter:function(cell, formatterParams, onRendered){ const a = moment.utc(cell.getValue()).format('LL'); if (a === 'Invalid date') {return ""}; return a;}, responsive: 0, minWidth: 200};
     if (!readOnly) {
       column['editor'] = dateEditor;
       column['cellEdited'] = function(cell) {
@@ -185,13 +188,6 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
           const newInvestment = new Investment(newData);
           updateInvestment(newInvestment);
       };
-      column['editorParams'] = {
-        showListOnEmpty:true,
-        freetext: true,
-        allowEmpty: true,
-        searchingPlaceholder:"Filtering ...", //set the search placeholder
-        values:myValues(colName, dataDictionary)
-      }
     }
     return column;
   }
