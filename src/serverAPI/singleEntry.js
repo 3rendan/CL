@@ -84,14 +84,11 @@ const deleteSingleEntry = async id => {
 
 const getSingleEntrys = async investment => {
   try {
-    console.log(investment)
-    const response = await fetch(`http://localhost:5000/singleEntrys/${investment}`, {
+    const response = await fetch(`http://localhost:5000/singleEntrysInvestment/${investment}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
-    console.log(response)
     const jsonData = await response.json();
-    console.log(jsonData)
     return jsonData;
   } catch (err) {
     console.error(err.message);
