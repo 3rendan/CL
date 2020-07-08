@@ -12,7 +12,9 @@ class SingleEntry {
       this.id = data.id;
       this.amount = data.Amount;
       this.date = data.Date;
-      this.investment = data.Investmemt;
+      console.log(data.Investment)
+      console.log(data.Investment.value)
+      this.investment = data.Investment.value.id;
       this.notes = data.Notes;
       this.type = data.Type;
     }
@@ -82,8 +84,14 @@ const deleteSingleEntry = async id => {
 
 const getSingleEntrys = async investment => {
   try {
-    const response = await fetch(`http://localhost:5000/singleEntrys/${investment}`);
+    console.log(investment)
+    const response = await fetch(`http://localhost:5000/singleEntrys/${investment}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log(response)
     const jsonData = await response.json();
+    console.log(jsonData)
     return jsonData;
   } catch (err) {
     console.error(err.message);

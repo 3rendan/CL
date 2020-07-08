@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {getTransfers, TransferColumns} from '../serverAPI/transfers.js'
+import {getTransfers, Transfer, TransferColumns} from '../serverAPI/transfers.js'
 
 import MaintenanceTable from './allTables'
 
@@ -10,11 +10,15 @@ const ipcRenderer  = electron.ipcRenderer;
 
 const TransferTable = (props) => {
   const [TransferData, setTransferData] = useState(null);
-  console.log(props)
   const investmentName = props.investmentName;
+  const investmentID = props.investmentID;
 
   ipcRenderer.on('replyTransfer', (event, message) => {
-    let copyTableData = [...TransferData, message]
+    let copyTableData = [new Transfer(message)]
+    if (TransferData !== null) {
+      copyTableData = [...TransferData, new Transfer(message)]
+    }
+
     setTransferData(copyTableData);
   });
 
@@ -23,13 +27,12 @@ const TransferTable = (props) => {
     async function fetchData() {
       let result = [];
       try {
-        result = await getTransfers(investmentName);
+        result = await getTransfers(investmentID);
       }
       catch(err) {
         console.log('ERROR!')
       }
 
-      console.log(result)
       setTransferData(result);
     }
     fetchData();

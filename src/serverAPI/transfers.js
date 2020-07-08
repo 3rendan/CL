@@ -10,11 +10,11 @@ class Transfer {
     }
     else {
       this.id = data.id;
-      this.date = data.date;
-      this.from_invest = data.from_invest;
-      this.to_invest = data.to_invest;
-      this.amount = data.amount;
-      this.notes = data.notes;
+      this.date = data.Date;
+      this.from_invest = data['From Investment'].value.id;
+      this.to_invest = data['To Investment'].value.id;
+      this.amount = data.Amount;
+      this.notes = data.Notes;
     }
   }
 
@@ -82,7 +82,6 @@ const deleteTransfer = async id => {
 
 const getTransfers = async investment => {
   try {
-    console.log(investment);
     const response = await fetch(`http://localhost:5000/transfers/${investment}`);
     const jsonData = await response.json();
     return jsonData;

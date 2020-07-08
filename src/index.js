@@ -7,9 +7,6 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
 import {getInvestments} from './serverAPI/investments.js'
 
-// Data
-import {Events, NAVEvents, Transfers} from './Data'
-
 const NoMatch = () => {
   return <h1> No Match </h1>
 }
@@ -33,8 +30,10 @@ const EventsPage = (props) => {
   return (
     <Fragment>
       <h1> Investment = {props.match.params.investment} </h1>
-      <EventsTable investment={props.match.params.investment}/>
-      <NAVEventsTable investment={props.match.params.investment}/>
+      <EventsTable investment={props.match.params.investment}
+                    investmentID = {props.match.params.id}/>
+      <NAVEventsTable investment={props.match.params.investment}
+                      investmentID = {props.match.params.id}/>
     </Fragment>
   )
 }
@@ -43,8 +42,9 @@ const TransferPage = (props) => {
   return (
     <Fragment>
       <h1> Investment = {props.match.params.investment} </h1>
-      <TransfersTable data={Transfers} name={'Transfers'}
-      investmentName={props.match.params.investment}  />
+      <TransfersTable name={'Transfers'}
+      investmentName={props.match.params.investment}
+      investmentID = {props.match.params.id}  />
     </Fragment>
   );
 }
@@ -59,8 +59,8 @@ ReactDOM.render(
         </Route>
         <Route path="/calendar" component={Calendar} />
         // EVENTS AND TRANSFERS
-        <Route path="/transfers/:investment" component={TransferPage} />
-        <Route path="/events/:investment"    component={EventsPage}   />
+        <Route path="/transfers/:investment/:id" component={TransferPage} />
+        <Route path="/events/:investment/:id"    component={EventsPage}   />
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
           <InvestmentTable />

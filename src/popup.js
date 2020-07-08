@@ -20,13 +20,9 @@ async function fetchData() {
     const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
     return {label: label, value: data};
   })
-  console.log(InvestmentData)
 }
 fetchData();
 
-
-
-console.log(investmentOptions)
 
 const filterInvestmentOptions = (inputValue: string) => {
   console.log(investmentOptions)
@@ -162,6 +158,8 @@ const RowCurrency = (props) => {
 };
 
 const RowInvestment = (props) => {
+  const [defaultOptions, setDefaultOptions] = useState(investmentOptions);
+
   const onChange = (inputText) => {
     props.state[props.name] = inputText;
     props.setState(props.state)
@@ -169,6 +167,17 @@ const RowInvestment = (props) => {
 
   const size = props.size * 10 + "px";
 
+  useEffect(() => {
+    async function fetchData() {
+      InvestmentData = await getInvestments();
+      investmentOptions = InvestmentData.map((data) => {
+        const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
+        return {label: label, value: data};
+      })
+      setDefaultOptions(investmentOptions);
+    }
+    fetchData();
+  }, [])
 
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
@@ -180,8 +189,8 @@ const RowInvestment = (props) => {
             menu: provided => ({ ...provided, zIndex: 9999 })
           }}
           loadOptions={loadOptions}
-          defaultOptions={investmentOptions}
-          onInputChange={onChange.bind(this)}
+          defaultOptions={defaultOptions}
+          onChange={onChange.bind(this)}
           required={true}
         />
     </div>
@@ -294,11 +303,7 @@ const FormSheet = (props) => {
 
 
   const onSubmit = () => {
-    console.log(state)
-    console.log(rows)
-    if (rows.length >= Object.keys(state).length) {
-      alert('MAKE SURE EVERYTHING IS FILLED IN!')
-    }
+    console.log(state);
     state['Type'] = transcationType;
     createEvent({
       state: state,

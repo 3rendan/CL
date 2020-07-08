@@ -8,6 +8,7 @@ import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 import 'font-awesome/css/font-awesome.css';
 
 import {deleteSingleEntry} from '../serverAPI/singleEntry';
+import {deleteTransfer} from '../serverAPI/transfers';
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
@@ -31,7 +32,6 @@ function AddRow(props) {
 };
 
 const MaintenanceTable = (props) => {
-  const [tableData, setTableData] = useState(props.data);
   const columnNames = props.columns;
   const tableName = props.name;
 
@@ -52,12 +52,11 @@ const MaintenanceTable = (props) => {
          return "<i class='fa fa-trash'></i>";
      }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
        const deletedData = cell.getData();
-       if (tableName === 'Event') {
+       if (tableName === 'Event' || tableName === 'NAVEvent') {
          deleteSingleEntry(deletedData.id)
        }
-       else if (tableName === 'NAVEvent') {
-       }
-       else if (tableName === 'Transaction') {
+       else if (tableName === 'Transfer') {
+         deleteTransfer(deletedData.id)
        }
 
        cell.getRow().delete();
@@ -71,7 +70,7 @@ const MaintenanceTable = (props) => {
         <br />
         <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
         <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-          <button type="button" onClick={() => { AddRow({data: tableData, name: tableName})}}
+          <button type="button" onClick={() => { AddRow({data: props.data, name: tableName})}}
                 className="btn btn-success btn-lg">Add Row</button>
         </div>
         <br />
@@ -80,7 +79,7 @@ const MaintenanceTable = (props) => {
       <React15Tabulator
         ref={ref}
         columns={columns}
-        data={tableData}
+        data={props.data}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />

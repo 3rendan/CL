@@ -58,13 +58,13 @@ ipcMain.on('viewEvents', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: `events/${args.name}`,
+      hash: `events/${args.name}/${args.id}`,
       protocol: 'file',
       slashes: true,
   });
 
   // Load html into window
-  newWindow.loadURL(isDev ? `http://localhost:3000/#/events/${args.name}` : fileURL);
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/events/${args.name}/${args.id}` : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 
@@ -84,16 +84,17 @@ ipcMain.on('viewTransfers', (event, args) => {
     minWidth: 780
   });
 
+
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: `transfers/${args.name}`,
+      hash: `transfers/${args.name}/${args.id}`,
       protocol: 'file',
       slashes: true,
   });
 
   // Load html into window
-  newWindow.loadURL(isDev ? `http://localhost:3000/#/transfers/${args.name}` : fileURL);
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/transfers/${args.name}/${args.id}` : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 
@@ -182,7 +183,6 @@ ipcMain.on('popupTransfer', (event, args) => {
   newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/transfer' : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
-  console.log('HELLI IS HERE!');
   newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('popupTransferMessage', args);
