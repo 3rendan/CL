@@ -305,6 +305,12 @@ const FormSheet = (props) => {
   const onSubmit = () => {
     console.log(state);
     state['Type'] = transcationType;
+    if (state.Type === 'DISTRIBUTION') {
+      replyChannel = 'replyDistribution'
+    }
+    else if (state.Type === 'CONTRIBUTION') {
+      replyChannel = 'replyContribution'
+    }
     createEvent({
       state: state,
       netAmount: netAmount

@@ -1,8 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { addDays } from 'date-fns';
 
+import moment from 'moment';
+
 import './calendar.css'
+import {getDistributionEventsTime as getEvents, getAllDistributionEvents as getAllEvents} from '../serverAPI/distributions'
+
+
+function groupBy(array, item) {
+  if (item.includes('date')) {
+    const result = array.reduce(function (r, a) {
+          const formatted_item = moment(a[item]).format('LL')
+          r[formatted_item] = r[formatted_item] || [];
+          r[formatted_item].push(a);
+          return r;
+      }, Object.create(null));
+    return result;
+  }
+  const result = array.reduce(function (r, a) {
+        r[a[item]] = r[a[item]] || [];
+        r[a[item]].push(a);
+        return r;
+    }, Object.create(null));
+  return result;
+}
 
 // https://stackoverflow.com/questions/21297323/calculate-an-expected-delivery-date-accounting-for-holidays-in-business-days-u
 function businessDaysFromDate(date,businessDays) {
@@ -86,21 +108,56 @@ function isBusinessDay (date) {
   return true;
 };
 
-const daysOfWeek = ['Sun','Mon','Tues','Wednes','Thurs','Fri','Sat'];
+const daysOfWeek = ['Sun','Mon','Tues','Wed','Thurs','Fri','Sat'];
 
-const CalendarData = [{date: addDays(new Date(), -14), title: '1'}, {date: addDays(new Date(), -9), title: '1'},
-{date: addDays(new Date(), -9), title: '1'}, {date: addDays(new Date(), -3), title: '1'}, {date: addDays(new Date(), 0), title: '1'}, {date: addDays(new Date(), 1), title: '1'},
-{date: new Date('2020,07,02'), title: '1'},];
 
 const Calendar = () => {
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     startDate: businessDaysFromDate(new Date(), -5),
     endDate: businessDaysFromDate(new Date(), 15),
   });
+  const [events, setEvents] = useState([]);
+
+  async function fetchDefaultEvents() {
+    const defaultEvents = await getEvents(state.startDate, state.endDate)
+    const eventsById = {};
+    defaultEvents.map(event => {
+      eventsById[event.id] = event;
+    })
+    console.log(eventsById)
+    setEvents(prevEvents => {
+      return {
+        ...prevEvents,
+        ...eventsById
+      }
+    });
+  }
+
+  async function fetchAllEvents() {
+    const allEvents = await getAllEvents();
+    const eventsById = {};
+    allEvents.map(event => {
+      eventsById[event.id] = event;
+    })
+    console.log(eventsById);
+    setEvents(prevEvents =>  {
+      return {
+        ...prevEvents,
+        ...eventsById
+      }
+    });
+  }
+
+  useEffect(() => {
+    fetchDefaultEvents();
+    fetchAllEvents();
+
+  }, [])
 
   return (<div> <CalendarButton state={state}  setState={setState}/>
                 <br />
-               <CalenderListView key={state} state={state}/> </div>);
+               <CalenderListView key={state} state={state} events={events}/>
+                  </div>);
 };
 
 const CalendarButton = (props) => {
@@ -174,27 +231,21 @@ const CalendarListElement = (props) => {
         date1.getUTCMonth() === date2.getUTCMonth());
   }
 
+  const events = props.events;
   const date = props.date;
-  var num_events = 0;
-  var calendarEvents = CalendarData.map((currDate2) => {
-      const currDate = currDate2.date;
-      const title = currDate2.title;
-      if (isSameDay(currDate, date)) {
-        num_events += 1;
-        return (
-        <div key={currDate + " " + title + " " + num_events} className="CalendarEvent">
-          {title}
-        </div>);
-      }
-      return null;
-    }
-  );
-  calendarEvents = calendarEvents.filter(event => event !== undefined);
-  if (calendarEvents.length <= 0) {
-    return null;
-  }
+  var num_events = events.length;
 
-  const calendarEventsString = "Contribution due to account 0";
+  let calendarEventsString = "";
+  if (num_events <= 1) {
+    calendarEventsString = 'Contribution Due to ' + events[0].id;
+  }
+  else {
+    calendarEventsString = num_events + ' Contributions Due to ';
+    for (var i = 0; i < num_events; i++) {
+      calendarEventsString += events[i].id + ', ';
+    }
+    calendarEventsString = calendarEventsString.substring(0, calendarEventsString.length-2);
+  }
 
   if (date < midnight) {
     return (
@@ -236,6 +287,11 @@ const CalendarListElement = (props) => {
 
 const CalenderListView = (props) => {
   var state = props.state;
+  const eventArray = Object.keys(props.events).map(function(key){
+      return props.events[key];
+  });
+  const eventsByDate = groupBy(eventArray, 'date_due');
+  console.log(eventsByDate)
 
   const startDate = state.startDate;
   const endDate = state.endDate;
@@ -246,7 +302,10 @@ const CalenderListView = (props) => {
     if (d > endDate) {
       break;
     }
-    listCalendarDatesBefore.push(<CalendarListElement key={d} date={new Date(d)} />);
+    if (eventsByDate[moment(d).format('LL')] !== undefined) {
+      listCalendarDatesBefore.push(<CalendarListElement key={d} date={new Date(d)}
+                                    events={eventsByDate[moment(d).format('LL')]}/>);
+    }
   }
 
   var listCalendarDatesAfter= [];
@@ -254,7 +313,10 @@ const CalenderListView = (props) => {
     if (d < startDate) {
       break;
     }
-    listCalendarDatesAfter.push(<CalendarListElement key={d} date={new Date(d)} />);
+    if (eventsByDate[moment(d).format('LL')] !== undefined) {
+      listCalendarDatesAfter.push(<CalendarListElement key={d} date={new Date(d)}
+                                    events={eventsByDate[moment(d).format('LL')]}/>);
+    }
   }
 
   return (
