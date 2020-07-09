@@ -1,40 +1,37 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, lazy} from "react";
 import ReactDOM from 'react-dom';
-import {getSingleEntrys, SingleEntry, SingleEntryColumns} from '../serverAPI/singleEntry.js'
 
-import MaintenanceTable from './allTables'
+import {getInvestment} from '../serverAPI/investments.js'
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
+const EventsSingleTable = lazy(() => import("./eventsSingleTable"));
+const EventsCommitmentTable = lazy(() => import("./eventsCommitmentTable"));
 
 
 const EventTable = (props) => {
-  const [EventData, setEventData] = useState(null);
-  const investmentName = props.investment;
-  const investmentID = props.investmentID;
-
-  ipcRenderer.on('replyEvent', (event, message) => {
-    let copyTableData = [new SingleEntry(message)]
-    if (EventData !== null) {
-      copyTableData = [...EventData, new SingleEntry(message)]
-    }
-    setEventData(copyTableData);
-  });
-
+  const [hasCommitment, setHasCommitment] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
-      const result = await getSingleEntrys(investmentID);
-      setEventData(result);
+      console.log(props.investmentID)
+      const result = await getInvestment(props.investmentID);
+      console.log(result)
+      setHasCommitment(result.has_commitment)
     }
     fetchData();
 
   }, []);
 
-  if (EventData === null) {
+  if (hasCommitment === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Event"} data={EventData} columns={SingleEntryColumns}/>);
+  else if (hasCommitment) {
+    return <EventsCommitmentTable investment={props.investment}
+                  investmentID = {props.investmentID}/>
+  }
+  else {
+    return <EventsSingleTable investment={props.investment}
+                  investmentID = {props.investmentID}/>
+  }
 };
 
 export default EventTable;
