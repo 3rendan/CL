@@ -22,7 +22,7 @@ Benchmark.prototype.toString = function() {
 const updateBenchmark = async (benchmark) => {
     try {
       const body = benchmark.body();
-      const response = await fetch(
+      const _ = await fetch(
         `http://localhost:5000/benchmarks/${benchmark.id}`,
         {
           method: "PUT",
@@ -55,7 +55,7 @@ const insertBenchmark = async (benchmark) => {
 
 const deleteBenchmark = async id => {
   try {
-    const deleteBenchmark = await fetch(`http://localhost:5000/benchmarks/${id}`, {
+    const _ = await fetch(`http://localhost:5000/benchmarks/${id}`, {
       method: "DELETE"
     });
 

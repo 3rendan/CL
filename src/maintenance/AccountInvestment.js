@@ -1,22 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
-import {copyCol, myMoneyFormatter, eventsCol, transactionsCol} from '../SpecialColumn';
+import {myMoneyFormatter, eventsCol, transactionsCol} from '../SpecialColumn';
 
 import moment from 'moment';
 
 
-import {getOwners} from '../serverAPI/owners.js'
-import {getBenchmarks} from '../serverAPI/benchmarks.js'
-import {getAssetClasses} from '../serverAPI/assetClass.js'
-import {getAccounts} from '../serverAPI/accounts.js'
-import {Investment, updateInvestment, insertInvestment, deleteInvestment, colToInvestmentFields} from '../serverAPI/investments.js'
+import {Investment, updateInvestment, insertInvestment, colToInvestmentFields} from '../serverAPI/investments.js'
 
 import 'font-awesome/css/font-awesome.css';
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 
-import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
+import { React15Tabulator } from "react-tabulator"; // for React 15.x
 
 window.moment = moment;
 
@@ -60,7 +56,7 @@ var dateEditor = function(cell, onRendered, success, cancel){
     });
 
     function onChange(){
-        if(input.value != cellValue){
+        if(input.value !== cellValue){
             success(moment(input.value, "YYYY-MM-DD").format("MM/DD/YYYY"));
         }else{
             cancel();
@@ -72,11 +68,11 @@ var dateEditor = function(cell, onRendered, success, cancel){
 
     //submit new value on enter
     input.addEventListener("keydown", function(e){
-        if(e.keyCode == 13){
+        if(e.keyCode === 13){
             onChange();
         }
 
-        if(e.keyCode == 27){
+        if(e.keyCode === 27){
             cancel();
         }
     });
@@ -98,10 +94,10 @@ const myValues = function(colName, dataDictionary) {
   else if (colName.includes('Benchmark')) {
     return BenchmarkData.map(i => i.name);
   }
-  else if (colName == 'Account') {
+  else if (colName === 'Account') {
     return AccountData.map(i => i.name);
   }
-  else if (colName == 'Account Owner') {
+  else if (colName ==='Account Owner') {
     return OwnerData.map(i => i.name);
   }
   else {

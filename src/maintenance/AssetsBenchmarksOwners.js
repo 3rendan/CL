@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import Tabulator from "tabulator-tables"; //import Tabulator library
 
-import {Owner, getOwners, insertOwner, updateOwner, deleteOwner} from '../serverAPI/owners';
-import {Benchmark, getBenchmarks, insertBenchmark, updateBenchmark, deleteBenchmark} from '../serverAPI/benchmarks';
+import {Owner, insertOwner, updateOwner, deleteOwner} from '../serverAPI/owners';
+import {Benchmark, insertBenchmark, updateBenchmark, deleteBenchmark} from '../serverAPI/benchmarks';
 import {AssetClass, getAssetClasss, insertAssetClass, updateAssetClass, deleteAssetClass} from '../serverAPI/assetClass';
-import {Account, getAccounts, insertAccount, updateAccount, deleteAccount} from '../serverAPI/accounts';
+import {Account, insertAccount, updateAccount, deleteAccount} from '../serverAPI/accounts';
 
 // data and info
 import "react-tabulator/lib/styles.css"; // default theme
@@ -23,7 +22,7 @@ const defaultTabulatorSettings = {
 };
 
 const MaintenanceTable = (props) => {
-  const [tableData, setTableData] = useState(props.data);
+  const [tableData, _] = useState(props.data);
   const columnNames = props.columns;
   const tableName = props.name;
 
@@ -74,7 +73,6 @@ const MaintenanceTable = (props) => {
                  updateAssetClass(newAssetClass)
                }
                else if (tableName === 'Account') {
-                 console.log(newData)
                  const newAccount = new Account(newData)
                  updateAccount(newAccount)
                }
@@ -99,6 +97,9 @@ const MaintenanceTable = (props) => {
        }
        else if (tableName === 'Asset Class') {
          deleteAssetClass(deletedData.id)
+       }
+       else if (tableName === 'Account') {
+         deleteAccount(deletedData.id)
        }
 
        cell.getRow().delete();
