@@ -24,6 +24,7 @@ const NAVEventsTable = lazy(() => import("./events/navEventsTable"));
 const TransfersTable = lazy(() => import("./events/transfersTable"));
 
 const Calendar = lazy(() => import('./calendar/calendar'));
+const Backup = lazy(() => import('./backup'))
 const FormSheet = lazy(() => import('./popup'));
 
 const EventsPage = (props) => {
@@ -81,6 +82,7 @@ ReactDOM.render(
         <Route path="/popup/transfer">
           <FormSheet getInvestmentData={getInvestments} transcationType={'TRANSFER'} dropdownOptions={['TRANSFER']} />,
         </Route>
+        <Route path="/backup" component={Backup} />
         <Route path="/" component={NoMatch} />
       </Switch>
     </Suspense>

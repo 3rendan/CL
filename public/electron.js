@@ -218,6 +218,33 @@ function loadMaintenanceAssetsBenchmarksOwnersView() {
 
 };
 
+function loadBackupView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'backup',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/backup' : fileURL);
+
+};
+
+function loadTransferView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'transfers',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/transfers' : fileURL);
+
+};
 
 function loadCalendarView() {
   const fileURL = url.format({
@@ -289,6 +316,18 @@ const mainMenuTemplate = [
         label: 'Calendar View',
         click() {
           loadCalendarView();
+        }
+      },
+      {
+        label: 'Backup View',
+        click() {
+          loadBackupView();
+        }
+      },
+      {
+        label: 'Transfer View',
+        click() {
+          loadTransferView();
         }
       }
     ]
