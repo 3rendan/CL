@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
-import {myMoneyFormatter, eventsCol, transactionsCol} from '../SpecialColumn';
+import {myMoneyFormatter, eventsCol} from '../SpecialColumn';
 
 import moment from 'moment';
 
@@ -270,7 +270,7 @@ const DetailInvestmentTable = (props) => {
   </div>);
 
   if (readOnly) {
-    columns = [eventsCol, transactionsCol, ...columns];
+    columns = [eventsCol, ...columns];
   }
 
 

@@ -151,7 +151,6 @@ const Calendar = () => {
   useEffect(() => {
     fetchDefaultEvents();
     fetchAllEvents();
-
   }, [])
 
   return (<div> <CalendarButton state={state}  setState={setState}/>

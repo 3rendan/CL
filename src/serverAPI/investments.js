@@ -6,7 +6,7 @@ class Investment {
       this.long_name = "";
       this.asset_class = "";
       this.sub_asset_class = "";
-      this.investment = "";
+      this.account = "";
       this.owner = "";
       this.has_commitment = false;
       this.primary_benchmark = "";
@@ -27,7 +27,7 @@ class Investment {
       this.long_name = data.long_name;
       this.asset_class = data.asset_class;
       this.sub_asset_class = data.sub_asset_class;
-      this.investment = data.investment;
+      this.account = data.account;
       this.owner = data.owner;
       this.has_commitment = data.has_commitment;
       this.primary_benchmark = data.primary_benchmark;
@@ -50,7 +50,7 @@ class Investment {
             long_name: this.long_name,
             asset_class: this.asset_class,
             sub_asset_class: this.sub_asset_class,
-            investment: this.investment,
+            account: this.account,
             owner: this.owner,
             has_commitment: this.has_commitment,
             primary_benchmark: this.primary_benchmark,
@@ -152,7 +152,7 @@ const getInvestment = async id => {
 
 
 const InvestmentColumns = [
-  'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Investment',	'Owner',
+  'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',	'Owner',
   'Commitment (Y/N)', 'Primary Benchmark',	'Secondary Benchmark',
   'Commitment',	'Size (M)',	'End of Term',	'Management Fee',
   'Preferred Return',	'Carried Interest',
