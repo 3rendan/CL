@@ -177,6 +177,8 @@ const RowInvestment = (props) => {
         const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
         if (data.id === defaultInvestment) {
           setValue({label: label, value: data})
+          props.state[props.name] = {label: label, value: data};
+          props.setState(props.state)
         }
         return {label: label, value: data};
       })
@@ -290,7 +292,8 @@ const FormSheet = (props) => {
        if (column === 'Amount' || column.includes('$')) {
          const a = <RowCurrency netAmount={netAmount} setNetAmount={passFunc}
                                 key={column} name={column} size={maxSize}
-                                state={state} setState={setState}/>;
+                                state={state} setState={setState}
+                                transcationType={transcationType}/>;
          return a;
        }
        else if (column === 'Net Amount') {
