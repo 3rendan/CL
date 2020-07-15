@@ -102,6 +102,8 @@ const RowCurrencyNet = (props) => {
 const RowCurrency = (props) => {
   let placeholder = props.name;
   let currency = 'USD';
+  const positiveTransactions = ['INFLOW', 'INT', 'DIV']
+  const negativeTransactions = ['OUTFLOW']
 
   const [currMoney, setCurrMoney] = useState(0);
 
@@ -118,6 +120,17 @@ const RowCurrency = (props) => {
 
   function onBlur(e){
     var value = e.target.value;
+    if (positiveTransactions.includes(props.transcationType) && e.target.value < 0) {
+      alert('Amount must be positive!')
+      e.target.value = 0;
+      value = 0;
+    }
+    if (negativeTransactions.includes(props.transcationType) && e.target.value > 0) {
+      alert('Amount must be negative!')
+      e.target.value = 0;
+      value = 0;
+    }
+
 
     var options = {
         maximumFractionDigits : 2,
