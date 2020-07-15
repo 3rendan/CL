@@ -34,7 +34,8 @@ const EventTable = (props) => {
   if (EventData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Event"} data={EventData} columns={SingleEntryColumns}/>);
+  return (<MaintenanceTable name={"Event"} data={EventData}
+            columns={SingleEntryColumns} hasCommitment={true}/>);
 };
 
 export default EventTable;

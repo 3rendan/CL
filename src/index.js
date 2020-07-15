@@ -39,16 +39,6 @@ const EventsPage = (props) => {
   )
 }
 
-const TransferPage = (props) => {
-  return (
-    <Fragment>
-      <h1> Investment = {props.match.params.investment} </h1>
-      <TransfersTable name={'Transfers'}
-      investmentName={props.match.params.investment}
-      investmentID = {props.match.params.id}  />
-    </Fragment>
-  );
-}
 
 // render
 ReactDOM.render(
@@ -60,7 +50,7 @@ ReactDOM.render(
         </Route>
         <Route path="/calendar" component={Calendar} />
         // EVENTS AND TRANSFERS
-        <Route path="/transfers/:investment/:id" component={TransferPage} />
+        <Route path="/transfers" component={TransfersTable} />
         <Route path="/events/:investment/:id"    component={EventsPage}   />
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
@@ -73,8 +63,11 @@ ReactDOM.render(
           <BenchmarkTable  />
         </Route>
         // POPUPs
+        <Route path="/popup/event/commitment">
+          <FormSheet getInvestmentData={getInvestments} dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN', 'DISTRIBUTION', 'CONTRIBUTION']} />,
+        </Route>
         <Route path="/popup/event">
-          <FormSheet getInvestmentData={getInvestments} dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN', 'CONTRIBUTION', 'DISTRIBUTION']} />,
+          <FormSheet getInvestmentData={getInvestments} dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN']} />,
         </Route>
         <Route path="/popup/NAVevent">
           <FormSheet getInvestmentData={getInvestments} transcationType={'NAV'} dropdownOptions={['NAV']} />,

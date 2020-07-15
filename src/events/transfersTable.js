@@ -10,8 +10,6 @@ const ipcRenderer  = electron.ipcRenderer;
 
 const TransferTable = (props) => {
   const [TransferData, setTransferData] = useState(null);
-  const investmentName = props.investmentName;
-  const investmentID = props.investmentID;
 
   ipcRenderer.on('replyTransfer', (event, message) => {
     let copyTableData = [new Transfer(message)]
@@ -25,14 +23,7 @@ const TransferTable = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-      let result = [];
-      try {
-        result = await getTransfers(investmentID);
-      }
-      catch(err) {
-        console.log('ERROR!')
-      }
-
+      let result = await getTransfers();
       setTransferData(result);
     }
     fetchData();

@@ -106,6 +106,10 @@ ipcMain.on('viewTransfers', (event, args) => {
 });
 
 ipcMain.on('popupEvent', (event, args) => {
+  let destURL = 'popup/event';
+  if (args.hasCommitment) {
+    destURL = 'popup/event/commitment'
+  }
   // Create new window
   let newWindow = new BrowserWindow({
     webPreferences: {
@@ -117,12 +121,12 @@ ipcMain.on('popupEvent', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: 'popup/event',
+      hash: `${destURL}`,
       protocol: 'file',
       slashes: true,
   });
   // Load html into window
-  newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/event' : fileURL);
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/${destURL}` : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 

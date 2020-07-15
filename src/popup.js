@@ -240,6 +240,7 @@ const FormSheet = (props) => {
   const [hasSelected, setSelected] = useState(isSelected);
   const [transcationType, setTranscationType] = useState(props.transcationType);
   const [rows, setRows] = useState(null);
+  const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
   const [state, setState] = useState({});
 
@@ -321,7 +322,7 @@ const FormSheet = (props) => {
 
   return (
      <div>
-       <MyDropdown dropdownOptions={props.dropdownOptions}
+       <MyDropdown dropdownOptions={dropdownOptions}
                    setSelected={setSelected}
                    transcationType={transcationType}
                    setTranscationType={setTranscationType}/>

@@ -12,9 +12,7 @@ const EventTable = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-      console.log(props.investmentID)
       const result = await getInvestment(props.investmentID);
-      console.log(result)
       setHasCommitment(result.has_commitment)
     }
     fetchData();

@@ -80,28 +80,10 @@ const deleteTransfer = async id => {
   }
 };
 
-const getTransfers = async investment => {
+const getTransfers = async () => {
   try {
-    const response = await fetch(`http://localhost:5000/transfers/${investment}`);
+    const response = await fetch(`http://localhost:5000/transfers`);
     const jsonData = await response.json();
-    return jsonData;
-  } catch (err) {
-    console.error(err.message);
-    return null;
-  }
-};
-
-const getTransfer = async id => {
-  try {
-    const response = await fetch(
-      `http://localhost:5000/transfers/${id}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" }
-      }
-    );
-    const jsonData = await response.json();
-
     return jsonData;
   } catch (err) {
     console.error(err.message);
@@ -120,6 +102,5 @@ export {
   updateTransfer,
   insertTransfer,
   deleteTransfer,
-  getTransfers,
-  getTransfer
+  getTransfers
 }
