@@ -10,7 +10,8 @@ class Distribution {
       this.withhold = 0;
       this.recallable = 0;
       this.other = 0;
-      this.from_invest = "";
+      this.investment = "";
+      this.from_investment = "";
       this.notes = "";
     }
     else {
@@ -21,7 +22,8 @@ class Distribution {
       this.recallable = data['Recallable $'];
       this.other = data['Other $'];
       this.net_amount = parseFloat(this.withhold) + parseFloat(this.recallable) + parseFloat(this.other);
-      this.from_invest = data['From Investment'].value.id;
+      this.investment = data['Investment'].value.id;
+      this.from_investment = data['From Investment'].value.id;
       this.notes = data.Notes;
     }
   }
@@ -34,7 +36,8 @@ class Distribution {
       withhold: this.withhold,
       recallable: this.recallable,
       other: this.other,
-      from_invest: this.from_invest,
+      investment: this.investment,
+      from_investment: this.from_investment,
       notes: this.notes
     };
   }
@@ -81,6 +84,25 @@ const getAllDistributionEvents = async () => {
     return null;
   }
 }
+
+const getDistributionsInvestment = async (id) => {
+  try {
+    const response = await fetch(
+      `http://localhost:5000/distributions/investment/${id}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+    const jsonData = await response.json();
+
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
+
 
 const updateDistribution = async (distribution) => {
     try {
@@ -133,13 +155,14 @@ const deleteDistribution = async id => {
 
 const DistributionColumns = ['date_due', 'date_sent',
               'net_amount', 'withhold', 'recallable',
-                      'other', 'from_invest', 'notes']
+                      'other', 'from_investment', 'notes']
 
 export {
   Distribution,
   DistributionColumns,
   getDistributionEventsTime,
   getAllDistributionEvents,
+  getDistributionsInvestment,
   updateDistribution,
   insertDistribution,
   deleteDistribution

@@ -1,4 +1,5 @@
 import {SingleEntry, insertSingleEntry} from './singleEntry'
+import {Commission, insertCommission} from './commissions'
 import {Distribution, insertDistribution} from './distributions'
 import {Contribution, insertContribution} from './contributions'
 import {Transfer, insertTransfer} from './transfers'
@@ -7,23 +8,29 @@ const createEvent = (props) => {
   const state = props.state
   const netAmount = props.netAmount
   console.log(state.Type)
+  var newEntry = null;
   if (state.Type === 'TRANSFER') {
-    const newTransfer = new Transfer(state);
-    insertTransfer(newTransfer);
+    newEntry = new Transfer(state);
+    insertTransfer(newEntry);
   }
   else if (state.Type === 'DISTRIBUTION') {
-    const newDistribution = new Distribution(state);
-    insertDistribution(newDistribution);
+    newEntry = new Distribution(state);
+    insertDistribution(newEntry);
   }
   else if (state.Type === 'CONTRIBUTION') {
-    const newContribution = new Contribution(state);
-    insertContribution(newContribution);
+    newEntry = new Contribution(state);
+    insertContribution(newEntry);
+  }
+  else if (state.Type === 'COMMISH') {
+    newEntry = new Commission(state);
+    insertCommission(newEntry);
   }
   else {
-    const newEntry = new SingleEntry(state);
-    console.log(state);
+    newEntry = new SingleEntry(state);
     insertSingleEntry(newEntry);
   }
+
+  return newEntry;
 
 };
 

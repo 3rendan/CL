@@ -9,7 +9,8 @@ class Contribution {
       this.tax = 0;
       this.outside = 0;
       this.other = 0;
-      this.from_invest = "";
+      this.investment = "";
+      this.from_investment = "";
       this.notes = "";
     }
     else {
@@ -24,7 +25,8 @@ class Contribution {
 
       this.net_amount = parseFloat(this.fees) + parseFloat(this.tax)
               + parseFloat(this.outside) + parseFloat(this.other);
-      this.from_invest = data['From Investment'].value.id;
+      this.investment = data['Investment'].value.id;
+      this.from_investment = data['From Investment'].value.id;
       this.notes = data.Notes;
     }
   }
@@ -38,7 +40,8 @@ class Contribution {
       tax: this.tax,
       outside: this.outside,
       other: this.other,
-      from_invest: this.from_invest,
+      investment: this.investment,
+      from_investment: this.from_investment,
       notes: this.notes
     };
   }
@@ -70,6 +73,24 @@ const getAllContributionEvents = async () => {
   try {
     const response = await fetch(
       `http://localhost:5000/contributions`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+    const jsonData = await response.json();
+
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
+
+const getContributionsInvestment = async (id) => {
+  try {
+    const response = await fetch(
+      `http://localhost:5000/contributions/investment/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -132,13 +153,14 @@ const deleteContribution = async id => {
 };
 
 const ContributionColumns = ['date_due', 'date_sent', 'net_amount',
-  'fees', 'tax', 'outside', 'other', 'from_invest', 'notes']
+  'fees', 'tax', 'outside', 'other', 'investment', 'from_investment', 'notes']
 
 export {
   Contribution,
   ContributionColumns,
   getContributionEventsTime,
   getAllContributionEvents,
+  getContributionsInvestment,
   updateContribution,
   insertContribution,
   deleteContribution

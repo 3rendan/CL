@@ -7,7 +7,7 @@ const FormSheet = lazy(() => import('./popup'));
 const Event = (props) => {
   return (
     <FormSheet getInvestmentData={getInvestments}
-    dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN']}
+    dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN', 'COMMISH']}
     investmentID={props.match.params.id}/>
   )
 }

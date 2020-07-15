@@ -281,15 +281,18 @@ const FormSheet = (props) => {
     let passFunc = null;
     switch (transcationType) {
       case 'CONTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Fees $',	'Tax $',	'Outside $', 'Other $', 'From Investment', 'Notes'];
+        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Fees $',	'Tax $',	'Outside $', 'Other $', 'Investment', 'From Investment', 'Notes'];
         passFunc = setNetAmount;
         break;
       case 'DISTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Withhold $',	'Recallable $',	'Other $', 'From Investment', 'Notes'];
+        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Withhold $',	'Recallable $',	'Other $', 'Investment', 'From Investment', 'Notes'];
         passFunc = setNetAmount;
         break;
       case 'TRANSFER':
         mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];
+        break;
+      case 'COMMISH':
+        mainColumns = ['Date', 'Amount', 'Investment', 'From Investment', 'Notes']
         break;
       default: // single entry transaction details
         mainColumns = ['Date', 'Investment', 'Amount', 'Notes'];
@@ -332,17 +335,11 @@ const FormSheet = (props) => {
   const onSubmit = () => {
     console.log(state);
     state['Type'] = transcationType;
-    if (state.Type === 'DISTRIBUTION') {
-      replyChannel = 'replyDistribution'
-    }
-    else if (state.Type === 'CONTRIBUTION') {
-      replyChannel = 'replyContribution'
-    }
-    createEvent({
+    const newEvent = createEvent({
       state: state,
       netAmount: netAmount
     });
-    senderWindow.webContents.send(replyChannel, state)
+    senderWindow.webContents.send(replyChannel, newEvent)
   };
 
 
