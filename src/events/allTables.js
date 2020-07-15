@@ -37,6 +37,7 @@ function AddRow(props) {
 const MaintenanceTable = (props) => {
   const columnNames = props.columns;
   const tableName = props.name;
+  const investmentID = props.investmentID
 
   const ref = useRef();
 
@@ -94,7 +95,7 @@ const MaintenanceTable = (props) => {
         <br />
         <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
         <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-          <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, name: tableName})}}
+          <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
                 className="btn btn-success btn-lg">Add Row</button>
         </div>
         <br />

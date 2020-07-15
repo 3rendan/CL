@@ -106,10 +106,11 @@ ipcMain.on('viewTransfers', (event, args) => {
 });
 
 ipcMain.on('popupEvent', (event, args) => {
-  let destURL = 'popup/event';
+  let destURL = `popup/event/${args.investmentID}`;
   if (args.hasCommitment) {
-    destURL = 'popup/event/commitment'
+    destURL = `popup/event/commitment/${args.investmentID}`
   }
+  console.log(destURL)
   // Create new window
   let newWindow = new BrowserWindow({
     webPreferences: {
@@ -149,13 +150,13 @@ ipcMain.on('popupNAVEvent', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: 'popup/NAVevent',
+      hash: `popup/NAVevent/${args.investmentID}`,
       protocol: 'file',
       slashes: true,
   });
 
   // Load html into window
-  newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/NAVevent' : fileURL);
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/popup/NAVevent/${args.investmentID}` : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 

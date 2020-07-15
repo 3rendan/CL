@@ -6,11 +6,11 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 
-import {createEvent} from './serverAPI/eventsAndTransfers'
+import {createEvent} from '../serverAPI/eventsAndTransfers'
 
 import AsyncSelect from 'react-select/async';
 
-import {getInvestments} from './serverAPI/investments.js'
+import {getInvestments} from '../serverAPI/investments.js'
 var InvestmentData = [];
 var investmentOptions = [];
 
@@ -159,10 +159,13 @@ const RowCurrency = (props) => {
 
 const RowInvestment = (props) => {
   const [defaultOptions, setDefaultOptions] = useState(investmentOptions);
+  const defaultInvestment = props.investmentID;
+  const [value, setValue] = useState(null);
 
   const onChange = (inputText) => {
     props.state[props.name] = inputText;
     props.setState(props.state)
+    setValue(inputText)
   }
 
   const size = props.size * 10 + "px";
@@ -172,6 +175,9 @@ const RowInvestment = (props) => {
       InvestmentData = await getInvestments();
       investmentOptions = InvestmentData.map((data) => {
         const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
+        if (data.id === defaultInvestment) {
+          setValue({label: label, value: data})
+        }
         return {label: label, value: data};
       })
       setDefaultOptions(investmentOptions);
@@ -190,6 +196,7 @@ const RowInvestment = (props) => {
           }}
           loadOptions={loadOptions}
           defaultOptions={defaultOptions}
+          value={value}
           onChange={onChange.bind(this)}
           required={true}
         />
@@ -242,6 +249,8 @@ const FormSheet = (props) => {
   const [rows, setRows] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
+  const investmentID = props.investmentID;
+
   const [state, setState] = useState({});
 
   const [netAmount, setNetAmount] = useState(0.0);
@@ -291,7 +300,8 @@ const FormSheet = (props) => {
        }
        else if (column.includes('Investment')) {
          return <RowInvestment name={column} key={column} size={maxSize}
-                                  state={state} setState={setState}/>
+                                  state={state} setState={setState}
+                                  investmentID={investmentID}/>
        }
        else {
          return <RowBland key={column} name={column} size={maxSize}

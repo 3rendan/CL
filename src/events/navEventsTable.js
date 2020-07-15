@@ -18,7 +18,6 @@ const NAVEventTable = (props) => {
       copyTableData = [...NAVEventData, new SingleEntry(message)]
     }
 
-    console.log(copyTableData)
     setNAVEventData(copyTableData);
   });
 
@@ -35,7 +34,8 @@ const NAVEventTable = (props) => {
   if (NAVEventData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"NAVEvent"} data={NAVEventData} columns={NAVColumns}/>);
+  return (<MaintenanceTable name={"NAVEvent"} data={NAVEventData}
+            columns={NAVColumns} investmentID={investmentID}/>);
 };
 
 export default NAVEventTable;

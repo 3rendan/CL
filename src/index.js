@@ -5,7 +5,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import './index.css';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
-import {getInvestments} from './serverAPI/investments.js'
+
 
 const NoMatch = () => {
   return <h1> No Match </h1>
@@ -25,7 +25,11 @@ const TransfersTable = lazy(() => import("./events/transfersTable"));
 
 const Calendar = lazy(() => import('./calendar/calendar'));
 const Backup = lazy(() => import('./backup'))
-const FormSheet = lazy(() => import('./popup'));
+
+const EventPopup = lazy(() => import("./popup/event.js"))
+const EventCommitmentPopup = lazy(() => import("./popup/eventCommitment.js"))
+const NavEventPopup = lazy(() => import("./popup/navEvent.js"))
+const TransferPopup = lazy(() => import("./popup/transfer.js"))
 
 const EventsPage = (props) => {
   return (
@@ -63,18 +67,10 @@ ReactDOM.render(
           <BenchmarkTable  />
         </Route>
         // POPUPs
-        <Route path="/popup/event/commitment">
-          <FormSheet getInvestmentData={getInvestments} dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN', 'DISTRIBUTION', 'CONTRIBUTION']} />,
-        </Route>
-        <Route path="/popup/event">
-          <FormSheet getInvestmentData={getInvestments} dropdownOptions={['INFLOW', 'OUTFLOW', 'DIV', 'GAIN']} />,
-        </Route>
-        <Route path="/popup/NAVevent">
-          <FormSheet getInvestmentData={getInvestments} transcationType={'NAV'} dropdownOptions={['NAV']} />,
-        </Route>
-        <Route path="/popup/transfer">
-          <FormSheet getInvestmentData={getInvestments} transcationType={'TRANSFER'} dropdownOptions={['TRANSFER']} />,
-        </Route>
+        <Route path="/popup/event/commitment/:id" component={EventCommitmentPopup}  />
+        <Route path="/popup/event/:id" component={EventPopup} />
+        <Route path="/popup/NAVevent/:id" component={NavEventPopup} />
+        <Route path="/popup/transfer" component={TransferPopup}  />
         <Route path="/backup" component={Backup} />
         <Route path="/" component={NoMatch} />
       </Switch>
