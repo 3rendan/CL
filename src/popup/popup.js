@@ -281,11 +281,14 @@ const FormSheet = (props) => {
     let passFunc = null;
     switch (transcationType) {
       case 'CONTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Fees $',	'Tax $',	'Outside $', 'Other $', 'Investment', 'From Investment', 'Notes'];
+        mainColumns = ['Date Due', 'Date Sent', 'Net Amount',
+        'Main $', 'Fees $', 'Tax $',
+        'Outside Main $', 'Outside Fees $', 'Outside Tax $',
+         'Investment', 'From Investment', 'Notes'];
         passFunc = setNetAmount;
         break;
       case 'DISTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Withhold $',	'Recallable $',	'Other $', 'Investment', 'From Investment', 'Notes'];
+        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Investment', 'From Investment', 'Notes'];
         passFunc = setNetAmount;
         break;
       case 'TRANSFER':
