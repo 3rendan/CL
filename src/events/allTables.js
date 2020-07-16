@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 // data and info
@@ -9,6 +9,11 @@ import 'font-awesome/css/font-awesome.css';
 
 import {deleteSingleEntry} from '../serverAPI/singleEntry';
 import {deleteTransfer} from '../serverAPI/transfers';
+import {deleteContribution} from '../serverAPI/contributions';
+import {deleteDistribution} from '../serverAPI/distributions';
+import {deleteCommission} from '../serverAPI/commissions';
+
+import {getInvestments} from '../serverAPI/investments'
 
 import moment from 'moment';
 import {copyCol, myMoneyFormatter} from '../SpecialColumn';
@@ -37,17 +42,47 @@ function AddRow(props) {
 const MaintenanceTable = (props) => {
   const columnNames = props.columns;
   const tableName = props.name;
-  const investmentID = props.investmentID
+  const investmentID = props.investmentID;
+  const [data, setData] = useState(null);
+
+
+  console.log(props.moneyColumns)
+  console.log(props.data)
+  // manual transforms
+    // 1) Date -> Date Due
+    // turn other money fileds into money
+  useEffect(() => {
+    async function fetchInvestments() {
+      const investmentsTemp = await getInvestments();
+      const investments = {};
+      investmentsTemp.map((investment) => {
+        investments[investment.id] = investment;
+      })
+      const manipulatedData = props.data.map((datum) => {
+        if (datum.from_investment !== undefined) {
+          datum.from_investment = investments[datum.from_investment].long_name;
+        }
+        if (datum.investment !== undefined) {
+          datum.investment = investments[datum.investment].long_name;
+        }
+
+        return datum;
+      });
+      setData(manipulatedData)
+    }
+    fetchInvestments();
+  }, [])
+
 
   const ref = useRef();
 
-
+  console.log(columnNames)
   let colNames = columnNames.map((colName) => {
-    const fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
+    let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (fieldName === 'date') {
-      return {title: colName, field: fieldName, formatter:function(cell, formatterParams, onRendered){ const a = moment.utc(cell.getValue()).format('LL'); if (a === 'Invalid date') {return ""}; return a;}, responsive: 0, minWidth: 200};
+      fieldName = 'date_due'; // manual correction
     }
-    else if (fieldName === 'amount') {
+    if (fieldName === 'amount' || (props.moneyColumns !== undefined && props.moneyColumns.includes(colName))) {
       const column = {title: colName +' $',
         field: fieldName, responsive: 0, minWidth: 150,
         formatter: "money", formatterParams:{
@@ -68,6 +103,19 @@ const MaintenanceTable = (props) => {
         }};
       return column;
     }
+    else if (fieldName === 'date_due' || fieldName === 'date_sent') {
+      return {title: colName, field: fieldName,
+        formatter:function(cell, formatterParams, onRendered){
+          if (cell.getValue() === undefined) {
+            return "";
+          }
+          const a = moment.utc(cell.getValue()).format('LL');
+          if (a === 'Invalid date') {
+            return ""
+          };
+          return a;
+        }, responsive: 0, minWidth: 200};
+    }
     return {title: colName, field: fieldName, responsive: 0};
   });
 
@@ -78,7 +126,18 @@ const MaintenanceTable = (props) => {
      }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
        const deletedData = cell.getData();
        if (tableName === 'Event' || tableName === 'NAVEvent') {
-         deleteSingleEntry(deletedData.id)
+         if (deletedData.type === 'CONTRIBUTION') {
+           deleteContribution(deletedData.id)
+         }
+         else if (deletedData.type === 'DISTRIBUTION') {
+           deleteDistribution(deletedData.id)
+         }
+         else if (deletedData.type === 'COMMISH') {
+           deleteCommission(deletedData.id)
+         }
+         else {
+           deleteSingleEntry(deletedData.id)
+         }
        }
        else if (tableName === 'Transfer') {
          deleteTransfer(deletedData.id)
@@ -105,6 +164,7 @@ const MaintenanceTable = (props) => {
         ref={ref}
         columns={columns}
         data={props.data}
+        options={{layout: "fitDataFill"}}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />
