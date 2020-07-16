@@ -52,21 +52,25 @@ const ipcRenderer  = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
 
 var senderWindow = null;
+var senderWindowId = null;
 var replyChannel = null;
 
 ipcRenderer.on('popupMessage', (event, message) => {
   replyChannel = 'replyEvent';
   senderWindow = browserWindow.fromId(message.id);
+  senderWindowId = senderWindow.webContents.id;
 })
 
 ipcRenderer.on('popupNAVMessage', (event, message) => {
   replyChannel = 'replyNAVEvent';
   senderWindow = browserWindow.fromId(message.id);
+  senderWindowId = senderWindow.webContents.id;
 })
 
 ipcRenderer.on('popupTransferMessage', (event, message) => {
   replyChannel = 'replyTransfer';
   senderWindow = browserWindow.fromId(message.id);
+  senderWindowId = senderWindow.webContents.id;
 })
 
 const RowCurrencyNet = (props) => {
@@ -342,7 +346,8 @@ const FormSheet = (props) => {
       state: state,
       netAmount: netAmount
     });
-    senderWindow.webContents.send(replyChannel, newEvent)
+    console.log(senderWindowId)
+    ipcRenderer.sendTo(senderWindowId, replyChannel, newEvent)
   };
 
 

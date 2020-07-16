@@ -2,16 +2,18 @@ class Commission {
   constructor(data) {
     if (data === undefined || data === null) {
       this.id = null;
+      this.amount = 0;
       this.date = "";
-      this.invest = "";
-      this.from_invest = "";
+      this.investment = "";
+      this.from_investment = "";
       this.notes = "";
     }
     else {
       this.id = data.id;
       this.date = data.Date;
-      this.invest = data['Investment'].value.id;
-      this.from_invest = data['From Investment'].value.id;
+      this.amount = data.Amount;
+      this.investment = data['Investment'].value.id;
+      this.from_investment = data['From Investment'].value.id;
       this.notes = data.Notes;
     }
   }
@@ -20,8 +22,8 @@ class Commission {
     return {
       date: this.date,
       amount: this.amount,
-      invest: this.invest,
-      from_invest: this.from_invest,
+      investment: this.investment,
+      from_investment: this.from_investment,
       notes: this.notes
     };
   }
@@ -70,6 +72,7 @@ const updateCommission = async (commission) => {
 const insertCommission = async (commission) => {
   try {
     const body = commission.body();
+    console.log(body)
     const response = await fetch("http://localhost:5000/commissions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -97,7 +100,7 @@ const deleteCommission = async id => {
 };
 
 const CommissionColumns = ['date', 'amount',
-  'investment', 'from_invest', 'notes']
+  'investment', 'from_investment', 'notes']
 
 export {
   Commission,

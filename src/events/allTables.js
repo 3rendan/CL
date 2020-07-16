@@ -66,6 +66,13 @@ const MaintenanceTable = (props) => {
           datum.investment = investments[datum.investment].long_name;
         }
 
+        if (datum.date !== undefined) {
+          datum.date_due = datum.date;
+        }
+        if (datum.amount !== undefined) {
+          datum.net_amount = datum.amount;
+        }
+
         return datum;
       });
       setData(manipulatedData)
@@ -79,9 +86,6 @@ const MaintenanceTable = (props) => {
   console.log(columnNames)
   let colNames = columnNames.map((colName) => {
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
-    if (fieldName === 'date') {
-      fieldName = 'date_due'; // manual correction
-    }
     if (fieldName === 'amount' || (props.moneyColumns !== undefined && props.moneyColumns.includes(colName))) {
       const column = {title: colName +' $',
         field: fieldName, responsive: 0, minWidth: 150,
