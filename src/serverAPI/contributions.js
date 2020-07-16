@@ -5,10 +5,12 @@ class Contribution {
       this.date_due = "";
       this.date_sent = "";
       this.net_amount = 0;
+      this.main = 0;
       this.fees = 0;
       this.tax = 0;
-      this.outside = 0;
-      this.other = 0;
+      this.outside_main = 0;
+      this.outside_fees = 0;
+      this.outside_tax = 0;
       this.investment = "";
       this.from_investment = "";
       this.notes = "";
@@ -18,28 +20,32 @@ class Contribution {
       this.date_due = data['Date Due'];
       this.date_sent = data['Date Sent'];
 
+      this.main = data['Main $'];
       this.fees = data['Fees $'];
       this.tax = data['Tax $'];
-      this.outside = data['Outside $'];
-      this.other = data['Other $'];
+      this.outside_main = data['Outside Main $'];
+      this.outside_fees = data['Outside Fees $'];
+      this.outside_tax = data['Outside Tax $'];
 
-      this.net_amount = parseFloat(this.fees) + parseFloat(this.tax)
-              + parseFloat(this.outside) + parseFloat(this.other);
+      this.net_amount = parseFloat(this.main) + parseFloat(this.fees) +
+                parseFloat(this.tax) +  parseFloat(this.outside_main) +
+                parseFloat(this.outside_fees) + parseFloat(this.outside_tax);
       this.investment = data['Investment'].value.id;
       this.from_investment = data['From Investment'].value.id;
       this.notes = data.Notes;
     }
   }
-
   body() {
     return {
       date_due: this.date_due,
       date_sent: this.date_sent,
       net_amount: this.net_amount,
+      main: this.main,
       fees: this.fees,
       tax: this.tax,
-      outside: this.outside,
-      other: this.other,
+      outside_main: this.outside_main,
+      outside_fees: this.outside_fees,
+      outside_tax: this.outside_tax,
       investment: this.investment,
       from_investment: this.from_investment,
       notes: this.notes
@@ -153,7 +159,9 @@ const deleteContribution = async id => {
 };
 
 const ContributionColumns = ['date_due', 'date_sent', 'net_amount',
-  'fees', 'tax', 'outside', 'other', 'investment', 'from_investment', 'notes']
+                    'main', 'fees', 'tax',
+                    'outside_main', 'outside_fees', 'outside_tax',
+                      'investment', 'from_investment', 'notes']
 
 export {
   Contribution,

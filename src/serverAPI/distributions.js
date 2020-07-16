@@ -9,19 +9,20 @@ class Distribution {
       this.net_amount = 0;
       this.withhold = 0;
       this.recallable = 0;
-      this.other = 0;
+      this.main = 0;
       this.investment = "";
       this.from_investment = "";
       this.notes = "";
     }
     else {
+      console.log(data)
       this.id = data.id;
       this.date_due = data['Date Due'];
       this.date_sent = data['Date Sent'];
       this.withhold = data['Withhold $'];
       this.recallable = data['Recallable $'];
-      this.other = data['Other $'];
-      this.net_amount = parseFloat(this.withhold) + parseFloat(this.recallable) + parseFloat(this.other);
+      this.main = data['Main $'];
+      this.net_amount = parseFloat(this.withhold) + parseFloat(this.recallable) + parseFloat(this.main);
       this.investment = data['Investment'].value.id;
       this.from_investment = data['From Investment'].value.id;
       this.notes = data.Notes;
@@ -35,7 +36,7 @@ class Distribution {
       net_amount: this.net_amount,
       withhold: this.withhold,
       recallable: this.recallable,
-      other: this.other,
+      main: this.main,
       investment: this.investment,
       from_investment: this.from_investment,
       notes: this.notes
@@ -155,7 +156,7 @@ const deleteDistribution = async id => {
 
 const DistributionColumns = ['date_due', 'date_sent',
               'net_amount', 'withhold', 'recallable',
-                      'other', 'from_investment', 'notes']
+                      'main', 'from_investment', 'notes']
 
 export {
   Distribution,
