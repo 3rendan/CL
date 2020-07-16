@@ -15,8 +15,10 @@ const ipcRenderer  = electron.ipcRenderer;
 
 const EventTable = (props) => {
   const [EventData, setEventData] = useState(null);
+  const [key, setKey] = useState(0);
   const investmentName = props.investment;
   const investmentID = props.investmentID;
+
 
   ipcRenderer.on('replyEvent', (event, message) => {
     let copyTableData = [message]
@@ -24,6 +26,7 @@ const EventTable = (props) => {
       copyTableData = [...EventData, message]
     }
     setEventData(copyTableData);
+    setKey(key => key+1)
   });
 
 
@@ -42,14 +45,16 @@ const EventTable = (props) => {
     }
     fetchData();
 
-  }, []);
+  }, [key]);
 
   if (EventData === null) {
     return null;
   }
   return (<MaintenanceTable name={"Event"} data={EventData}
-            columns={SingleEntryColumns} hasCommitment={false}
-            investmentID={investmentID}/>);
+            columns={props.columns} hasCommitment={false}
+            investmentID={investmentID}
+            moneyColumns = {props.moneyColumns}
+            key = {key}/>);
 };
 
 export default EventTable;

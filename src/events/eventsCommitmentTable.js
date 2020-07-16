@@ -2,9 +2,9 @@ import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import {getSingleEntrys, SingleEntryColumns} from '../serverAPI/singleEntry.js'
 
-import {getDistributionsInvestment, DistributionColumns} from '../serverAPI/distributions.js'
-import {getContributionsInvestment, ContributionColumns} from '../serverAPI/contributions.js'
-import {getCommissionsInvestment, CommissionColumns} from '../serverAPI/commissions.js'
+import {getDistributionsInvestment} from '../serverAPI/distributions.js'
+import {getContributionsInvestment} from '../serverAPI/contributions.js'
+import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 
 import MaintenanceTable from './allTables'
 
@@ -16,6 +16,8 @@ const EventTable = (props) => {
   const [EventData, setEventData] = useState(null);
   const investmentName = props.investment;
   const investmentID = props.investmentID;
+  const [key, setKey] = useState(0);
+
 
   ipcRenderer.on('replyEvent', (event, message) => {
     let copyTableData = [message]
@@ -23,6 +25,7 @@ const EventTable = (props) => {
       copyTableData = [...EventData, message]
     }
     setEventData(copyTableData);
+    setKey(key => key + 1);
   });
 
 
@@ -32,24 +35,38 @@ const EventTable = (props) => {
       singleEntry = singleEntry ? singleEntry : [];
       let commission = await getCommissionsInvestment(investmentID);
       commission = commission ? commission : [];
+      commission = commission.map((comm) => {
+        comm['type'] = 'COMMISH'
+        return comm;
+      })
       let distribution = await getDistributionsInvestment(investmentID);
       distribution = distribution ? distribution : [];
+      distribution = distribution.map((dist) => {
+        console.log(dist)
+        dist['type'] = 'DISTRIBUTION'
+        return dist;
+      })
+
       let contribution = await getContributionsInvestment(investmentID);
       contribution = contribution ? contribution : [];
-      console.log(commission)
+      contribution = contribution.map((contr) => {
+        contr['type'] = 'CONTRIBUTION'
+        return contr;
+      })
+
       setEventData([...singleEntry, ...commission, ...distribution, ...contribution]);
     }
     fetchData();
 
-  }, []);
+  }, [key]);
 
-  console.log(EventData)
   if (EventData === null) {
     return null;
   }
   return (<MaintenanceTable name={"Event"} data={EventData}
-            columns={SingleEntryColumns} hasCommitment={true}
-            investmentID={investmentID}/>);
+            columns={props.columns} hasCommitment={true}
+            investmentID={investmentID}
+            moneyColumns = {props.moneyColumns}/>);
 };
 
 export default EventTable;
