@@ -15,14 +15,13 @@ class Distribution {
       this.notes = "";
     }
     else {
-      console.log(data)
       this.id = data.id;
       this.date_due = data['Date Due'];
       this.date_sent = data['Date Sent'];
       this.withhold = data['Withhold $'];
       this.recallable = data['Recallable $'];
       this.main = data['Main $'];
-      this.net_amount = parseFloat(this.withhold) + parseFloat(this.recallable) + parseFloat(this.main);
+      this.net_amount = parseFloat(this.recallable) + parseFloat(this.main);
       this.investment = data['Investment'].value.id;
       this.from_investment = data['From Investment'].value.id;
       this.notes = data.Notes;
