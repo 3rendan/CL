@@ -39,15 +39,40 @@ function AddRow(props) {
 
 };
 
+function myDateSort(a, b) {
+  let firstDay = null;
+  if (a === undefined) {
+    firstDay = "";
+  }
+  firstDay = moment.utc(a).format('LL').toString()
+  if (firstDay === 'Invalid date') {
+    firstDay = "";
+  }
+
+  let secondDay = null;
+  if (b === undefined) {
+    secondDay = "";
+  }
+  secondDay = moment.utc(b).format('LL').toString()
+  if (secondDay === 'Invalid date') {
+    secondDay = "";
+  }
+
+  if (a < b) {
+    return -1;
+  }
+  else if (a > b) {
+    return 1;
+  }
+  return 0;
+}
+
 const MaintenanceTable = (props) => {
   const columnNames = props.columns;
   const tableName = props.name;
   const investmentID = props.investmentID;
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
 
-
-  console.log(props.moneyColumns)
-  console.log(props.data)
   // manual transforms
     // 1) Date -> Date Due
     // turn other money fileds into money
@@ -58,7 +83,7 @@ const MaintenanceTable = (props) => {
       investmentsTemp.map((investment) => {
         investments[investment.id] = investment;
       })
-      const manipulatedData = props.data.map((datum) => {
+      let manipulatedData = props.data.map((datum) => {
         if (datum.from_investment !== undefined) {
           datum.from_investment = investments[datum.from_investment].long_name;
         }
@@ -75,6 +100,52 @@ const MaintenanceTable = (props) => {
 
         return datum;
       });
+      // calculate net commitment after each transaction
+      if (props.hasCommitment) {
+        manipulatedData = manipulatedData.sort(function(a, b) {
+          return myDateSort(a.date_due, b.date_due)
+        });
+        let net_commitment = props.commitment;
+
+        try {
+          net_commitment = parseFloat(net_commitment.substring(1));
+        }
+        catch (e) {}
+        manipulatedData.map((datum) => {
+          if (datum.type === 'CONTRIBUTION') {
+            let main = datum.main;
+            try {
+              main = datum.main ? parseFloat(datum.main.substring(1)) : 0;
+            }
+            catch (e) {}
+            net_commitment -= main;
+
+            let fees = datum.fees;
+            try {
+              fees = datum.fees ? parseFloat(datum.fees.substring(1)) : 0;
+            }
+            catch (e) {}
+            net_commitment -= fees;
+
+            let tax = datum.tax;
+            try {
+              tax = datum.tax ? parseFloat(datum.tax.substring(1)) : 0;
+            }
+            catch (e) {}
+            net_commitment -= tax;
+          }
+          else if (datum.type === 'DISTRIBUTION') {
+            let recallable = datum.recallable;
+            try {
+              recallable = datum.recallable ? parseFloat(datum.recallable.substring(1)) : 0;
+            }
+            catch (e) {}
+            net_commitment -= recallable;
+          }
+          datum.net_commitment = net_commitment;
+        });
+      }
+
       setData(manipulatedData)
     }
     fetchInvestments();
@@ -83,7 +154,6 @@ const MaintenanceTable = (props) => {
 
   const ref = useRef();
 
-  console.log(columnNames)
   let colNames = columnNames.map((colName) => {
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (fieldName === 'amount' || (props.moneyColumns !== undefined && props.moneyColumns.includes(colName))) {
@@ -95,6 +165,7 @@ const MaintenanceTable = (props) => {
           symbol:"$",
           precision:0,
         }, headerTooltip: 'Right Click to toggle cents',
+        headerSort:false, sorter:'number',
         headerContext:function(e, column){
           const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
           const currSymbol = showCents ? ' ¢' : ' $';
@@ -118,10 +189,38 @@ const MaintenanceTable = (props) => {
             return ""
           };
           return a;
-        }, responsive: 0, minWidth: 200};
+        }, responsive: 0, minWidth: 200,
+        sorter:function(a, b, aRow, bRow, column, dir, sorterParams){
+          //a, b - the two values being compared
+          //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+          //column - the column component for the column being sorted
+          //dir - the direction of the sort ("asc" or "desc")
+          //sorterParams - sorterParams object from column definition array
+          return myDateSort(a, b);
+        }, headerSort:false};
     }
-    return {title: colName, field: fieldName, responsive: 0};
+    return {title: colName, field: fieldName, responsive: 0,
+            sorter: 'string', headerSort:false};
   });
+
+  if (props.hasCommitment) {
+    colNames.push({
+      title: 'Net Commitment $',
+      field: 'net_commitment',
+      headerTooltip: 'Right Click to toggle cents',
+      headerSort:false, sorter:'number',
+      headerContext:function(e, column){
+        const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
+        const currSymbol = showCents ? ' ¢' : ' $';
+        column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = 'Net Commitment' + currSymbol;
+
+        var cells = column.getCells();
+        cells.forEach((cell, _) => {
+          cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
+        });
+      }
+    })
+  }
 
   const columns = [
     ...colNames,
@@ -151,7 +250,6 @@ const MaintenanceTable = (props) => {
     }}
   ];
 
-
   return (
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
@@ -167,11 +265,12 @@ const MaintenanceTable = (props) => {
       <React15Tabulator
         ref={ref}
         columns={columns}
-        data={props.data}
-        options={{layout: "fitDataFill"}}
+        data={data}
+        options={{layout: "fitDataFill",
+                  initialSort: [{column: "date_due", dir:'asc'}]}}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
-      />
+      />;
       <br />
     </div>
   );

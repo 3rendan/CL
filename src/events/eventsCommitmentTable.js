@@ -42,7 +42,6 @@ const EventTable = (props) => {
       let distribution = await getDistributionsInvestment(investmentID);
       distribution = distribution ? distribution : [];
       distribution = distribution.map((dist) => {
-        console.log(dist)
         dist['type'] = 'DISTRIBUTION'
         return dist;
       })
@@ -65,6 +64,7 @@ const EventTable = (props) => {
   }
   return (<MaintenanceTable name={"Event"} data={EventData}
             columns={props.columns} hasCommitment={true}
+            commitment={props.commitment}
             investmentID={investmentID}
             moneyColumns = {props.moneyColumns}/>);
 };

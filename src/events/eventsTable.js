@@ -17,11 +17,13 @@ const eventColumns = ['Type', 'Date Due', 'Date Sent',
 
 const EventTable = (props) => {
   const [hasCommitment, setHasCommitment] = useState(null);
+  const [commitment, setCommitment] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
       const result = await getInvestment(props.investmentID);
       setHasCommitment(result.has_commitment)
+      setCommitment(result.commitment)
     }
     fetchData();
 
@@ -34,6 +36,7 @@ const EventTable = (props) => {
     return <EventsCommitmentTable investment={props.investment}
                   investmentID = {props.investmentID}
                   columns = {eventColumns}
+                  commitment = {commitment}
                   moneyColumns = {moneyColumns}/>
   }
   else {
