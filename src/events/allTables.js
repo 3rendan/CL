@@ -78,11 +78,20 @@ const MaintenanceTable = (props) => {
     // turn other money fileds into money
   useEffect(() => {
     async function fetchInvestments() {
+      if (tableName === 'NAV') {
+        setData(props.data);
+        return;
+      }
+
       const investmentsTemp = await getInvestments();
       const investments = {};
       investmentsTemp.map((investment) => {
         investments[investment.id] = investment;
       })
+
+
+
+      // rename data
       let manipulatedData = props.data.map((datum) => {
         if (datum.from_investment !== undefined) {
           datum.from_investment = investments[datum.from_investment].long_name;
@@ -270,7 +279,7 @@ const MaintenanceTable = (props) => {
                   initialSort: [{column: "date_due", dir:'asc'}]}}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
-      />;
+      />
       <br />
     </div>
   );

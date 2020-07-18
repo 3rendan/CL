@@ -80,9 +80,20 @@ const deleteTransfer = async id => {
   }
 };
 
-const getTransfers = async () => {
+const getAllTransfers = async () => {
   try {
     const response = await fetch(`http://localhost:5000/transfers`);
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+};
+
+const getTransfers = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/transfers/${id}`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -102,5 +113,6 @@ export {
   updateTransfer,
   insertTransfer,
   deleteTransfer,
-  getTransfers
+  getTransfers,
+  getAllTransfers
 }

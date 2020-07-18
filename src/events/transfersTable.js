@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
-import {getTransfers, Transfer, TransferColumns} from '../serverAPI/transfers.js'
+import {getAllTransfers, Transfer, TransferColumns} from '../serverAPI/transfers.js'
 
 import MaintenanceTable from './allTables'
 
@@ -23,7 +23,7 @@ const TransferTable = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-      let result = await getTransfers();
+      let result = await getAllTransfers();
       setTransferData(result);
     }
     fetchData();
