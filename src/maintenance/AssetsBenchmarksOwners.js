@@ -14,15 +14,10 @@ import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
 // settings I use across tables
-const defaultTabulatorSettings = {
-  movableRows: true,
-  columnMinWidth:100,
-  resizableColumns:false,
-  layoutColumnsOnNewData:true
-};
+import {defaultTabulatorSettings} from '../SpecialColumn';
 
 const MaintenanceTable = (props) => {
-  const [tableData, _] = useState(props.data);
+  const tableData = props.data;
   const columnNames = props.columns;
   const tableName = props.name;
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
-import {myMoneyFormatter, eventsCol} from '../SpecialColumn';
+import {myMoneyFormatter, eventsCol, defaultTabulatorSettings} from '../SpecialColumn';
 
 import moment from 'moment';
 
@@ -20,16 +20,6 @@ const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
                     'Sponsor Investment',	'Notes'];
 
 const currencyColumns = ['Commitment',	'Size (M)'];
-
-// settings I use across tables
-const defaultTabulatorSettings = {
-  movableRows: true,
-  columnMinWidth:100,
-  resizableColumns:false,
-  resizableRows:true,
-  layoutColumnsOnNewData:true,
-};
-
 
 //Create Date Editor
 var dateEditor = function(cell, onRendered, success, cancel){
@@ -224,38 +214,14 @@ const DetailInvestmentTable = (props) => {
     BenchmarkData : props.BenchmarkData,
   };
 
-  // get the current maximum length for all the commitment values
-  let tempMaxCommitment = InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
-    try {
-      return i.commitment.length;
-    }
-    catch(err) {
-      return 0;
-    }
-  }
-  )) : 0;
-  tempMaxCommitment = Math.max(tempMaxCommitment, 25); // allow a minimum of 25 digits
-  const [maxLengthCommitment, setMaxLengthCommitment] = useState(tempMaxCommitment);
-
-  // get the current maximum length for all the Size (M) values
-  let tempMaxSize =  InvestmentData.length !== 0 ? Math.max(...InvestmentData.map(i => {
-    try {
-      return i.size.length;
-    }
-    catch(err) {
-      return 0;
-    }
-  }
-  )) : 0;
-  tempMaxSize = Math.max(tempMaxSize, 25); // allow a minimum of 25 digits
-  const [maxLengthSize, setMaxLengthSize] = useState(tempMaxSize);
 
 
   let columns = columnNames.map((colName) => {
     return columnNameToDefintion(colName, readOnly, dataDictionary);
   });
 
-  const addButton = readOnly ? null : (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+  const addButton = readOnly ? null : (
+  <div style ={{float: "right", width: "130px", display: "inline-block"}}>
     <button type="button" onClick={() =>
       {
         const data = new Investment(null);

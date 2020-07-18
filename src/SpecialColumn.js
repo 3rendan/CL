@@ -43,7 +43,6 @@ const copyCol = {
 
 // my special money formatter
 function myMoneyFormatter(value, showCents) {
-
   let myFloat = value;
   try {
     myFloat = value.substring(1)
@@ -58,12 +57,8 @@ function myMoneyFormatter(value, showCents) {
   var symbol = "$";
   var precision = showCents ? 0 : 2;
 
-
-
   number = floatVal.toFixed(precision);
   number = String(number).split(".");
-
-
 
   integer = number[0];
   decimal = number.length > 1 ? decimalSym + number[1] : "";
@@ -87,16 +82,13 @@ const eventsCol = {
    // ViewEvents(cell.getRow().getData());
 }};
 
-// a column that when clicked launches the transactions page
-const transactionsCol = {
-  formatter:function(cell, formatterParams, onRendered){ //plain text value
-     return "<i class='fa fa-tumblr'></i>";
-   }, minWidth: 40, width:40, headerSort:false,
-   responsive:0, hozAlign:"center", cellClick:function(e, cell){
-     ipcRenderer.send('viewTransfers', cell.getRow().getData());
-      // ViewTranscations(cell.getRow().getData());
-    }
+// settings I use across tables
+const defaultTabulatorSettings = {
+  movableRows: true,
+  columnMinWidth:100,
+  resizableColumns:false,
+  resizableRows:true,
+  layoutColumnsOnNewData:true,
 };
 
-
-export {copyCol, myMoneyFormatter, eventsCol, transactionsCol};
+export {copyCol, myMoneyFormatter, eventsCol, defaultTabulatorSettings};

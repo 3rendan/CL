@@ -9,16 +9,18 @@ const ipcRenderer  = electron.ipcRenderer;
 
 const NAVEventTable = (props) => {
   const [NAVEventData, setNAVEventData] = useState(null);
+  const [key, setKey] = useState(0);
   const investmentName = props.investment;
   const investmentID = props.investmentID;
 
   ipcRenderer.on('replyNAVEvent', (event, message) => {
-    let copyTableData = [new SingleEntry(message)]
+    let copyTableData = [message]
     if (NAVEventData !== null) {
-      copyTableData = [...NAVEventData, new SingleEntry(message)]
+      copyTableData = [...NAVEventData, message]
     }
-
+    console.log('new key')
     setNAVEventData(copyTableData);
+    setKey(key => key + 1)
   });
 
 
@@ -29,12 +31,13 @@ const NAVEventTable = (props) => {
     }
     fetchData();
 
-  }, []);
+  }, [key]);
 
   if (NAVEventData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"NAVEvent"} data={NAVEventData}
+  return (<MaintenanceTable
+            name={"NAVEvent"} data={NAVEventData}
             columns={NAVColumns} investmentID={investmentID}/>);
 };
 

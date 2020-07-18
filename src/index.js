@@ -21,6 +21,7 @@ const OwnerTable = lazy(() => import('./tables/OwnerTable'));
 
 const EventsTable = lazy(() => import("./events/eventsTable"));
 const NAVEventsTable = lazy(() => import("./events/navEventsTable"));
+const NAVTable = lazy(() => import("./events/navTable"));
 const TransfersTable = lazy(() => import("./events/transfersTable"));
 
 const Calendar = lazy(() => import('./calendar/calendar'));
@@ -38,6 +39,8 @@ const EventsPage = (props) => {
       <EventsTable investment={props.match.params.investment}
                     investmentID = {props.match.params.id}/>
       <NAVEventsTable investment={props.match.params.investment}
+                      investmentID = {props.match.params.id}/>
+      <NAVTable investment={props.match.params.investment}
                       investmentID = {props.match.params.id}/>
     </Fragment>
   )
