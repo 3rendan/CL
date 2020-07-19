@@ -265,6 +265,20 @@ function loadAssetAllocationReportView() {
 
 };
 
+function loadSummaryReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/summary',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summary' : fileURL);
+
+};
+
 function loadAccountBalanceReportView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
@@ -373,6 +387,12 @@ const mainMenuTemplate = [
         label: 'Account Balance Report',
         click() {
           loadAccountBalanceReportView();
+        }
+      },
+      {
+        label: 'Summary Report',
+        click() {
+          loadSummaryReportView();
         }
       },
       {
