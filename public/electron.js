@@ -251,6 +251,36 @@ function loadTransferView() {
 
 };
 
+function loadAssetAllocationReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/assetAllocation',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/report/assetAllocation' : fileURL);
+
+};
+
+function loadAccountBalanceReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/accountBalance',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/report/accountBalance' : fileURL);
+
+};
+
+
+
 function loadCalendarView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
@@ -318,12 +348,6 @@ const mainMenuTemplate = [
         }
       },
       {
-        label: 'Calendar View',
-        click() {
-          loadCalendarView();
-        }
-      },
-      {
         label: 'Backup View',
         click() {
           loadBackupView();
@@ -335,6 +359,28 @@ const mainMenuTemplate = [
           loadTransferView();
         }
       }
+    ]
+  },
+  {label: 'Summary Reports',
+    submenu: [
+      {
+        label: 'Account Allocation Report',
+        click() {
+          loadAssetAllocationReportView();
+        }
+      },
+      {
+        label: 'Account Balance Report',
+        click() {
+          loadAccountBalanceReportView();
+        }
+      },
+      {
+        label: 'Calendar View',
+        click() {
+          loadCalendarView();
+        }
+      },
     ]
   },
   { role: 'windowMenu' },
