@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class Investment {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -76,7 +78,7 @@ const updateInvestment = async (investment) => {
     try {
       const body = investment.body();
       const response = await fetch(
-        `http://localhost:5000/investments/${investment.id}`,
+        `http://${databaseHost}:5000/investments/${investment.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -94,7 +96,7 @@ const insertInvestment = async (investment) => {
   try {
     const body = investment.body();
     console.log(body)
-    const response = await fetch("http://localhost:5000/investments", {
+    const response = await fetch(`http://${databaseHost}:5000/investments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -109,7 +111,7 @@ const insertInvestment = async (investment) => {
 
 const deleteInvestment = async id => {
   try {
-    const deleteInvestment = await fetch(`http://localhost:5000/investments/${id}`, {
+    const deleteInvestment = await fetch(`http://${databaseHost}:5000/investments/${id}`, {
       method: "DELETE"
     });
 
@@ -122,7 +124,7 @@ const deleteInvestment = async id => {
 
 const getInvestments = async () => {
   try {
-    const response = await fetch("http://localhost:5000/investments");
+    const response = await fetch(`http://${databaseHost}:5000/investments`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -134,7 +136,7 @@ const getInvestments = async () => {
 const getInvestment = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/investments/${id}`,
+      `http://${databaseHost}:5000/investments/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }

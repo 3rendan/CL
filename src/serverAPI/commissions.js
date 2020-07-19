@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class Commission {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -36,7 +38,7 @@ Commission.prototype.toString = function() {
 const getCommissionsInvestment = async (id) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/commissions/investment/${id}`,
+      `http://${databaseHost}:5000/commissions/investment/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -55,7 +57,7 @@ const updateCommission = async (commission) => {
     try {
       const body = commission.body();
       const response = await fetch(
-        `http://localhost:5000/commission/${commission.id}`,
+        `http://${databaseHost}:5000/commission/${commission.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -73,7 +75,7 @@ const insertCommission = async (commission) => {
   try {
     const body = commission.body();
     console.log(body)
-    const response = await fetch("http://localhost:5000/commissions", {
+    const response = await fetch(`http://${databaseHost}:5000/commissions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -88,7 +90,7 @@ const insertCommission = async (commission) => {
 
 const deleteCommission = async id => {
   try {
-    const deleteCommission = await fetch(`http://localhost:5000/commissions/${id}`, {
+    const deleteCommission = await fetch(`http://${databaseHost}:5000/commissions/${id}`, {
       method: "DELETE"
     });
 

@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class Owner {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -25,7 +27,7 @@ const updateOwner = async (owner) => {
     try {
       const body = owner.body();
       const response = await fetch(
-        `http://localhost:5000/owners/${owner.id}`,
+        `http://${databaseHost}:5000/owners/${owner.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -43,7 +45,7 @@ const insertOwner = async (owner) => {
   try {
     console.log('trying to insert owners')
     const body = owner.body();
-    const response = await fetch("http://localhost:5000/owners", {
+    const response = await fetch(`http://${databaseHost}:5000/owners`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -58,7 +60,7 @@ const insertOwner = async (owner) => {
 
 const deleteOwner = async id => {
   try {
-    const deleteOwner = await fetch(`http://localhost:5000/owners/${id}`, {
+    const deleteOwner = await fetch(`http://${databaseHost}:5000/owners/${id}`, {
       method: "DELETE"
     });
 
@@ -71,7 +73,7 @@ const deleteOwner = async id => {
 
 const getOwners = async () => {
   try {
-    const response = await fetch("http://localhost:5000/owners");
+    const response = await fetch(`http://${databaseHost}:5000/owners`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -83,7 +85,7 @@ const getOwners = async () => {
 const getOwner = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/owners/${id}`,
+      `http://${databaseHost}:5000/owners/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }

@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class Contribution {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -60,7 +62,7 @@ Contribution.prototype.toString = function() {
 const getContributionEventsTime = async (startDate, endDate) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/contributions/${startDate}/${endDate}`,
+      `http://${databaseHost}:5000/contributions/${startDate}/${endDate}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -78,7 +80,7 @@ const getContributionEventsTime = async (startDate, endDate) => {
 const getAllContributionEvents = async () => {
   try {
     const response = await fetch(
-      `http://localhost:5000/contributions`,
+      `http://${databaseHost}:5000/contributions`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -96,7 +98,7 @@ const getAllContributionEvents = async () => {
 const getContributionsInvestment = async (id) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/contributions/investment/${id}`,
+      `http://${databaseHost}:5000/contributions/investment/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -115,7 +117,7 @@ const updateContribution = async (contribution) => {
     try {
       const body = contribution.body();
       const response = await fetch(
-        `http://localhost:5000/Contribution/${contribution.id}`,
+        `http://${databaseHost}:5000/Contribution/${contribution.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -132,7 +134,7 @@ const updateContribution = async (contribution) => {
 const insertContribution = async (contribution) => {
   try {
     const body = contribution.body();
-    const response = await fetch("http://localhost:5000/contributions", {
+    const response = await fetch(`http://${databaseHost}:5000/contributions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -147,7 +149,7 @@ const insertContribution = async (contribution) => {
 
 const deleteContribution = async id => {
   try {
-    const deleteContribution = await fetch(`http://localhost:5000/contributions/${id}`, {
+    const deleteContribution = await fetch(`http://${databaseHost}:5000/contributions/${id}`, {
       method: "DELETE"
     });
 

@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class SingleEntry {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -39,7 +41,7 @@ const updateSingleEntry = async (singleEntry) => {
     try {
       const body = singleEntry.body();
       const response = await fetch(
-        `http://localhost:5000/SingleEntry/${singleEntry.id}`,
+        `http://${databaseHost}:5000/SingleEntry/${singleEntry.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -56,7 +58,7 @@ const updateSingleEntry = async (singleEntry) => {
 const insertSingleEntry = async (singleEntry) => {
   try {
     const body = singleEntry.body();
-    const response = await fetch("http://localhost:5000/singleEntrys", {
+    const response = await fetch(`http://${databaseHost}:5000/singleEntrys`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -71,7 +73,7 @@ const insertSingleEntry = async (singleEntry) => {
 
 const deleteSingleEntry = async id => {
   try {
-    const deleteSingleEntry = await fetch(`http://localhost:5000/singleEntrys/${id}`, {
+    const deleteSingleEntry = await fetch(`http://${databaseHost}:5000/singleEntrys/${id}`, {
       method: "DELETE"
     });
 
@@ -84,7 +86,7 @@ const deleteSingleEntry = async id => {
 
 const getSingleEntrys = async investment => {
   try {
-    const response = await fetch(`http://localhost:5000/singleEntrysInvestment/${investment}`, {
+    const response = await fetch(`http://${databaseHost}:5000/singleEntrysInvestment/${investment}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -98,7 +100,7 @@ const getSingleEntrys = async investment => {
 
 const getNAVEvents = async investment => {
   try {
-    const response = await fetch(`http://localhost:5000/navEvents/${investment}`, {
+    const response = await fetch(`http://${databaseHost}:5000/navEvents/${investment}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -113,7 +115,7 @@ const getNAVEvents = async investment => {
 const getSingleEntry = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/singleEntrys/${id}`,
+      `http://${databaseHost}:5000/singleEntrys/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }

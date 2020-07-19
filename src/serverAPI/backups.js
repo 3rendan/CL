@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class Backup {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -24,7 +26,7 @@ const updateBackup = async (backup) => {
     try {
       const body = backup.body();
       const response = await fetch(
-        `http://localhost:5000/backups/${backup.id}`,
+        `http://${databaseHost}:5000/backups/${backup.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -41,7 +43,7 @@ const updateBackup = async (backup) => {
 const insertBackup = async (backup) => {
   try {
     const body = backup.body();
-    const response = await fetch("http://localhost:5000/backups", {
+    const response = await fetch(`http://${databaseHost}:5000/backups`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -56,7 +58,7 @@ const insertBackup = async (backup) => {
 
 const deleteBackup = async id => {
   try {
-    const deleteBackup = await fetch(`http://localhost:5000/backups/${id}`, {
+    const deleteBackup = await fetch(`http://${databaseHost}:5000/backups/${id}`, {
       method: "DELETE"
     });
 
@@ -69,7 +71,7 @@ const deleteBackup = async id => {
 
 const getBackups = async () => {
   try {
-    const response = await fetch("http://localhost:5000/backups");
+    const response = await fetch(`http://${databaseHost}:5000/backups`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -81,7 +83,7 @@ const getBackups = async () => {
 const getBackup = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/backups/${id}`,
+      `http://${databaseHost}:5000/backups/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -99,7 +101,7 @@ const getBackup = async id => {
 const restore = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/restore/${id}`,
+      `http://${databaseHost}:5000/restore/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }

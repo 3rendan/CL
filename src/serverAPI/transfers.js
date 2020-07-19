@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class Transfer {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -37,7 +39,7 @@ const updateTransfer = async (transfer) => {
   try {
     const body = transfer.body();
     const response = await fetch(
-      `http://localhost:5000/transfer/${transfer.id}`,
+      `http://${databaseHost}:5000/transfer/${transfer.id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -54,7 +56,7 @@ const updateTransfer = async (transfer) => {
 const insertTransfer = async (transfer) => {
   try {
     const body = transfer.body();
-    const response = await fetch("http://localhost:5000/transfers", {
+    const response = await fetch(`http://${databaseHost}:5000/transfers`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -69,7 +71,7 @@ const insertTransfer = async (transfer) => {
 
 const deleteTransfer = async id => {
   try {
-    const deleteTransfer = await fetch(`http://localhost:5000/transfers/${id}`, {
+    const deleteTransfer = await fetch(`http://${databaseHost}:5000/transfers/${id}`, {
       method: "DELETE"
     });
 
@@ -82,7 +84,7 @@ const deleteTransfer = async id => {
 
 const getAllTransfers = async () => {
   try {
-    const response = await fetch(`http://localhost:5000/transfers`);
+    const response = await fetch(`http://${databaseHost}:5000/transfers`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -93,7 +95,7 @@ const getAllTransfers = async () => {
 
 const getTransfers = async (id) => {
   try {
-    const response = await fetch(`http://localhost:5000/transfers/${id}`);
+    const response = await fetch(`http://${databaseHost}:5000/transfers/${id}`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {

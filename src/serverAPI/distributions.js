@@ -1,3 +1,4 @@
+import databaseHost from './database';
 import moment from 'moment';
 
 class Distribution {
@@ -52,7 +53,7 @@ const getDistributionEventsTime = async (startDate, endDate) => {
     startDate = moment(startDate).format('LL')
     endDate = moment(endDate).format('LL')
     const response = await fetch(
-      `http://localhost:5000/distributions/${startDate}/${endDate}`,
+      `http://${databaseHost}:5000/distributions/${startDate}/${endDate}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -70,7 +71,7 @@ const getDistributionEventsTime = async (startDate, endDate) => {
 const getAllDistributionEvents = async () => {
   try {
     const response = await fetch(
-      `http://localhost:5000/distributions`,
+      `http://${databaseHost}:5000/distributions`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -88,7 +89,7 @@ const getAllDistributionEvents = async () => {
 const getDistributionsInvestment = async (id) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/distributions/investment/${id}`,
+      `http://${databaseHost}:5000/distributions/investment/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
@@ -108,7 +109,7 @@ const updateDistribution = async (distribution) => {
     try {
       const body = distribution.body();
       const response = await fetch(
-        `http://localhost:5000/Distribution/${distribution.id}`,
+        `http://${databaseHost}:5000/Distribution/${distribution.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -125,7 +126,7 @@ const updateDistribution = async (distribution) => {
 const insertDistribution = async (distribution) => {
   try {
     const body = distribution.body();
-    const response = await fetch("http://localhost:5000/distributions", {
+    const response = await fetch(`http://${databaseHost}:5000/distributions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -140,7 +141,7 @@ const insertDistribution = async (distribution) => {
 
 const deleteDistribution = async id => {
   try {
-    const deleteDistribution = await fetch(`http://localhost:5000/distributions/${id}`, {
+    const deleteDistribution = await fetch(`http://${databaseHost}:5000/distributions/${id}`, {
       method: "DELETE"
     });
 

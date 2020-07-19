@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class Account {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -31,7 +33,7 @@ const updateAccount = async (account) => {
     try {
       const body = account.body();
       const response = await fetch(
-        `http://localhost:5000/accounts/${account.id}`,
+        `http://${databaseHost}:5000/accounts/${account.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -48,7 +50,7 @@ const updateAccount = async (account) => {
 const insertAccount = async (account) => {
   try {
     const body = account.body();
-    const response = await fetch("http://localhost:5000/accounts", {
+    const response = await fetch(`http://${databaseHost}:5000/accounts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -63,7 +65,7 @@ const insertAccount = async (account) => {
 
 const deleteAccount = async id => {
   try {
-    const deleteAccount = await fetch(`http://localhost:5000/accounts/${id}`, {
+    const deleteAccount = await fetch(`http://${databaseHost}:5000/accounts/${id}`, {
       method: "DELETE"
     });
 
@@ -76,7 +78,7 @@ const deleteAccount = async id => {
 
 const getAccounts = async () => {
   try {
-    const response = await fetch("http://localhost:5000/accounts");
+    const response = await fetch(`http://${databaseHost}:5000/accounts`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -88,7 +90,7 @@ const getAccounts = async () => {
 const getAccount = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/accounts/${id}`,
+      `http://${databaseHost}:5000/accounts/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }

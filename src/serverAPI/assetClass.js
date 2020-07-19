@@ -1,3 +1,5 @@
+import databaseHost from './database';
+
 class AssetClass {
   constructor(data) {
     if (data === undefined || data === null) {
@@ -38,7 +40,7 @@ const updateAssetClass = async (assetClass) => {
       const body = assetClass.body();
       console.log(body)
       const response = await fetch(
-        `http://localhost:5000/assetClasses/${assetClass.id}`,
+        `http://${databaseHost}:5000/assetClasses/${assetClass.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -57,7 +59,7 @@ const insertAssetClass = async (assetClass) => {
     const body = assetClass.body();
     console.log(body)
     console.log('attempt insert assetClass')
-    const response = await fetch("http://localhost:5000/assetClasses", {
+    const response = await fetch(`http://${databaseHost}:5000/assetClasses`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -72,7 +74,7 @@ const insertAssetClass = async (assetClass) => {
 
 const deleteAssetClass = async id => {
   try {
-    const deleteAssetClass = await fetch(`http://localhost:5000/assetClasses/${id}`, {
+    const deleteAssetClass = await fetch(`http://${databaseHost}:5000/assetClasses/${id}`, {
       method: "DELETE"
     });
 
@@ -85,7 +87,7 @@ const deleteAssetClass = async id => {
 
 const getAssetClasses = async () => {
   try {
-    const response = await fetch("http://localhost:5000/assetClasses");
+    const response = await fetch(`http://${databaseHost}:5000/assetClasses`);
     const jsonData = await response.json();
     return jsonData;
   } catch (err) {
@@ -97,7 +99,7 @@ const getAssetClasses = async () => {
 const getAssetClass = async id => {
   try {
     const response = await fetch(
-      `http://localhost:5000/assetClasses/${id}`,
+      `http://${databaseHost}:5000/assetClasses/${id}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" }
