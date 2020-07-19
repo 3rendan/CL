@@ -364,7 +364,7 @@ const mainMenuTemplate = [
   {label: 'Summary Reports',
     submenu: [
       {
-        label: 'Account Allocation Report',
+        label: 'Asset Allocation Report',
         click() {
           loadAssetAllocationReportView();
         }
