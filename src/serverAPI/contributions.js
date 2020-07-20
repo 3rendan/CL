@@ -1,4 +1,5 @@
 import databaseHost from './database';
+import moment from 'moment';
 
 class Contribution {
   constructor(data) {
@@ -61,6 +62,8 @@ Contribution.prototype.toString = function() {
 
 const getContributionEventsTime = async (startDate, endDate) => {
   try {
+    startDate = moment(startDate).format('LL')
+    endDate = moment(endDate).format('LL')
     const response = await fetch(
       `http://${databaseHost}:5000/contributions/${startDate}/${endDate}`,
       {

@@ -385,7 +385,7 @@ const CalenderListView = (props) => {
       listCalendarDatesBefore.push(<CalendarListElement key={d} date={new Date(d)}
                                     distributions={distributions}
                                     contributions={contributions}
-                                    getInvestmentNames={getInvestmentNames}/>);
+                                    getInvestmentNames={props.getInvestmentNames}/>);
     }
   }
 
@@ -400,7 +400,7 @@ const CalenderListView = (props) => {
       listCalendarDatesAfter.push(<CalendarListElement key={d} date={new Date(d)}
                                     distributions={distributions}
                                     contributions={contributions}
-                                    getInvestmentNames={getInvestmentNames}/>);
+                                    getInvestmentNames={props.getInvestmentNames}/>);
     }
   }
 
