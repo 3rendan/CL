@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { addDays } from 'date-fns';
 
 import moment from 'moment';
 
 import './calendar.css'
-import {getDistributionEventsTime as getEvents, getAllDistributionEvents as getAllEvents} from '../serverAPI/distributions'
+import {getDistributionEventsTime as getDistributions, getAllDistributionEvents as getAllDistributions} from '../serverAPI/distributions'
+import {getContributionEventsTime as getContributions, getAllContributionEvents as getAllContributions} from '../serverAPI/contributions'
 
+import {getInvestment} from '../serverAPI/investments'
 
 function groupBy(array, item) {
   if (item.includes('date')) {
@@ -110,22 +112,32 @@ function isBusinessDay (date) {
 
 const daysOfWeek = ['Sun','Mon','Tues','Wed','Thurs','Fri','Sat'];
 
+async function getInvestmentName(investmentID) {
+  const investment = await getInvestment(investmentID);
+  if (investment === null) {
+    return "";
+  }
+  return investment.long_name;
+}
 
 const Calendar = () => {
   const [state, setState] = useState({
     startDate: businessDaysFromDate(new Date(), -5),
     endDate: businessDaysFromDate(new Date(), 15),
   });
-  const [events, setEvents] = useState([]);
+  const [distributions, setDistributions] = useState([]);
+  const [contributions, setContributions] = useState([]);
 
-  async function fetchDefaultEvents() {
-    const defaultEvents = await getEvents(state.startDate, state.endDate)
+  const getMemoizedInvestmentName = useCallback(async (id) => getInvestmentName(id))
+
+  async function fetchDefaultDistributions() {
+    const defaultEvents = await getDistributions(state.startDate, state.endDate)
     const eventsById = {};
     defaultEvents.map(event => {
       eventsById[event.id] = event;
     })
-    console.log(eventsById)
-    setEvents(prevEvents => {
+
+    setDistributions(prevEvents => {
       return {
         ...prevEvents,
         ...eventsById
@@ -133,14 +145,44 @@ const Calendar = () => {
     });
   }
 
-  async function fetchAllEvents() {
-    const allEvents = await getAllEvents();
+  async function fetchAllDistributions() {
+    const allEvents = await getAllDistributions();
     const eventsById = {};
     allEvents.map(event => {
       eventsById[event.id] = event;
     })
-    console.log(eventsById);
-    setEvents(prevEvents =>  {
+
+    setDistributions(prevEvents =>  {
+      return {
+        ...prevEvents,
+        ...eventsById
+      }
+    });
+  }
+
+  async function fetchDefaultContributions() {
+    const defaultEvents = await getContributions(state.startDate, state.endDate)
+    const eventsById = {};
+    defaultEvents.map(event => {
+      eventsById[event.id] = event;
+    })
+
+    setContributions(prevEvents => {
+      return {
+        ...prevEvents,
+        ...eventsById
+      }
+    });
+  }
+
+  async function fetchAllContributions() {
+    const allEvents = await getAllContributions();
+    const eventsById = {};
+    allEvents.map(event => {
+      eventsById[event.id] = event;
+    })
+
+    setContributions(prevEvents =>  {
       return {
         ...prevEvents,
         ...eventsById
@@ -149,13 +191,18 @@ const Calendar = () => {
   }
 
   useEffect(() => {
-    fetchDefaultEvents();
-    fetchAllEvents();
+    fetchDefaultDistributions();
+    fetchDefaultContributions();
+    fetchAllDistributions();
+    fetchAllContributions();
   }, [])
 
   return (<div> <CalendarButton state={state}  setState={setState}/>
                 <br />
-               <CalenderListView key={state} state={state} events={events}/>
+               <CalenderListView key={state} state={state}
+                                 contributions={contributions}
+                                 distributions={distributions}
+                                 getInvestmentNames={getMemoizedInvestmentName}/>
                   </div>);
 };
 
@@ -214,7 +261,6 @@ const CalendarButton = (props) => {
 const midnight = addDays(new Date(),-1);
 midnight.setHours(24, 0, 0, 0);
 
-
 const CalendarListElement = (props) => {
   const getDateString = (date) => {
     var month = date.toLocaleString('default', { month: 'long' }); //months from 1-12
@@ -230,21 +276,50 @@ const CalendarListElement = (props) => {
         date1.getUTCMonth() === date2.getUTCMonth());
   }
 
-  const events = props.events;
+  const getInvestmentNames = props.getInvestmentNames;
+  const distributions = props.distributions;
+  const contributions = props.contributions;
   const date = props.date;
-  var num_events = events.length;
 
-  let calendarEventsString = "";
-  if (num_events <= 1) {
-    calendarEventsString = 'Contribution Due to ' + events[0].id;
-  }
-  else {
-    calendarEventsString = num_events + ' Contributions Due to ';
-    for (var i = 0; i < num_events; i++) {
-      calendarEventsString += events[i].id + ', ';
+  const [eventString, setEventString] = useState(null);
+
+  useEffect(() => {
+    async function getEventData() {
+      const contributionNames = contributions ? await Promise.all(
+        contributions.map(event => getInvestmentNames(event.investment))
+      ) : [];
+      const distributionNames = distributions ? await Promise.all(
+        distributions.map(event => getInvestmentNames(event.investment))
+      ) : [];
+
+      let name = "";
+      if (contributionNames.length === 1) {
+        name = 'Contribution Due to ' + contributionNames[0];
+      }
+      else if (contributionNames.length > 1) {
+        name = contributionNames.length + ' Contributions Due to ' + contributionNames.join(', ');
+      }
+
+      if (distributionNames.length === 1) {
+        if (name === '') {
+          name = 'Distribution Due to ' + distributionNames[0];
+        }
+        else {
+          name += '; Distribution Due to ' + distributionNames[0];
+        }
+      }
+      else if (distributionNames.length > 1) {
+        if (name === '') {
+          name = distributionNames.length + ' Distributions Due to ' + distributionNames.join(', ');
+        }
+        name += ';' + distributionNames.length + ' Distributions Due to ' + distributionNames.join(', ');
+      }
+      setEventString(name);
     }
-    calendarEventsString = calendarEventsString.substring(0, calendarEventsString.length-2);
-  }
+
+    getEventData();
+
+  });
 
   if (date < midnight) {
     return (
@@ -253,7 +328,7 @@ const CalendarListElement = (props) => {
           {getDateString(date)}
         </div>
         <div className="column">
-          {calendarEventsString}
+          {eventString}
         </div>
       </div>
     );
@@ -267,7 +342,7 @@ const CalendarListElement = (props) => {
           {getDateString(date)}
         </div>
         <div style={{"backgroundColor": "LawnGreen", 'fontWeight': 'bold'}} className="column">
-          {calendarEventsString}
+          {eventString}
         </div>
       </div>
     );
@@ -278,32 +353,39 @@ const CalendarListElement = (props) => {
         {getDateString(date)}
       </div>
       <div style={{'fontWeight': 'bold'}} className="column">
-        {calendarEventsString}
+        {eventString}
       </div>
     </div>
   );
 }
 
 const CalenderListView = (props) => {
-  var state = props.state;
-  const eventArray = Object.keys(props.events).map(function(key){
-      return props.events[key];
+  const distributionArray = Object.keys(props.distributions).map(function(key){
+      return props.distributions[key];
   });
-  const eventsByDate = groupBy(eventArray, 'date_due');
-  console.log(eventsByDate)
+  const distributionsByDate = groupBy(distributionArray, 'date_due');
 
-  const startDate = state.startDate;
-  const endDate = state.endDate;
+  const contributionArray = Object.keys(props.contributions).map(function(key){
+      return props.contributions[key];
+  });
+  const contributionsByDate = groupBy(contributionArray, 'date_due');
 
-  var listCalendarDatesBefore = [];
+  const startDate = props.state.startDate;
+  const endDate = props.state.endDate;
+
+  const listCalendarDatesBefore = [];
 
   for (var d = addDays(startDate, 1); d < midnight; d.setDate(d.getDate() + 1)) {
     if (d > endDate) {
       break;
     }
-    if (eventsByDate[moment(d).format('LL')] !== undefined) {
+    const distributions = distributionsByDate[moment(d).format('LL')]
+    const contributions = contributionsByDate[moment(d).format('LL')]
+    if (distributions !== undefined || contributions !== undefined) {
       listCalendarDatesBefore.push(<CalendarListElement key={d} date={new Date(d)}
-                                    events={eventsByDate[moment(d).format('LL')]}/>);
+                                    distributions={distributions}
+                                    contributions={contributions}
+                                    getInvestmentNames={getInvestmentNames}/>);
     }
   }
 
@@ -312,9 +394,13 @@ const CalenderListView = (props) => {
     if (d < startDate) {
       break;
     }
-    if (eventsByDate[moment(d).format('LL')] !== undefined) {
+    const distributions = distributionsByDate[moment(d).format('LL')]
+    const contributions = contributionsByDate[moment(d).format('LL')]
+    if (distributions !== undefined || contributions !== undefined) {
       listCalendarDatesAfter.push(<CalendarListElement key={d} date={new Date(d)}
-                                    events={eventsByDate[moment(d).format('LL')]}/>);
+                                    distributions={distributions}
+                                    contributions={contributions}
+                                    getInvestmentNames={getInvestmentNames}/>);
     }
   }
 
