@@ -5,16 +5,16 @@ class Transfer {
     if (data === undefined || data === null) {
       this.id = null;
       this.date = "";
-      this.from_invest = "";
-      this.to_invest = "";
+      this.from_investment = "";
+      this.to_investment = "";
       this.amount = 0;
       this.notes = "";
     }
     else {
       this.id = data.id;
       this.date = data.Date;
-      this.from_invest = data['From Investment'].value.id;
-      this.to_invest = data['To Investment'].value.id;
+      this.from_investment = data['From Investment'].value.id;
+      this.to_investment = data['To Investment'].value.id;
       this.amount = data.Amount;
       this.notes = data.Notes;
     }
@@ -23,8 +23,8 @@ class Transfer {
   body() {
     return {
       date: this.date,
-      from_invest: this.from_invest,
-      to_invest: this.to_invest,
+      from_investment: this.from_investment,
+      to_investment: this.to_investment,
       amount: this.amount,
       notes: this.notes
     };
@@ -105,7 +105,7 @@ const getTransfers = async (id) => {
 };
 
 const TransferColumns = [
-  'date', 'from invest', 'to invest', 'amount', 'notes'
+  'date', 'from investment', 'to investment', 'amount', 'notes'
 ];
 
 

@@ -24,6 +24,7 @@ const TransferTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       let result = await getAllTransfers();
+      console.log(result)
       setTransferData(result);
     }
     fetchData();

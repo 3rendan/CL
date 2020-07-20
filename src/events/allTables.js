@@ -96,6 +96,9 @@ const MaintenanceTable = (props) => {
         if (datum.from_investment !== undefined) {
           datum.from_investment = investments[datum.from_investment].long_name;
         }
+        if (datum.to_investment !== undefined) {
+          datum.to_investment = investments[datum.to_investment].long_name;
+        }
         if (datum.investment !== undefined) {
           datum.investment = investments[datum.investment].long_name;
         }
