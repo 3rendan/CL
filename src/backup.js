@@ -27,8 +27,16 @@ const createBackup = (setKey) => {
 const BackupList = (props) => {
   const backups = props.events;
   const backupItems = backups.map(backup =>
-    <ListGroup.Item key={backup.id} action onClick={(e) => click(backup, e)}>
+    <ListGroup.Item key={backup.id}>
       {moment(backup.date).format('LLL')}
+      <button type="button" style = {{marginLeft: "25px"}} onClick={(e) => click(backup, e)}
+      className="btn btn-success btn-lg">Restore Backup</button>
+      <button type="button" style = {{marginLeft: "25px"}} onClick={() =>
+        {
+          console.log('delete ' + backup.id)
+        }
+        }
+      className="btn btn-danger btn-lg">Delete Backup</button>
     </ListGroup.Item>
   );
   return ( <ListGroup> {backupItems} </ListGroup>)
