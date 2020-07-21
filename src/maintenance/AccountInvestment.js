@@ -104,7 +104,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
           allowEmpty:false,
           allowTruthy:true,
           tickElement:"<i class='fa fa-check'></i>",
-          crossElement:"<i class='fa fa-times'></i>"
+          crossElement:""
       }
     };
     if (!readOnly) {
@@ -208,10 +208,10 @@ const DetailInvestmentTable = (props) => {
 
 
   const dataDictionary = {
-    AccountData : props.AccountData,
-    OwnerData : props.OwnerData,
-    AssetClassData : props.AssetClassData,
-    BenchmarkData : props.BenchmarkData,
+    AccountData: props.AccountData,
+    OwnerData: props.OwnerData,
+    AssetClassData: props.AssetClassData,
+    BenchmarkData: props.BenchmarkData,
   };
 
 
