@@ -188,7 +188,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
     };
     column['editorParams'] = {
       showListOnEmpty:true,
-      freetext: true,
+      freetext: false,
       allowEmpty: true,
       searchingPlaceholder:"Filtering ...", //set the search placeholder
       values:myValues(colName, dataDictionary)
