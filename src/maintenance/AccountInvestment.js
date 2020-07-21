@@ -20,6 +20,7 @@ const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
                     'Sponsor Investment',	'Notes'];
 
 const currencyColumns = ['Commitment',	'Size (M)'];
+const dateColumns = ['End of Term', 'Close Date'];
 
 //Create Date Editor
 var dateEditor = function(cell, onRendered, success, cancel){
@@ -165,7 +166,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
       }
       return column;
   }
-  else if (colName === 'Close Date') {
+  else if (dateColumns.includes(colName)) {
     const column = {title: colName, field: fieldName, formatter:function(cell, formatterParams, onRendered){ const a = moment.utc(cell.getValue()).format('L'); if (a === 'Invalid date') {return ""}; return a;}, responsive: 0, minWidth: 200};
     if (!readOnly) {
       column['editor'] = dateEditor;
