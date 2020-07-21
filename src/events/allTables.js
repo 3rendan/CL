@@ -167,6 +167,7 @@ const MaintenanceTable = (props) => {
   const ref = useRef();
 
   let colNames = columnNames.map((colName) => {
+    const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (fieldName === 'amount' || (props.moneyColumns !== undefined && props.moneyColumns.includes(colName))) {
       const column = {title: colName +' $',
@@ -202,7 +203,7 @@ const MaintenanceTable = (props) => {
             return ""
           };
           return a;
-        }, responsive: 0, minWidth: 200,
+        }, responsive: 0, frozen: frozen,
         sorter:function(a, b, aRow, bRow, column, dir, sorterParams){
           //a, b - the two values being compared
           //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
@@ -213,6 +214,7 @@ const MaintenanceTable = (props) => {
         }, headerSort:false};
     }
     return {title: colName, field: fieldName, responsive: 0,
+           frozen: frozen,
             sorter: 'string', headerSort:false};
   });
 

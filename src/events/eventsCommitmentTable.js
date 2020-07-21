@@ -65,6 +65,7 @@ const EventTable = (props) => {
   return (<MaintenanceTable name={"Event"} data={EventData}
             columns={props.columns} hasCommitment={true}
             commitment={props.commitment}
+            frozenColumns={props.frozenColumns}
             investmentID={investmentID}
             moneyColumns = {props.moneyColumns}/>);
 };

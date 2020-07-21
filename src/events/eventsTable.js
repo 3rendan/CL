@@ -15,6 +15,8 @@ const eventColumns = ['Type', 'Date Due', 'Date Sent',
     ...moneyColumns,
     'Notes']
 
+const frozenColumns = ['Type', 'Date Due'];
+
 const EventTable = (props) => {
   const [hasCommitment, setHasCommitment] = useState(null);
   const [commitment, setCommitment] = useState(null);
@@ -36,6 +38,7 @@ const EventTable = (props) => {
     return <EventsCommitmentTable investment={props.investment}
                   investmentID = {props.investmentID}
                   columns = {eventColumns}
+                  frozenColumns = {frozenColumns}
                   commitment = {commitment}
                   moneyColumns = {moneyColumns}/>
   }
@@ -43,6 +46,7 @@ const EventTable = (props) => {
     return <EventsSingleTable investment={props.investment}
                   investmentID = {props.investmentID}
                   columns = {eventColumns}
+                  frozenColumns = {frozenColumns}
                   moneyColumns = {moneyColumns}/>
   }
 };

@@ -37,7 +37,7 @@ const NAVEventTable = (props) => {
     return null;
   }
   return (<MaintenanceTable
-            name={"NAVEvent"} data={NAVEventData}
+            name={"NAV Entries"} data={NAVEventData}
             columns={NAVColumns} investmentID={investmentID}/>);
 };
 
