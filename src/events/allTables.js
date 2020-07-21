@@ -171,7 +171,7 @@ const MaintenanceTable = (props) => {
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (fieldName === 'amount' || (props.moneyColumns !== undefined && props.moneyColumns.includes(colName))) {
       const column = {title: colName +' $',
-        field: fieldName, responsive: 0, minWidth: 150,
+        field: fieldName, responsive: 0,
         align: 'right',
         formatter: "money", formatterParams:{
           decimal:".",
@@ -281,7 +281,7 @@ const MaintenanceTable = (props) => {
         ref={ref}
         columns={columns}
         data={data}
-        options={{layout: "fitDataFill",
+        options={{layout: "fitData",
                   initialSort: [{column: "date_due", dir:'asc'}]}}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"

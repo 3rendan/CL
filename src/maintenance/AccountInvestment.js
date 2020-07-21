@@ -100,7 +100,6 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
   const fieldName = colToInvestmentFields(colName);
   if (colName === 'Commitment (Y/N)') {
     const column = {title:colName, field:fieldName,
-      minWidth: 175,
       formatter:"tickCross", formatterParams:{
           allowEmpty:false,
           allowTruthy:true,
@@ -138,7 +137,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
   }
   else if (currencyColumns.includes(colName)) {
     const column = {title: colName +' $',
-      field: fieldName, responsive: 0, minWidth: 150,
+      field: fieldName, responsive: 0,
       formatter: "money", formatterParams:{
         decimal:".",
         thousand:",",
@@ -178,7 +177,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
     }
     return column;
   }
-  const column = {title: colName, field: fieldName, responsive: 0, minWidth: 200};
+  const column = {title: colName, field: fieldName, responsive: 0};
   if (!readOnly) {
     column['editor'] = 'autocomplete';
     column['cellEdited'] = function(cell) {
