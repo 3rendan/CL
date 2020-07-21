@@ -94,13 +94,13 @@ const MaintenanceTable = (props) => {
       // rename data
       let manipulatedData = props.data.map((datum) => {
         if (datum.from_investment !== undefined) {
-          datum.from_investment = investments[datum.from_investment].long_name;
+          datum.from_investment = investments[datum.from_investment].name;
         }
         if (datum.to_investment !== undefined) {
-          datum.to_investment = investments[datum.to_investment].long_name;
+          datum.to_investment = investments[datum.to_investment].name;
         }
         if (datum.investment !== undefined) {
-          datum.investment = investments[datum.investment].long_name;
+          datum.investment = investments[datum.investment].name;
         }
 
         if (datum.date !== undefined) {
@@ -171,6 +171,7 @@ const MaintenanceTable = (props) => {
     if (fieldName === 'amount' || (props.moneyColumns !== undefined && props.moneyColumns.includes(colName))) {
       const column = {title: colName +' $',
         field: fieldName, responsive: 0, minWidth: 150,
+        align: 'right',
         formatter: "money", formatterParams:{
           decimal:".",
           thousand:",",

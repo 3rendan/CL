@@ -263,11 +263,11 @@ midnight.setHours(24, 0, 0, 0);
 
 const CalendarListElement = (props) => {
   const getDateString = (date) => {
-    var month = date.toLocaleString('default', { month: 'long' }); //months from 1-12
+    var month = date.getMonth() + 1; //months from 1-12
     var day = date.getUTCDate();
     var year = date.getUTCFullYear();
 
-    return daysOfWeek[date.getDay()] + ", " + month + " " + day + ", " + year;
+    return month + "/" + day + "/" + year + "(" + daysOfWeek[date.getDay()] + ")";
   };
 
   const isSameDay = (date1, date2) => {
