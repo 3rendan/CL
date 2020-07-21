@@ -29,6 +29,7 @@ const MaintenanceTable = (props) => {
   const ref = useRef();
 
   let columns = columnNames.map((colName) => {
+    const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (props.moneyColumns !== undefined && props.moneyColumns.includes(colName)) {
       const column = {title: colName +' $',
@@ -53,7 +54,7 @@ const MaintenanceTable = (props) => {
       return column;
     }
     return {title: colName, field: fieldName, responsive: 0,
-            sorter: 'string', headerSort:false};
+            sorter: 'string', headerSort:false, frozen: frozen};
   });
 
 

@@ -101,6 +101,7 @@ function groupByMonth(array) {
 
 const SummaryReport = (props) => {
   const [data, setData] = useState(null);
+  const frozenColumns = ['name'];
   const [columns, setColumns] = useState(null);
   const [moneyColumns, setMoneyColumns] = useState(null);
 
@@ -191,7 +192,7 @@ const SummaryReport = (props) => {
   }
   return (<div>
     <MaintenanceTable name={"Summary Report"} data={data}
-            columns={columns}
+            columns={columns} frozenColumns={frozenColumns}
             moneyColumns={moneyColumns}/>
         </div>
             );
