@@ -39,7 +39,7 @@ function myDateSort(a, b) {
   if (aDate === undefined) {
     firstDay = "";
   }
-  firstDay = moment.utc(aDate).format('LL').toString()
+  firstDay = moment.utc(aDate).format('L').toString()
   if (firstDay === 'Invalid date') {
     firstDay = "";
   }
@@ -48,7 +48,7 @@ function myDateSort(a, b) {
   if (bDate === undefined) {
     secondDay = "";
   }
-  secondDay = moment.utc(bDate).format('LL').toString()
+  secondDay = moment.utc(bDate).format('L').toString()
   if (secondDay === 'Invalid date') {
     secondDay = "";
   }
@@ -180,7 +180,7 @@ const NAVTable = (props) => {
       while (minDate <= currEndMonth) {
         nav = calcNAV(groups[minDate], investmentID, nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
-        const formatDate = moment(minDate).format('LL')
+        const formatDate = moment(minDate).format('L')
         navDates.push({date: formatDate, nav: nav, net_contribute: netContribute, 'p/l': nav - netContribute})
 
 

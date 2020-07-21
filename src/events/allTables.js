@@ -44,7 +44,7 @@ function myDateSort(a, b) {
   if (a === undefined) {
     firstDay = "";
   }
-  firstDay = moment.utc(a).format('LL').toString()
+  firstDay = moment.utc(a).format('L').toString()
   if (firstDay === 'Invalid date') {
     firstDay = "";
   }
@@ -53,7 +53,7 @@ function myDateSort(a, b) {
   if (b === undefined) {
     secondDay = "";
   }
-  secondDay = moment.utc(b).format('LL').toString()
+  secondDay = moment.utc(b).format('L').toString()
   if (secondDay === 'Invalid date') {
     secondDay = "";
   }
@@ -196,7 +196,7 @@ const MaintenanceTable = (props) => {
           if (cell.getValue() === undefined) {
             return "";
           }
-          const a = moment.utc(cell.getValue()).format('LL');
+          const a = moment.utc(cell.getValue()).format('L');
           if (a === 'Invalid date') {
             return ""
           };

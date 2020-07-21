@@ -21,65 +21,12 @@ const MaintenanceTable = (props) => {
   const columnNames = props.columns;
   const tableName = props.name;
 
-  const doesAutocomplete = ['Asset Class', 'Account'].includes(tableName);
-
   const ref = useRef();
-
-
-  let colNames = columnNames.map((colName) => {
-    const fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
-    if (doesAutocomplete) {
-      return {title: colName, field: fieldName, responsive: 0, editor:"autocomplete",
-              editorParams:{freetext: true, allowEmpty: true, values:true},
-              cellEdited:function(cell) {
-                const newData = cell.getData();
-                if (tableName === 'Owner') {
-                  const newOwner = new Owner(newData)
-                  updateOwner(newOwner)
-                }
-                else if (tableName === 'Benchmark') {
-                  const newBenchmark = new Benchmark(newData)
-                  updateBenchmark(newBenchmark)
-                }
-                else if (tableName === 'Asset Class') {
-                  const newAssetClass = new AssetClass(newData)
-                  updateAssetClass(newAssetClass)
-                }
-                else if (tableName === 'Account') {
-                  const newAccount = new Account(newData)
-                  updateAccount(newAccount)
-                }
-              }};
-    }
-    else {
-      return {title: colName, field: fieldName, responsive: 0,
-             editor:"input", cellEdited:function(cell) {
-               const newData = cell.getData();
-               if (tableName === 'Owner') {
-                 const newOwner = new Owner(newData)
-                 updateOwner(newOwner)
-               }
-               else if (tableName === 'Benchmark') {
-                 const newBenchmark = new Benchmark(newData)
-                 updateBenchmark(newBenchmark)
-               }
-               else if (tableName === 'Asset Class') {
-                 const newAssetClass = new AssetClass(newData)
-                 updateAssetClass(newAssetClass)
-               }
-               else if (tableName === 'Account') {
-                 const newAccount = new Account(newData)
-                 updateAccount(newAccount)
-               }
-             }
-          };
-    }
-  });
 
   const columns = [
     {rowHandle:true, formatter:"handle", headerSort:false,
       responsive:0, width:30, minWidth:30},
-    ...colNames,
+    ...props.colNames,
     {formatter:function(cell, formatterParams, onRendered){ //plain text value
          return "<i class='fa fa-trash'></i>";
      }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){

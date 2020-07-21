@@ -166,7 +166,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
       return column;
   }
   else if (colName === 'Close Date') {
-    const column = {title: colName, field: fieldName, formatter:function(cell, formatterParams, onRendered){ const a = moment.utc(cell.getValue()).format('LL'); if (a === 'Invalid date') {return ""}; return a;}, responsive: 0, minWidth: 200};
+    const column = {title: colName, field: fieldName, formatter:function(cell, formatterParams, onRendered){ const a = moment.utc(cell.getValue()).format('L'); if (a === 'Invalid date') {return ""}; return a;}, responsive: 0, minWidth: 200};
     if (!readOnly) {
       column['editor'] = dateEditor;
       column['cellEdited'] = function(cell) {

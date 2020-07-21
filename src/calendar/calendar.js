@@ -13,7 +13,7 @@ import {getInvestment} from '../serverAPI/investments'
 function groupBy(array, item) {
   if (item.includes('date')) {
     const result = array.reduce(function (r, a) {
-          const formatted_item = moment(a[item]).format('LL')
+          const formatted_item = moment(a[item]).format('L')
           r[formatted_item] = r[formatted_item] || [];
           r[formatted_item].push(a);
           return r;
@@ -379,8 +379,8 @@ const CalenderListView = (props) => {
     if (d > endDate) {
       break;
     }
-    const distributions = distributionsByDate[moment(d).format('LL')]
-    const contributions = contributionsByDate[moment(d).format('LL')]
+    const distributions = distributionsByDate[moment(d).format('L')]
+    const contributions = contributionsByDate[moment(d).format('L')]
     if (distributions !== undefined || contributions !== undefined) {
       listCalendarDatesBefore.push(<CalendarListElement key={d} date={new Date(d)}
                                     distributions={distributions}
@@ -394,8 +394,8 @@ const CalenderListView = (props) => {
     if (d < startDate) {
       break;
     }
-    const distributions = distributionsByDate[moment(d).format('LL')]
-    const contributions = contributionsByDate[moment(d).format('LL')]
+    const distributions = distributionsByDate[moment(d).format('L')]
+    const contributions = contributionsByDate[moment(d).format('L')]
     if (distributions !== undefined || contributions !== undefined) {
       listCalendarDatesAfter.push(<CalendarListElement key={d} date={new Date(d)}
                                     distributions={distributions}

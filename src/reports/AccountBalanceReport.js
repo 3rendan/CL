@@ -20,7 +20,7 @@ function myDateSort(a, b) {
   if (aDate === undefined) {
     firstDay = "";
   }
-  firstDay = moment.utc(aDate).format('LL').toString()
+  firstDay = moment.utc(aDate).format('L').toString()
   if (firstDay === 'Invalid date') {
     firstDay = "";
   }
@@ -29,7 +29,7 @@ function myDateSort(a, b) {
   if (bDate === undefined) {
     secondDay = "";
   }
-  secondDay = moment.utc(bDate).format('LL').toString()
+  secondDay = moment.utc(bDate).format('L').toString()
   if (secondDay === 'Invalid date') {
     secondDay = "";
   }

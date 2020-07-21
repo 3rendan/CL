@@ -20,7 +20,7 @@ function myDateSort(a, b) {
   if (aDate === undefined) {
     firstDay = "";
   }
-  firstDay = moment.utc(aDate).format('LL').toString()
+  firstDay = moment.utc(aDate).format('L').toString()
   if (firstDay === 'Invalid date') {
     firstDay = "";
   }
@@ -29,7 +29,7 @@ function myDateSort(a, b) {
   if (bDate === undefined) {
     secondDay = "";
   }
-  secondDay = moment.utc(bDate).format('LL').toString()
+  secondDay = moment.utc(bDate).format('L').toString()
   if (secondDay === 'Invalid date') {
     secondDay = "";
   }
@@ -164,7 +164,7 @@ const SummaryReport = (props) => {
 
           while (minDate <= currEndMonth) {
             nav = calcNAV(groups[minDate], investment.id, nav);
-            const formatDate = moment(minDate).format('LL')
+            const formatDate = moment(minDate).format('L')
             const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
             investmentRow[fieldName] = nav;
             if (!allDates.includes(formatDate)) {
