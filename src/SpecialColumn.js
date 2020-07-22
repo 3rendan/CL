@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
@@ -105,6 +107,79 @@ function rightClickMoney(e, column){
   });
 }
 
+// date sorting
+function myDateSort(a, b) {
+  let aDate = a.date ? a.date : a.date_due;
+  let bDate = b.date ? b.date : b.date_due;
+
+
+  let firstDay = null;
+  if (aDate === undefined) {
+    firstDay = "";
+  }
+  firstDay = moment.utc(aDate).format('L').toString()
+  if (firstDay === 'Invalid date') {
+    firstDay = "";
+  }
+
+  let secondDay = null;
+  if (bDate === undefined) {
+    secondDay = "";
+  }
+  secondDay = moment.utc(bDate).format('L').toString()
+  if (secondDay === 'Invalid date') {
+    secondDay = "";
+  }
+
+  if (aDate < bDate) {
+    return -1;
+  }
+  else if (aDate > bDate) {
+    return 1;
+  }
+  else {
+    if (a.type === 'NAV') {
+      return 1;
+    }
+    else if (b.type === 'NAV') {
+      return -1;
+    }
+    return 0;
+  }
+}
+
+// NAV calculation
+function calcNAV(group, investmentID, nav) {
+  if (group === undefined) {
+    return nav;
+  }
+  group.sort(myDateSort);
+  return group.reduce((accumulator, current) => {
+    if (current.type === 'TRANSFER') {
+      if (current.investment === investmentID) {
+        return accumulator + current.amount;
+      }
+      return accumulator - current.amount; // in from_investment
+    }
+    if (current.type === 'COMMISH') {
+      if (investmentID === current.investment) {
+        return accumulator;
+      }
+      return accumulator - current.amount; // in from_investment
+    }
+    if (current.type === 'NAV') {
+      return current.amount;
+    }
+    let amount = current.amount ? current.amount : current.net_amount;
+    if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
+      if (current.from_investment === investmentID) {
+        return accumulator - amount;
+      }
+    }
+    return accumulator + amount;
+  }, nav);
+}
+
 // // a column that when clicked launches the events page
 const eventsCol = {
   formatter:function(cell, formatterParams, onRendered){ //plain text value
@@ -124,4 +199,4 @@ const defaultTabulatorSettings = {
 };
 
 export {copyCol, myMoneyFormatter, initialMoneyFormatter, rightClickMoney,
-  eventsCol, defaultTabulatorSettings};
+  eventsCol, defaultTabulatorSettings, calcNAV, myDateSort};

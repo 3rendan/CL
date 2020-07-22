@@ -16,7 +16,8 @@ import {deleteCommission} from '../serverAPI/commissions';
 import {getInvestments} from '../serverAPI/investments'
 
 import moment from 'moment';
-import {copyCol, myMoneyFormatter, initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
+import {copyCol, myDateSort,
+  myMoneyFormatter, initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
@@ -38,34 +39,6 @@ function AddRow(props) {
   }
 
 };
-
-function myDateSort(a, b) {
-  let firstDay = null;
-  if (a === undefined) {
-    firstDay = "";
-  }
-  firstDay = moment.utc(a).format('L').toString()
-  if (firstDay === 'Invalid date') {
-    firstDay = "";
-  }
-
-  let secondDay = null;
-  if (b === undefined) {
-    secondDay = "";
-  }
-  secondDay = moment.utc(b).format('L').toString()
-  if (secondDay === 'Invalid date') {
-    secondDay = "";
-  }
-
-  if (a < b) {
-    return -1;
-  }
-  else if (a > b) {
-    return 1;
-  }
-  return 0;
-}
 
 const MaintenanceTable = (props) => {
   const columnNames = props.columns;
