@@ -292,29 +292,34 @@ const CalendarListElement = (props) => {
         distributions.map(event => getInvestmentNames(event.investment))
       ) : [];
 
+
+      const totalContribution = contributions ? contributions.reduce(function(a,b) {
+        return a + b.net_amount;
+      }, 0) : 0;
+      const totalDistribution = distributions ? distributions.reduce(function(a,b) {
+        return a + b.net_amount;
+      }, 0) : 0;
+
       let name = "";
       if (contributionNames.length === 1) {
-        name = 'Contribution Due to ' + contributionNames[0];
+        name = `Contribution ($${totalContribution}) Due to ${contributionNames[0]}`;
       }
       else if (contributionNames.length > 1) {
-        name = contributionNames.length + ' Contributions Due to ' + contributionNames.join(', ');
+        name = `${contributionNames.length} Contributions ($${totalContribution} Due to ${contributionNames.join(', ')}`;
+      }
+
+      // separate contribution string with ; if necessary
+      if (name !== '') {
+        name += '; ';
       }
 
       if (distributionNames.length === 1) {
-        if (name === '') {
-          name = 'Distribution Due to ' + distributionNames[0];
-        }
-        else {
-          name += '; Distribution Due to ' + distributionNames[0];
-        }
+        name += `Distribution ($${totalDistribution}) Due to ${distributionNames[0]}`;
       }
       else if (distributionNames.length > 1) {
-        if (name === '') {
-          name = distributionNames.length + ' Distributions Due to ' + distributionNames.join(', ');
-        }
-        name += ';' + distributionNames.length + ' Distributions Due to ' + distributionNames.join(', ');
+        name += `${distributionNames.length} Distributions ($${totalDistribution}) Due to ${distributionNames.join(', ')}`;
       }
-      setEventString(name);
+      setEventString(name)
     }
 
     getEventData();
