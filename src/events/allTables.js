@@ -192,7 +192,31 @@ const MaintenanceTable = (props) => {
         }};
       return column;
     }
-    else if (fieldName === 'date_due' || fieldName === 'date_sent') {
+    else if (fieldName === 'date_sent') {
+      return {title: colName, field: fieldName,
+        formatter:function(cell, formatterParams, onRendered){
+          if (cell.getValue() === cell.getData()['date_due']) {
+            return "";
+          };
+          if (cell.getValue() === undefined) {
+            return "";
+          }
+          const a = moment.utc(cell.getValue()).format('L');
+          if (a === 'Invalid date') {
+            return ""
+          };
+          return a;
+        }, responsive: 0, frozen: frozen,
+        sorter:function(a, b, aRow, bRow, column, dir, sorterParams){
+          //a, b - the two values being compared
+          //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+          //column - the column component for the column being sorted
+          //dir - the direction of the sort ("asc" or "desc")
+          //sorterParams - sorterParams object from column definition array
+          return myDateSort(a, b);
+        }, headerSort:false};
+    }
+    else if (fieldName === 'date_due') {
       return {title: colName, field: fieldName,
         formatter:function(cell, formatterParams, onRendered){
           if (cell.getValue() === undefined) {
