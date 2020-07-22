@@ -30,7 +30,7 @@ function AddRow(props) {
   if (props.name === 'Event') {
     ipcRenderer.send('popupEvent', props);
   }
-  else if (props.name === 'NAVEvent') {
+  else if (props.name === 'NAV Entries') {
     ipcRenderer.send('popupNAVEvent', props);
   }
   else if (props.name === 'Transfer') {
