@@ -16,7 +16,7 @@ import {deleteCommission} from '../serverAPI/commissions';
 import {getInvestments} from '../serverAPI/investments'
 
 import moment from 'moment';
-import {copyCol, myMoneyFormatter} from '../SpecialColumn';
+import {copyCol, myMoneyFormatter, initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
@@ -165,13 +165,6 @@ const MaintenanceTable = (props) => {
 
   const ref = useRef();
 
-  const initialMoneyFormatter = function(cell, formatterParams, onRendered){
-    if (cell.getValue() === undefined) {
-      return '';
-    }
-    return myMoneyFormatter(cell.getValue(), true);
-  }
-
   let colNames = columnNames.map((colName) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -182,25 +175,7 @@ const MaintenanceTable = (props) => {
         formatter: initialMoneyFormatter,
         headerTooltip: 'Right Click to toggle cents',
         headerSort:false, sorter:'number',
-        headerContext:function(e, column){
-          if (column.getCells().length === 0) {
-            return;
-          }
-          const showCentsColumn = column.getCells().map(cell => {
-            return cell.getElement().innerText.includes('.')
-          });
-          let showCents = showCentsColumn.reduce(function (a, b) {
-            return a || b;
-          }, false)
-          showCents = !showCents;
-
-          var cells = column.getCells();
-          cells.forEach((cell, _) => {
-            if (cell.getValue() !== undefined) {
-              cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
-            }
-          });
-        }};
+        headerContext: rightClickMoney};
       return column;
     }
     else if (fieldName === 'date_sent') {

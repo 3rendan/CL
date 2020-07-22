@@ -78,6 +78,32 @@ function myMoneyFormatter(value, showCents) {
   return sign + symbol + integer + decimal;
 };
 
+function initialMoneyFormatter(cell, formatterParams, onRendered){
+  if (cell.getValue() === undefined) {
+    return '';
+  }
+  return myMoneyFormatter(cell.getValue(), true);
+}
+
+function rightClickMoney(e, column){
+  if (column.getCells().length === 0) {
+    return;
+  }
+  const showCentsColumn = column.getCells().map(cell => {
+    return cell.getElement().innerText.includes('.')
+  });
+  let showCents = showCentsColumn.reduce(function (a, b) {
+    return a || b;
+  }, false)
+  showCents = !showCents;
+
+  var cells = column.getCells();
+  cells.forEach((cell, _) => {
+    if (cell.getValue() !== undefined) {
+      cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
+    }
+  });
+}
 
 // // a column that when clicked launches the events page
 const eventsCol = {
@@ -97,4 +123,5 @@ const defaultTabulatorSettings = {
   layoutColumnsOnNewData:true,
 };
 
-export {copyCol, myMoneyFormatter, eventsCol, defaultTabulatorSettings};
+export {copyCol, myMoneyFormatter, initialMoneyFormatter, rightClickMoney,
+  eventsCol, defaultTabulatorSettings};

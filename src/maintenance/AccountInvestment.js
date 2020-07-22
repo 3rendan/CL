@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
-import {myMoneyFormatter, eventsCol, defaultTabulatorSettings} from '../SpecialColumn';
+import {myMoneyFormatter, eventsCol, defaultTabulatorSettings,
+        rightClickMoney, initialMoneyFormatter} from '../SpecialColumn';
 
 import moment from 'moment';
 
@@ -91,7 +92,6 @@ const myValues = function(colName, dataDictionary) {
     return AccountData.map(i => i.name);
   }
   else if (colName ==='Owner') {
-    console.log(OwnerData)
     return OwnerData.map(i => i.name);
   }
   else {
@@ -143,22 +143,8 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
   else if (currencyColumns.includes(colName)) {
     const column = {title: colName +' $',
       field: fieldName, responsive: 0,
-      formatter: "money", formatterParams:{
-        decimal:".",
-        thousand:",",
-        symbol:"$",
-        precision:0,
-      }, headerTooltip: 'Right Click to toggle cents',
-      headerContext:function(e, column){
-        const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
-        const currSymbol = showCents ? ' ¢' : ' $';
-        column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = colName + currSymbol;
-
-        var cells = column.getCells();
-        cells.forEach((cell, _) => {
-          cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
-        });
-      }};
+      formatter: initialMoneyFormatter, headerTooltip: 'Right Click to toggle cents',
+      headerContext: rightClickMoney};
 
       if (!readOnly) {
         column['cellEdited'] = function(cell) {
