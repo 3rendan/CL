@@ -131,10 +131,10 @@ const getSingleEntry = async id => {
 };
 
 const SingleEntryColumns = [
-  'amount', 'date', 'notes', 'type'
+  'Amount', 'Date', 'Notes', 'Type'
 ];
 const NAVColumns = [
-  'amount', 'date', 'notes'
+  'Amount', 'Date', 'Notes'
 ];
 
 export {

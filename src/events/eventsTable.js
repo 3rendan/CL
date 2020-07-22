@@ -6,15 +6,6 @@ import {getInvestment} from '../serverAPI/investments.js'
 const EventsSingleTable = lazy(() => import("./eventsSingleTable"));
 const EventsCommitmentTable = lazy(() => import("./eventsCommitmentTable"));
 
-const moneyColumns = ['Net Amount', 'Main',
-'Recallable',	'Withhold',
-'Fees', 'Tax', 'Outside Main', 'Outside Fees', 'Outside Tax']
-
-const eventColumns = ['Type', 'Date Due', 'Date Sent',
-    'Investment', 'From Investment',
-    ...moneyColumns,
-    'Notes']
-
 const frozenColumns = ['Type', 'Date Due'];
 
 const EventTable = (props) => {
@@ -37,17 +28,13 @@ const EventTable = (props) => {
   else if (hasCommitment) {
     return <EventsCommitmentTable investment={props.investment}
                   investmentID = {props.investmentID}
-                  columns = {eventColumns}
                   frozenColumns = {frozenColumns}
-                  commitment = {commitment}
-                  moneyColumns = {moneyColumns}/>
+                  commitment = {commitment}/>
   }
   else {
     return <EventsSingleTable investment={props.investment}
                   investmentID = {props.investmentID}
-                  columns = {eventColumns}
-                  frozenColumns = {frozenColumns}
-                  moneyColumns = {moneyColumns}/>
+                  frozenColumns = {frozenColumns}/>
   }
 };
 

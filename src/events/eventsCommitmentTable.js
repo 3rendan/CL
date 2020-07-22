@@ -11,6 +11,14 @@ import MaintenanceTable from './allTables'
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
+const moneyColumns = ['Net Amount', 'Main',
+'Recallable',	'Withhold',
+'Fees', 'Tax', 'Outside Main', 'Outside Fees', 'Outside Tax', 'Net Commitment']
+
+const eventColumns = ['Type', 'Date Due', 'Date Sent',
+    'Investment', 'From Investment',
+    ...moneyColumns,
+    'Notes']
 
 const EventTable = (props) => {
   const [EventData, setEventData] = useState(null);
@@ -63,11 +71,11 @@ const EventTable = (props) => {
     return null;
   }
   return (<MaintenanceTable name={"Event"} data={EventData}
-            columns={props.columns} hasCommitment={true}
+            columns={eventColumns} hasCommitment={true}
             commitment={props.commitment}
             frozenColumns={props.frozenColumns}
             investmentID={investmentID}
-            moneyColumns = {props.moneyColumns}/>);
+            moneyColumns = {moneyColumns}/>);
 };
 
 export default EventTable;

@@ -61,6 +61,12 @@ function myMoneyFormatter(value, showCents) {
   number = String(number).split(".");
 
   integer = number[0];
+  let sign = '';
+  if (floatVal < 0) {
+    integer = integer.substring(1);
+    sign = '-';
+  }
+
   decimal = number.length > 1 ? decimalSym + number[1] : "";
 
   rgx = /(\d+)(\d{3})/;
@@ -69,7 +75,7 @@ function myMoneyFormatter(value, showCents) {
     integer = integer.replace(rgx, "$1" + thousandSym + "$2");
   }
 
-  return symbol + integer + decimal;
+  return sign + symbol + integer + decimal;
 };
 
 

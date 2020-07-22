@@ -78,7 +78,7 @@ const MaintenanceTable = (props) => {
     // turn other money fileds into money
   useEffect(() => {
     async function fetchInvestments() {
-      if (tableName === 'NAV') {
+      if (tableName === 'NAV' || tableName === 'NAV Entries') {
         setData(props.data);
         return;
       }
@@ -102,7 +102,6 @@ const MaintenanceTable = (props) => {
         if (datum.investment !== undefined) {
           datum.investment = investments[datum.investment].name;
         }
-
         if (datum.date !== undefined) {
           datum.date_due = datum.date;
         }
@@ -166,28 +165,40 @@ const MaintenanceTable = (props) => {
 
   const ref = useRef();
 
+  const initialMoneyFormatter = function(cell, formatterParams, onRendered){
+    if (cell.getValue() === undefined) {
+      return '';
+    }
+    return myMoneyFormatter(cell.getValue(), true);
+  }
+
   let colNames = columnNames.map((colName) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (fieldName === 'amount' || (props.moneyColumns !== undefined && props.moneyColumns.includes(colName))) {
-      const column = {title: colName +' $',
+      const column = {title: colName,
         field: fieldName, responsive: 0,
         align: 'right',
-        formatter: "money", formatterParams:{
-          decimal:".",
-          thousand:",",
-          symbol:"$",
-          precision:0,
-        }, headerTooltip: 'Right Click to toggle cents',
+        formatter: initialMoneyFormatter,
+        headerTooltip: 'Right Click to toggle cents',
         headerSort:false, sorter:'number',
         headerContext:function(e, column){
-          const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
-          const currSymbol = showCents ? ' ¢' : ' $';
-          column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = colName + currSymbol;
+          if (column.getCells().length === 0) {
+            return;
+          }
+          const showCentsColumn = column.getCells().map(cell => {
+            return cell.getElement().innerText.includes('.')
+          });
+          let showCents = showCentsColumn.reduce(function (a, b) {
+            return a || b;
+          }, false)
+          showCents = !showCents;
 
           var cells = column.getCells();
           cells.forEach((cell, _) => {
-            cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
+            if (cell.getValue() !== undefined) {
+              cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
+            }
           });
         }};
       return column;
@@ -237,29 +248,31 @@ const MaintenanceTable = (props) => {
           return myDateSort(a, b);
         }, headerSort:false};
     }
+    else if (fieldName === 'date') {
+      return {title: colName, field: fieldName,
+        formatter:function(cell, formatterParams, onRendered){
+          if (cell.getValue() === undefined) {
+            return "";
+          }
+          const a = moment.utc(cell.getValue()).format('L');
+          if (a === 'Invalid date') {
+            return ""
+          };
+          return a;
+        }, responsive: 0, frozen: frozen,
+        sorter:function(a, b, aRow, bRow, column, dir, sorterParams){
+          //a, b - the two values being compared
+          //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+          //column - the column component for the column being sorted
+          //dir - the direction of the sort ("asc" or "desc")
+          //sorterParams - sorterParams object from column definition array
+          return myDateSort(a, b);
+        }, headerSort:false};
+    }
     return {title: colName, field: fieldName, responsive: 0,
            frozen: frozen,
             sorter: 'string', headerSort:false};
   });
-
-  if (props.hasCommitment) {
-    colNames.push({
-      title: 'Net Commitment $',
-      field: 'net_commitment',
-      headerTooltip: 'Right Click to toggle cents',
-      headerSort:false, sorter:'number',
-      headerContext:function(e, column){
-        const showCents = column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText.includes('$');
-        const currSymbol = showCents ? ' ¢' : ' $';
-        column.getElement().getElementsByClassName('tabulator-col-title')[0].innerText  = 'Net Commitment' + currSymbol;
-
-        var cells = column.getCells();
-        cells.forEach((cell, _) => {
-          cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
-        });
-      }
-    })
-  }
 
   const columns = [
     ...colNames,
@@ -267,7 +280,7 @@ const MaintenanceTable = (props) => {
          return "<i class='fa fa-trash'></i>";
      }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
        const deletedData = cell.getData();
-       if (tableName === 'Event' || tableName === 'NAVEvent') {
+       if (tableName === 'Event' || tableName === 'NAV Entries') {
          if (deletedData.type === 'CONTRIBUTION') {
            deleteContribution(deletedData.id)
          }
