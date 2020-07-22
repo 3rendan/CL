@@ -21,6 +21,7 @@ const OwnerTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       const result = await getOwners();
+      console.log(result)
       setOwnerData(result);
     }
     fetchData();

@@ -21,6 +21,8 @@ const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
 
 const currencyColumns = ['Commitment',	'Size (M)'];
 const dateColumns = ['End of Term', 'Close Date'];
+const dropdownColumns = ['Primary Benchmark', 'Secondary Benchmark',
+                  'Asset Class', 'Sub Asset Class', 'Account', 'Owner']
 
 //Create Date Editor
 var dateEditor = function(cell, onRendered, success, cancel){
@@ -88,7 +90,8 @@ const myValues = function(colName, dataDictionary) {
   else if (colName === 'Account') {
     return AccountData.map(i => i.name);
   }
-  else if (colName ==='Account Owner') {
+  else if (colName ==='Owner') {
+    console.log(OwnerData)
     return OwnerData.map(i => i.name);
   }
   else {
@@ -130,6 +133,8 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
       column['cellEdited'] = function(cell) {
           const newData = cell.getData();
           const newInvestment = new Investment(newData);
+          console.log(newInvestment)
+          console.log('try update')
           updateInvestment(newInvestment);
       };
     }
@@ -177,12 +182,35 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
     }
     return column;
   }
+  else if (!dropdownColumns.includes(colName)) {
+    const column = {title: colName, field: fieldName, responsive: 0,
+                    editor: true};
+    if (!readOnly) {
+      column['cellEdited'] = function(cell) {
+          const newData = cell.getData();
+          const newInvestment = new Investment(newData);
+          console.log(newInvestment)
+          console.log('update!')
+          updateInvestment(newInvestment);
+      };
+      column['editorParams'] = {
+        showListOnEmpty:true,
+        freetext: true,
+        allowEmpty: true,
+        searchingPlaceholder:"Filtering ...", //set the search placeholder
+        values:true
+      }
+    }
+    return column;
+  }
   const column = {title: colName, field: fieldName, responsive: 0};
   if (!readOnly) {
     column['editor'] = 'autocomplete';
     column['cellEdited'] = function(cell) {
         const newData = cell.getData();
         const newInvestment = new Investment(newData);
+        console.log(newInvestment)
+        console.log('update!')
         updateInvestment(newInvestment);
     };
     column['editorParams'] = {

@@ -18,6 +18,9 @@ const InvestmentTable = () => {
 
   useEffect(() => {
     async function fetchData() {
+      const owners = await getOwners();
+      setOwnerData(owners);
+
       const accounts = await getAccounts();
       setAccountData(accounts);
 
@@ -29,9 +32,6 @@ const InvestmentTable = () => {
 
       const investments = await getInvestments();
       setInvestmentData(investments);
-
-      const owners = await getOwners();
-      setOwnerData(owners);
     }
     fetchData();
   }, []);
