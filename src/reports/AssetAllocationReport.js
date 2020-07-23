@@ -79,32 +79,27 @@ const AssetAllocationReport = (props) => {
           assets[assetClass] = nav;
         }
 
-        if ([assetClass, subAssetClass] in subAssets) {
-          subAssets[[assetClass, subAssetClass]] += nav;
+        if (assetClass in subAssets) {
+          subAssets[assetClass].push({asset: subAssetClass, nav: nav});
         }
         else {
-          subAssets[[assetClass, subAssetClass]] = nav;
+          subAssets[assetClass] = [{asset: subAssetClass, nav: nav}];
         }
       }));
 
       const allAssets = Object.keys(assets);
       const assetData = allAssets.map((asset) => {
-        return {asset: asset, nav: assets[asset]}
-      })
-
-      const allSubAssets = Object.keys(subAssets);
-      const subAssetData = allSubAssets.map((subAsset) => {
-        return {sub_asset: subAsset, nav: subAssets[subAsset]}
+        return {asset: asset, nav: assets[asset], _children: subAssets[asset]
+        }
       })
 
       setAsset(assetData);
-      setSubAsset(subAssetData);
     }
     manipulateData();
 
   }, []);
 
-  if (asset === null || subAsset === null) {
+  if (asset === null) {
     return <div> hi </div>;
   }
   return (<div>
@@ -112,10 +107,6 @@ const AssetAllocationReport = (props) => {
             columns={['Asset', 'NAV']}
             moneyColumns={['NAV']}
             noButton={true}/>
-    <MaintenanceTable name={"Sub Assets NAV"} data={subAsset}
-              columns={['Sub Asset', 'NAV']}
-              moneyColumns={['NAV']}
-              noButton={true}/>
         </div>
             );
 }
