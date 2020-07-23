@@ -174,9 +174,11 @@ const RowCurrency = (props) => {
       props.setNetAmount(props.netAmount + localStringToNumber(value) - currMoney);
     }
     setCurrMoney(localStringToNumber(value));
-
-    props.state[props.name] = value;
-    props.setState(props.state);
+    const newState = {
+      ...props.state,
+    }
+    newState[props.name] = value
+    props.setState(newState);
 
   }
 
@@ -213,8 +215,11 @@ const RowInvestment = (props) => {
   }
 
   const onChange = (inputText) => {
-    props.state[props.name] = inputText;
-    props.setState(props.state)
+    const newState = {
+      ...props.state,
+    }
+    newState[props.name] = inputText
+    props.setState(newState)
     setValue(inputText)
   }
 
@@ -227,8 +232,11 @@ const RowInvestment = (props) => {
         const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
         if (data.id === defaultInvestment) {
           setValue({label: label, value: data})
-          props.state[props.name] = {label: label, value: data};
-          props.setState(props.state)
+          const newState = {
+            ...props.state,
+          }
+          newState[props.name] = {label: label, value: data};
+          props.setState(newState)
         }
         return {label: label, value: data};
       })
@@ -285,8 +293,11 @@ const RowBland = (props) => {
 
 
   const onChange = (e) => {
-    props.state[props.name] = e.target.value;
-    props.setState(props.state)
+    const newState = {
+      ...props.state,
+    }
+    newState[props.name] = e.target.value
+    props.setState(newState)
   }
 
   const size = props.size * 10 + "px";
@@ -297,7 +308,9 @@ const RowBland = (props) => {
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
-        <input type={type} min={min} onChange={onChange.bind(this)} className="form-control" placeholder={placeholder} required />
+        <input type={type} min={min} onChange={onChange.bind(this)}
+            defaultValue={props.state[props.name]}
+            className="form-control" placeholder={placeholder} required />
     </div>
   );
 };
@@ -319,6 +332,9 @@ const FormSheet = (props) => {
   const [netAmount, setNetAmount] = useState(0.0);
 
   useEffect(()=> {
+    if (state['Date Sent'] === undefined && state['Date Due'] !== undefined) {
+      state['Date Sent'] = state['Date Due'];
+    }
     async function fetchData() {
       const result = await getInvestmentData();
       setInvestmentData(result);
