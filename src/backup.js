@@ -5,13 +5,11 @@ import moment from 'moment';
 
 import Button from 'react-bootstrap/Button'
 import ListGroup from 'react-bootstrap/ListGroup'
+import Jumbotron from 'react-bootstrap/Jumbotron'
 
-import {Backup, getBackups, insertBackup, restore} from './serverAPI/backups.js'
+import {Backup, getBackups, insertBackup,
+  deleteBackup, restore} from './serverAPI/backups.js'
 
-const click = (backup, e) => {
-  restore(backup.id)
-  console.log(backup.id)
-}
 
 const createBackup = (setKey) => {
   const backup = new Backup();
@@ -20,24 +18,83 @@ const createBackup = (setKey) => {
     setKey(key => key+1)
   };
   insertAndFetch();
+}
 
+const LaunchModal = (props) => {
+  const backup = props.backup;
+  const header = <h1> {props.type} Backup </h1>;
+  const variant = props.type === 'Delete' ? 'danger' : 'success';
 
+  return (
+    <Jumbotron>
+      {header}
+      <p>
+        {moment(backup.date).format('LLL')}
+      </p>
+      <p>
+        <Button variant={variant} onClick={props.onClick}>{props.type}</Button>
+      </p>
+    </Jumbotron>
+  );
+}
+
+const BackupItem = (props) => {
+  const backup = props.backup;
+  const [modal, setModal] = useState(null);
+  const [show, setShow] = useState(true)
+
+  useEffect(() => {
+  }, [modal, show])
+
+  if (!show) {
+    return null;
+  }
+  return (
+    <Fragment>
+      <ListGroup.Item key={backup.id}>
+        {moment(backup.date).format('LLL')}
+        <button type="button" style = {{marginLeft: "25px"}} onClick={(e) =>   {
+            if (modal !== null && modal.props.type === 'Restore') {
+              setModal(null);
+            }
+            else {
+              setModal(<LaunchModal type='Restore' backup={backup}
+                      onClick={() => {
+                        restore(backup.id)
+                      }}/>)
+
+              console.log('restore ' + backup.id)
+            }
+
+          }
+          }
+        className="btn btn-success btn-lg">Restore Backup</button>
+        <button type="button" style = {{marginLeft: "25px"}} onClick={() =>
+          {
+            if (modal !== null && modal.props.type === 'Delete') {
+              setModal(null);
+            }
+            else {
+              setModal(<LaunchModal type='Delete' backup={backup}
+                      onClick={() => {
+                        setShow(false);
+                        deleteBackup(backup.id)
+                        // CALL DELETE HERE
+                      }}/>)
+            }
+          }
+          }
+        className="btn btn-danger btn-lg">Delete Backup</button>
+      </ListGroup.Item>
+      {modal}
+    </Fragment>
+  )
 }
 
 const BackupList = (props) => {
   const backups = props.events;
   const backupItems = backups.map(backup =>
-    <ListGroup.Item key={backup.id}>
-      {moment(backup.date).format('LLL')}
-      <button type="button" style = {{marginLeft: "25px"}} onClick={(e) => click(backup, e)}
-      className="btn btn-success btn-lg">Restore Backup</button>
-      <button type="button" style = {{marginLeft: "25px"}} onClick={() =>
-        {
-          console.log('delete ' + backup.id)
-        }
-        }
-      className="btn btn-danger btn-lg">Delete Backup</button>
-    </ListGroup.Item>
+    <BackupItem key={backup.id} backup={backup}/>
   );
   return ( <ListGroup> {backupItems} </ListGroup>)
 }
