@@ -25,25 +25,47 @@ fetchData();
 
 
 const filterInvestmentOptions = (inputValue: string) => {
-  console.log(investmentOptions)
-  if (inputValue === undefined || inputValue === null || inputValue.length === 0) {
+  if (inputValue === undefined || inputValue.length === 0) {
     return investmentOptions;
   }
+
   const a = investmentOptions.filter(i =>
-    i.value.name.toLowerCase().includes(inputValue.toLowerCase())
+    i.value.name.toLowerCase().includes(inputValue.toString().toLowerCase())
   );
-  console.log(a)
+
   return a;
 };
 
+const filterCommitInvestmentOptions = (inputValue: string) => {
+  const investments = filterInvestmentOptions(inputValue);
+  return investments.filter(i => i.value.has_commitment);
+};
 
-const loadOptions = inputValue =>
+const filterNonCommitInvestmentOptions = (inputValue: string) => {
+  const investments = filterInvestmentOptions(inputValue);
+  return investments.filter(i => !i.value.has_commitment);
+};
+
+const loadAllOptions = inputValue =>
   new Promise(resolve => {
     setTimeout(() => {
       resolve(filterInvestmentOptions(inputValue));
     }, 500);
   });
 
+const loadCommitOptions = inputValue =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve(filterCommitInvestmentOptions(inputValue));
+    }, 500);
+  });
+
+const loadNonCommitOptions = inputValue =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve(filterNonCommitInvestmentOptions(inputValue));
+    }, 500);
+  });
 
 
 
@@ -179,6 +201,17 @@ const RowInvestment = (props) => {
   const defaultInvestment = props.investmentID;
   const [value, setValue] = useState(null);
 
+  let loadOptions = loadAllOptions;
+  if (props.transcationType === 'CONTRIBUTION' ||
+      props.transcationType === 'DISTRIBUTION') {
+    if (props.name === 'From Investment') {
+      loadOptions = loadCommitOptions;
+    }
+    else if (props.name === 'Investment') {
+      loadOptions = loadNonCommitOptions;
+    }
+  }
+
   const onChange = (inputText) => {
     props.state[props.name] = inputText;
     props.setState(props.state)
@@ -199,7 +232,18 @@ const RowInvestment = (props) => {
         }
         return {label: label, value: data};
       })
-      setDefaultOptions(investmentOptions);
+      if (loadOptions === loadCommitOptions) {
+        setDefaultOptions(investmentOptions.filter(i => i.value.has_commitment));
+      }
+      if (loadOptions === loadNonCommitOptions) {
+        const nonCommit = investmentOptions.filter(i => !i.value.has_commitment)
+        setDefaultOptions(nonCommit);
+        setValue(nonCommit[0])
+      }
+      if (loadOptions === loadAllOptions) {
+        setDefaultOptions(investmentOptions);
+      }
+
     }
     fetchData();
   }, [])
@@ -314,23 +358,24 @@ const FormSheet = (props) => {
     const newRows = mainColumns.map((column) => {
        if (column === 'Amount' || column.includes('$')) {
          const a = <RowCurrency netAmount={netAmount} setNetAmount={passFunc}
-                                key={column} name={column} size={maxSize}
+                                key={column + transcationType} name={column} size={maxSize}
                                 state={state} setState={setState}
                                 transcationType={transcationType}/>;
          return a;
        }
        else if (column === 'Net Amount') {
-         return <RowCurrencyNet netAmount={netAmount} key={column}
+         return <RowCurrencyNet netAmount={netAmount} key={column + transcationType}
                                 name={column} size={maxSize}
                                 state={state} setState={setState}/>;
        }
        else if (column.includes('Investment')) {
-         return <RowInvestment name={column} key={column} size={maxSize}
+         return <RowInvestment name={column} key={column + transcationType} size={maxSize}
                                   state={state} setState={setState}
-                                  investmentID={investmentID}/>
+                                  investmentID={investmentID}
+                                  transcationType={transcationType}/>
        }
        else {
-         return <RowBland key={column} name={column} size={maxSize}
+         return <RowBland key={column + transcationType} name={column} size={maxSize}
                           state={state} setState={setState}/>;
        }
     });
