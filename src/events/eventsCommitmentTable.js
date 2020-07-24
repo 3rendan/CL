@@ -26,17 +26,6 @@ const EventTable = (props) => {
   const investmentID = props.investmentID;
   const [key, setKey] = useState(0);
 
-
-  ipcRenderer.on('replyEvent', (event, message) => {
-    let copyTableData = [message]
-    if (EventData !== null) {
-      copyTableData = [...EventData, message]
-    }
-    setEventData(copyTableData);
-    setKey(key => key + 1);
-  });
-
-
   useEffect(() => {
     async function fetchData() {
       let singleEntry = await getSingleEntrys(investmentID);

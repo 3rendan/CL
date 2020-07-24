@@ -45,14 +45,9 @@ const copyCol = {
 
 // my special money formatter
 function myMoneyFormatter(value, showCents) {
-  let myFloat = value;
-  try {
-    myFloat = value.substring(1)
-  }
-  catch {
-    showCents = !showCents;
-  }
-  var floatVal = parseFloat(myFloat), number, integer, decimal, rgx;
+  console.log('value ' + value)
+  console.log(showCents)
+  var floatVal = parseFloat(value), number, integer, decimal, rgx;
 
   var decimalSym = ".";
   var thousandSym = ",";
@@ -84,7 +79,8 @@ function initialMoneyFormatter(cell, formatterParams, onRendered){
   if (cell.getValue() === undefined) {
     return '';
   }
-  return myMoneyFormatter(cell.getValue(), true);
+  const a= myMoneyFormatter(cell.getValue(), false);
+  return a;
 }
 
 function rightClickMoney(e, column){
@@ -97,10 +93,12 @@ function rightClickMoney(e, column){
   let showCents = showCentsColumn.reduce(function (a, b) {
     return a || b;
   }, false)
-  showCents = !showCents;
+  // showCents = !showCents;
+  console.log(showCents)
 
   var cells = column.getCells();
   cells.forEach((cell, _) => {
+    console.log(cell.getValue())
     if (cell.getValue() !== undefined) {
       cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
     }

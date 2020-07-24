@@ -315,6 +315,33 @@ const RowBland = (props) => {
   );
 };
 
+const eventToRow = (event, state) => {
+  let net_commitment = 0;
+  if (event.type === 'COMMISH') {
+    event.net_amount = parseFloat(event.amount);
+    event.investment = state.Investment.value.name;
+    event.from_investment = state['From Investment'].value.name;
+    event.date_due = event.date;
+    return event;
+  }
+  else if (event.type === 'CONTRIBUTION') {
+    event.investment = state.Investment.value.name;
+    event.from_investment = state['From Investment'].value.name;
+    return event;
+  }
+  else if (event.type === 'DISTRIBUTION') {
+    event.investment = state.Investment.value.name;
+    event.from_investment = state['From Investment'].value.name;
+    return event;
+  }
+  else {
+    event.investment = state.Investment.value.name;
+    event.date_due = event.date;
+    event.net_amount = parseFloat(event.amount);
+    return event;
+  }
+}
+
 const FormSheet = (props) => {
   const [InvestmentData, setInvestmentData] = useState(null);
   const getInvestmentData = props.getInvestmentData;
@@ -401,14 +428,18 @@ const FormSheet = (props) => {
 
 
   const onSubmit = () => {
-    console.log(state);
     state['Type'] = transcationType;
     const newEvent = createEvent({
       state: state,
       netAmount: netAmount
     });
-    console.log(senderWindowId)
-    ipcRenderer.sendTo(senderWindowId, replyChannel, newEvent)
+
+    console.log(state)
+    console.log(newEvent)
+
+    newEvent['type'] = transcationType;
+    const newRow = eventToRow(newEvent, state);
+    ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
   };
 
 

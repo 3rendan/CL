@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import ReactDOM from 'react-dom';
 import {getSingleEntrys, SingleEntry, SingleEntryColumns} from '../serverAPI/singleEntry.js'
 
@@ -26,28 +26,17 @@ const EventTable = (props) => {
   const investmentID = props.investmentID;
 
 
-  ipcRenderer.on('replyEvent', (event, message) => {
-    let copyTableData = [message]
-    if (EventData !== null) {
-      copyTableData = [...EventData, message]
-    }
-    setEventData(copyTableData);
-    setKey(key => key+1)
-  });
-
-
   useEffect(() => {
     async function fetchData() {
       let singleEntry = await getSingleEntrys(investmentID);
       singleEntry = singleEntry ? singleEntry : [];
       let commission = await getCommissionsInvestment(investmentID);
       commission = commission ? commission : [];
-      let distribution = await getDistributionsInvestment(investmentID);
-      distribution = distribution ? distribution : [];
-      let contribution = await getContributionsInvestment(investmentID);
-      contribution = contribution ? contribution : [];
-      console.log(commission)
-      setEventData([...singleEntry, ...commission, ...distribution, ...contribution]);
+      commission = commission.map((comm) => {
+        comm['type'] = 'COMMISH'
+        return comm;
+      })
+      setEventData([...singleEntry, ...commission]);
     }
     fetchData();
 
@@ -59,8 +48,8 @@ const EventTable = (props) => {
   return (<MaintenanceTable name={"Event"} data={EventData}
             columns={eventColumns} hasCommitment={false}
             investmentID={investmentID}
-            moneyColumns = {moneyColumns}
-            key = {key}/>);
+            moneyColumns={moneyColumns}
+            key={key}/>);
 };
 
 export default EventTable;

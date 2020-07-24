@@ -141,20 +141,21 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
     return column;
   }
   else if (currencyColumns.includes(colName)) {
-    const column = {title: colName +' $',
+    const column = {title: colName,
       field: fieldName, responsive: 0,
       formatter: initialMoneyFormatter, headerTooltip: 'Right Click to toggle cents',
       headerContext: rightClickMoney};
 
-      if (!readOnly) {
-        column['cellEdited'] = function(cell) {
-            const newData = cell.getData();
-            const newInvestment = new Investment(newData);
-            updateInvestment(newInvestment);
-        };
-        column['editor'] = "number";
-      }
-      return column;
+    if (!readOnly) {
+      column['cellEdited'] = function(cell) {
+          const newData = cell.getData();
+          console.log(newData)
+          const newInvestment = new Investment(newData);
+          updateInvestment(newInvestment);
+      };
+      column['editor'] = "number";
+    }
+    return column;
   }
   else if (dateColumns.includes(colName)) {
     const column = {title: colName, field: fieldName, formatter:function(cell, formatterParams, onRendered){ const a = moment.utc(cell.getValue()).format('L'); if (a === 'Invalid date') {return ""}; return a;}, responsive: 0, minWidth: 200};
@@ -228,11 +229,14 @@ const DetailInvestmentTable = (props) => {
     BenchmarkData: props.BenchmarkData,
   };
 
+  console.log(props.data)
 
 
   let columns = columnNames.map((colName) => {
     return columnNameToDefintion(colName, readOnly, dataDictionary);
   });
+
+  console.log(columns)
 
   const addButton = readOnly ? null : (
   <div style ={{float: "right", width: "130px", display: "inline-block"}}>

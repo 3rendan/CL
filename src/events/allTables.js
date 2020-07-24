@@ -46,6 +46,8 @@ const MaintenanceTable = (props) => {
   const investmentID = props.investmentID;
   const [data, setData] = useState([]);
 
+  const ref = React.createRef();
+
   // manual transforms
     // 1) Date -> Date Due
     // turn other money fileds into money
@@ -61,8 +63,6 @@ const MaintenanceTable = (props) => {
       investmentsTemp.map((investment) => {
         investments[investment.id] = investment;
       })
-
-
 
       // rename data
       let manipulatedData = props.data.map((datum) => {
@@ -82,6 +82,10 @@ const MaintenanceTable = (props) => {
           datum.net_amount = datum.amount;
         }
 
+        if (datum.type === 'COMMISH') {
+          console.log(datum)
+        }
+
         return datum;
       });
       // calculate net commitment after each transaction
@@ -89,7 +93,9 @@ const MaintenanceTable = (props) => {
         manipulatedData = manipulatedData.sort(function(a, b) {
           return myDateSort(a.date_due, b.date_due)
         });
+
         let net_commitment = props.commitment;
+        console.log(net_commitment)
 
         try {
           net_commitment = parseFloat(net_commitment.substring(1));
@@ -135,8 +141,25 @@ const MaintenanceTable = (props) => {
     fetchInvestments();
   }, [])
 
+  ipcRenderer.on('replyEvent', (event, message) => {
+    let copyTableData = [message]
+    if (data !== null) {
+      copyTableData = [...data, message]
+    }
 
-  const ref = useRef();
+    setData(copyTableData);
+  });
+
+  ipcRenderer.on('replyNAVEvent', (event, message) => {
+    let copyTableData = [message]
+    if (data !== null) {
+      copyTableData = [...data, message]
+    }
+
+    setData(copyTableData);
+  });
+
+
 
   let colNames = columnNames.map((colName) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
