@@ -268,15 +268,18 @@ const MaintenanceTable = (props) => {
     }}
   ];
 
+  let addRow = tableName === 'NAV' ? null :
+  (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
+          className="btn btn-success btn-lg">Add Row</button>
+  </div>);
+
   return (
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
         <br />
         <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
-        <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-          <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
-                className="btn btn-success btn-lg">Add Row</button>
-        </div>
+        {addRow}
         <br />
         <br />
       </div>
