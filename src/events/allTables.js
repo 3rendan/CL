@@ -82,10 +82,6 @@ const MaintenanceTable = (props) => {
           datum.net_amount = datum.amount;
         }
 
-        if (datum.type === 'COMMISH') {
-          console.log(datum)
-        }
-
         return datum;
       });
       // calculate net commitment after each transaction
@@ -95,7 +91,6 @@ const MaintenanceTable = (props) => {
         });
 
         let net_commitment = props.commitment;
-        console.log(net_commitment)
 
         try {
           net_commitment = parseFloat(net_commitment.substring(1));

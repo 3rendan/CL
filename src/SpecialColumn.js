@@ -45,8 +45,6 @@ const copyCol = {
 
 // my special money formatter
 function myMoneyFormatter(value, showCents) {
-  console.log('value ' + value)
-  console.log(showCents)
   var floatVal = parseFloat(value), number, integer, decimal, rgx;
 
   var decimalSym = ".";
@@ -110,6 +108,12 @@ function myDateSort(a, b) {
   let aDate = a.date ? a.date : a.date_due;
   let bDate = b.date ? b.date : b.date_due;
 
+  if (typeof(a) === 'string') {
+    aDate = a;
+  }
+  if (typeof(b) === 'string') {
+    bDate = b;
+  }
 
   let firstDay = null;
   if (aDate === undefined) {

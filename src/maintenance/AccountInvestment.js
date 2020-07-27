@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 import {myMoneyFormatter, eventsCol, defaultTabulatorSettings,
+        myDateSort,
         rightClickMoney, initialMoneyFormatter} from '../SpecialColumn';
 
 import moment from 'moment';
@@ -159,6 +160,14 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
   }
   else if (dateColumns.includes(colName)) {
     const column = {title: colName, field: fieldName, formatter:function(cell, formatterParams, onRendered){ const a = moment.utc(cell.getValue()).format('L'); if (a === 'Invalid date') {return ""}; return a;}, responsive: 0, minWidth: 200};
+    column['sorter'] = function(a, b, aRow, bRow, column, dir, sorterParams){
+      //a, b - the two values being compared
+      //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+      //column - the column component for the column being sorted
+      //dir - the direction of the sort ("asc" or "desc")
+      //sorterParams - sorterParams object from column definition array
+      return myDateSort(a, b)
+    }
     if (!readOnly) {
       column['editor'] = dateEditor;
       column['cellEdited'] = function(cell) {
@@ -273,7 +282,9 @@ const DetailInvestmentTable = (props) => {
         ref={ref}
         columns={columns}
         data={tableData}
-        options={defaultTabulatorSettings}
+        options={{...defaultTabulatorSettings,
+        initialSort: [{column: "date_due", dir:'asc'}]}
+        }
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />
