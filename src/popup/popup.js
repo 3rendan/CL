@@ -300,6 +300,44 @@ const RowBland = (props) => {
     props.setState(newState)
   }
 
+  const onBlur = (e) => {
+    if (type === 'date') {
+      const now = new Date();
+      const then = new Date(e.target.value)
+      if (then === 'Invalid Date') {
+        const confirmed = window.confirm(`The date you entered is technically not correct (Possibly Feb 31st). Are you sure?`)
+        if (!confirmed) {
+          e.target.value = null;
+          e.target.focus();
+        }
+        if (confirmed) {
+          // console.log('confirmed!');
+          // e.target.blur();
+          return;
+        }
+      }
+
+
+      const difference = now.getTime() - then.getTime();
+      const year_difference = difference / (1000 * 3600 * 24 * 365);
+      // console.log(year_difference)
+      const max_years = 5;
+      if (Math.abs(year_difference) >= max_years ) {
+        const confirmed = window.confirm(`The date you entered is more than ${max_years} years away. Are you sure?`)
+        if (!confirmed) {
+          e.target.value = null;
+          e.target.focus();
+        }
+        if (confirmed) {
+          // console.log('confirmed!');
+          // e.target.blur();
+          return;
+        }
+
+      }
+    }
+  }
+
   const size = props.size * 10 + "px";
 
   placeholder = "Enter ".concat(placeholder.toLowerCase());
@@ -308,7 +346,7 @@ const RowBland = (props) => {
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
-        <input type={type} min={min} onChange={onChange.bind(this)}
+        <input type={type} min={min} onChange={onChange.bind(this)} onBlur={onBlur.bind(this)}
             defaultValue={props.state[props.name]}
             className="form-control" placeholder={placeholder} required />
     </div>
