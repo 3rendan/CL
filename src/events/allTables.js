@@ -240,33 +240,39 @@ const MaintenanceTable = (props) => {
             sorter: 'string', headerSort:false};
   });
 
-  const columns = [
-    ...colNames,
-    {formatter:function(cell, formatterParams, onRendered){ //plain text value
-         return "<i class='fa fa-trash'></i>";
-     }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
-       const deletedData = cell.getData();
-       if (tableName === 'Event' || tableName === 'NAV Entries') {
-         if (deletedData.type === 'CONTRIBUTION') {
-           deleteContribution(deletedData.id)
-         }
-         else if (deletedData.type === 'DISTRIBUTION') {
-           deleteDistribution(deletedData.id)
-         }
-         else if (deletedData.type === 'COMMISH') {
-           deleteCommission(deletedData.id)
-         }
-         else {
-           deleteSingleEntry(deletedData.id)
-         }
+  const trashCol = {formatter:function(cell, formatterParams, onRendered){ //plain text value
+       return "<i class='fa fa-trash'></i>";
+   }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+     const deletedData = cell.getData();
+     if (tableName === 'Event' || tableName === 'NAV Entries') {
+       if (deletedData.type === 'CONTRIBUTION') {
+         deleteContribution(deletedData.id)
        }
-       else if (tableName === 'Transfer') {
-         deleteTransfer(deletedData.id)
+       else if (deletedData.type === 'DISTRIBUTION') {
+         deleteDistribution(deletedData.id)
        }
+       else if (deletedData.type === 'COMMISH') {
+         deleteCommission(deletedData.id)
+       }
+       else {
+         deleteSingleEntry(deletedData.id)
+       }
+     }
+     else if (tableName === 'Transfer') {
+       deleteTransfer(deletedData.id)
+     }
 
-       cell.getRow().delete();
-    }}
+     cell.getRow().delete();
+  }};
+
+
+  const columns = [
+    ...colNames
   ];
+
+  if (tableName !== 'NAV') {
+    columns.push(trashCol)
+  }
 
   let addRow = tableName === 'NAV' ? null :
   (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
