@@ -243,6 +243,10 @@ const MaintenanceTable = (props) => {
   const trashCol = {formatter:function(cell, formatterParams, onRendered){ //plain text value
        return "<i class='fa fa-trash'></i>";
    }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+     const confirmed = window.confirm('Confirm Delete?')
+     if (!confirmed) {
+       return;
+     }
      const deletedData = cell.getData();
      if (tableName === 'Event' || tableName === 'NAV Entries') {
        if (deletedData.type === 'CONTRIBUTION') {

@@ -20,75 +20,41 @@ const createBackup = (setKey) => {
   insertAndFetch();
 }
 
-const LaunchModal = (props) => {
-  const backup = props.backup;
-  const header = <h1> Are you sure you want to {props.type} this Backup? </h1>;
-  const variant = props.type === 'Delete' ? 'danger' : 'success';
-
-  return (
-    <Jumbotron>
-      {header}
-      <p>
-        {moment(backup.date).format('LLL')}
-      </p>
-      <p>
-        <Button variant={variant} onClick={props.onClick}>
-        Yes confirm, {props.type}!
-        </Button>
-      </p>
-    </Jumbotron>
-  );
-}
 
 const BackupItem = (props) => {
   const backup = props.backup;
-  const [modal, setModal] = useState(null);
-  const [show, setShow] = useState(true)
+  const [showSelf, setShowSelf] = useState(true);
 
-  useEffect(() => {
-  }, [modal, show])
-
-  if (!show) {
+  if (!showSelf) {
     return null;
   }
+
   return (
     <Fragment>
       <ListGroup.Item key={backup.id}>
         {moment(backup.date).format('LLL')}
-        <button type="button" style = {{marginLeft: "25px"}} onClick={(e) =>   {
-            if (modal !== null && modal.props.type === 'Restore') {
-              setModal(null);
-            }
-            else {
-              setModal(<LaunchModal type='Restore' backup={backup}
-                      onClick={() => {
-                        restore(backup.id)
-                      }}/>)
-
-              console.log('restore ' + backup.id)
-            }
+        <button type="button" style = {{marginLeft: "25px"}} onClick={() =>   {
+          const confirmed = window.confirm('Confirm Restore?')
+          if (!confirmed) {
+            return
+          }
+          restore(backup.id)
 
           }
           }
         className="btn btn-success btn-lg">Restore Backup</button>
-        <button type="button" style = {{marginLeft: "25px"}} onClick={() =>
-          {
-            if (modal !== null && modal.props.type === 'Delete') {
-              setModal(null);
-            }
-            else {
-              setModal(<LaunchModal type='Delete' backup={backup}
-                      onClick={() => {
-                        setShow(false);
-                        deleteBackup(backup.id)
-                        // CALL DELETE HERE
-                      }}/>)
-            }
+        <button type="button" style = {{marginLeft: "25px"}} onClick={() => {
+          const confirmed = window.confirm('Confirm Delete?')
+          if (!confirmed) {
+            return
+          }
+          deleteBackup(backup.id)
+          setShowSelf(false)
+          // CALL DELETE HERE
           }
           }
         className="btn btn-danger btn-lg">Delete Backup</button>
       </ListGroup.Item>
-      {modal}
     </Fragment>
   )
 }
