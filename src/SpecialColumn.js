@@ -91,12 +91,9 @@ function rightClickMoney(e, column){
   let showCents = showCentsColumn.reduce(function (a, b) {
     return a || b;
   }, false)
-  // showCents = !showCents;
-  console.log(showCents)
 
   var cells = column.getCells();
   cells.forEach((cell, _) => {
-    console.log(cell.getValue())
     if (cell.getValue() !== undefined) {
       cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
     }
