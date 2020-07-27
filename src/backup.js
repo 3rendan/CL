@@ -22,7 +22,7 @@ const createBackup = (setKey) => {
 
 const LaunchModal = (props) => {
   const backup = props.backup;
-  const header = <h1> {props.type} Backup </h1>;
+  const header = <h1> Are you sure you want to {props.type} this Backup? </h1>;
   const variant = props.type === 'Delete' ? 'danger' : 'success';
 
   return (
@@ -32,7 +32,9 @@ const LaunchModal = (props) => {
         {moment(backup.date).format('LLL')}
       </p>
       <p>
-        <Button variant={variant} onClick={props.onClick}>{props.type}</Button>
+        <Button variant={variant} onClick={props.onClick}>
+        Yes confirm, {props.type}!
+        </Button>
       </p>
     </Jumbotron>
   );
