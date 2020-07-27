@@ -189,6 +189,7 @@ const eventsCol = {
 
 // settings I use across tables
 const defaultTabulatorSettings = {
+  layout: "fitData",
   movableRows: true,
   columnMinWidth:100,
   resizableColumns:false,
