@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from "react-dom";
 
 
@@ -393,6 +393,7 @@ const FormSheet = (props) => {
   const investmentID = props.investmentID;
 
   const [state, setState] = useState({});
+  const [error, setError] = useState(null);
 
   const [netAmount, setNetAmount] = useState(0.0);
 
@@ -402,9 +403,14 @@ const FormSheet = (props) => {
     }
     async function fetchData() {
       const result = await getInvestmentData();
+      if (!result) {
+        throw 'Server Disconnected: Investment data null'
+      }
       setInvestmentData(result);
     }
-    fetchData();
+    fetchData().catch(e =>
+      setError(e)
+    )
 
     let mainColumns = null;
     let passFunc = null;
@@ -480,7 +486,9 @@ const FormSheet = (props) => {
     ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
   };
 
-
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   return (
      <div>
        <MyDropdown dropdownOptions={dropdownOptions}

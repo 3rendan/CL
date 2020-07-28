@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {Fragment, useState, useEffect, useRef} from "react";
 import ReactDOM from 'react-dom';
 import {getSingleEntrys, SingleEntry, SingleEntryColumns} from '../serverAPI/singleEntry.js'
 
@@ -22,6 +22,8 @@ const eventColumns = ['Type', 'Date Due', 'Date Sent',
 const EventTable = (props) => {
   const [EventData, setEventData] = useState(null);
   const [key, setKey] = useState(0);
+  const [error, setError] = useState(null);
+
   const investmentName = props.investment;
   const investmentID = props.investmentID;
 
@@ -38,10 +40,16 @@ const EventTable = (props) => {
       })
       setEventData([...singleEntry, ...commission]);
     }
-    fetchData();
+
+    fetchData().catch(e =>
+      setError(e)
+    )
 
   }, [key]);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (EventData === null) {
     return null;
   }

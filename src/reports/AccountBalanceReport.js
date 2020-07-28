@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
@@ -16,6 +16,7 @@ import MaintenanceTable from './reportTables'
 
 const AccountBalanceReport = (props) => {
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData(investmentID) {
@@ -84,9 +85,13 @@ const AccountBalanceReport = (props) => {
       console.log(accountData)
       setData(accountData);
     }
-    manipulateData();
+    manipulateData().catch(e => setError(e))
 
   }, []);
+
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (data === null) {
     return <div> hi </div>;
   }

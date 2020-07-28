@@ -1,11 +1,10 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, {Fragment, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 import moment from 'moment';
 
 import Button from 'react-bootstrap/Button'
 import ListGroup from 'react-bootstrap/ListGroup'
-import Jumbotron from 'react-bootstrap/Jumbotron'
 
 import {Backup, getBackups, insertBackup,
   deleteBackup, restore} from './serverAPI/backups.js'
@@ -70,7 +69,7 @@ const BackupList = (props) => {
 const BackupHeader = (props) => {
   return (
     <Fragment>
-      <h1> Backups - Click to Restore </h1>
+      <h1> Backups - Click to Backup </h1>
       <Button variant="success" size="lg" onClick={() => createBackup(props.setKey)}> Backup </Button>
       <br />
       <br />
@@ -80,16 +79,23 @@ const BackupHeader = (props) => {
 
 const BackupView = () => {
   const [backups, setBackups] = useState(null);
+  const [error, setError] = useState(null);
   const [key, setKey] = useState(0)
 
   useEffect(() => {
     async function fetchData() {
       const temp_backups = await getBackups();
+      if (!temp_backups) {
+        throw 'Server Disconnected: Null Back ups'
+      }
       setBackups(temp_backups);
     };
-    fetchData();
+    fetchData().catch(e => setError(e))
   }, [key]);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (backups === null) {
     return <BackupHeader key={key} setKey={setKey} />
   }

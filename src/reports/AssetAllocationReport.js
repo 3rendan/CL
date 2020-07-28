@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
@@ -17,6 +17,7 @@ import MaintenanceTable from './reportTables'
 const AssetAllocationReport = (props) => {
   const [asset, setAsset] = useState(null);
   const [subAsset, setSubAsset] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData(investmentID) {
@@ -95,10 +96,13 @@ const AssetAllocationReport = (props) => {
 
       setAsset(assetData);
     }
-    manipulateData();
+    manipulateData().catch(e => setError(e))
 
   }, []);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (asset === null) {
     return <div> hi </div>;
   }

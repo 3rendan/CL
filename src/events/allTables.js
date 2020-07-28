@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {Fragment, useRef, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 // data and info
@@ -45,6 +45,7 @@ const MaintenanceTable = (props) => {
   const tableName = props.name;
   const investmentID = props.investmentID;
   const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
 
   const ref = React.createRef();
 
@@ -133,7 +134,9 @@ const MaintenanceTable = (props) => {
 
       setData(manipulatedData)
     }
-    fetchInvestments();
+    fetchInvestments().catch(e =>
+      setError(e)
+    )
   }, [])
 
   ipcRenderer.on('replyEvent', (event, message) => {
@@ -283,6 +286,10 @@ const MaintenanceTable = (props) => {
     <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
           className="btn btn-success btn-lg">Add Row</button>
   </div>);
+
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
 
   return (
     <div>

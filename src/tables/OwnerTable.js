@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import {getOwners, OwnerColumns, Owner, updateOwner} from '../serverAPI/owners.js'
 
@@ -6,6 +6,7 @@ import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 
 const OwnerTable = (props) => {
   const [OwnerData, setOwnerData]  = useState(null);
+  const [error, setError] = useState(null);
 
   let colNames = OwnerColumns.map((colName) => {
     const fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -21,13 +22,18 @@ const OwnerTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       const result = await getOwners();
-      console.log(result)
+      if (!result) {
+        throw 'Server Disconnected: null Owners'
+      }
       setOwnerData(result);
     }
-    fetchData();
+    fetchData().catch(e => setError(e))
 
   }, []);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (OwnerData === null) {
     return null;
   }

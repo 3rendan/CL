@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
@@ -31,6 +31,7 @@ function groupByMonth(array) {
 
 const SummaryReport = (props) => {
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
   const frozenColumns = ['name'];
   const [columns, setColumns] = useState(null);
   const [moneyColumns, setMoneyColumns] = useState(null);
@@ -113,10 +114,13 @@ const SummaryReport = (props) => {
       setData(investmentData)
     }
 
-    manipulateData();
+    manipulateData().catch(e => setError(e))
 
   }, []);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (data === null) {
     return <div> hi </div>;
   }

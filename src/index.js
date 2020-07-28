@@ -5,8 +5,6 @@ import Spinner from 'react-bootstrap/Spinner'
 import './index.css';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
-
-
 const NoMatch = () => {
   return <h1> No Match </h1>
 }

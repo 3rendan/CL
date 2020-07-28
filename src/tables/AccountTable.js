@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import {getAccounts, AccountColumns, updateAccount, Account} from '../serverAPI/accounts.js'
 
@@ -6,6 +6,7 @@ import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 
 const AccountTable = (props) => {
   const [AccountData, setAccountData]  = useState(null);
+  const [error, setError] = useState(null);
 
   const colNames = AccountColumns.map((colName) => {
     const fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -21,12 +22,18 @@ const AccountTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       const result = await getAccounts();
+      if (!result) {
+        throw 'Server Disconnected: null acounts'
+      }
       setAccountData(result);
     }
-    fetchData();
+    fetchData().catch(e => setError(e))
 
   }, []);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (AccountData === null) {
     return null;
   }

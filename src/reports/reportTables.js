@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {Fragment, useRef, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 // data and info
@@ -14,6 +14,8 @@ import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React
 
 
 const MaintenanceTable = (props) => {
+  const [error, setError] = useState(null);
+  
   const columnNames = props.columns;
   const tableName = props.name;
   const [data, setData] = useState([]);
@@ -22,7 +24,7 @@ const MaintenanceTable = (props) => {
     async function fetchInvestments() {
       setData(props.data);
     }
-    fetchInvestments();
+    fetchInvestments().catch(e => setError(e))
   }, [])
 
 
@@ -43,7 +45,9 @@ const MaintenanceTable = (props) => {
             sorter: 'string', headerSort:false, frozen: frozen};
   });
 
-
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   return (
     <div>
       <br />

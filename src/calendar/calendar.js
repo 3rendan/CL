@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {Fragment, useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { addDays } from 'date-fns';
 
@@ -121,6 +121,7 @@ async function getInvestmentName(investmentID) {
 }
 
 const Calendar = () => {
+  const [error, setError] = useState(null);
   const [state, setState] = useState({
     startDate: businessDaysFromDate(new Date(), -5),
     endDate: businessDaysFromDate(new Date(), 15),
@@ -191,12 +192,24 @@ const Calendar = () => {
   }
 
   useEffect(() => {
-    fetchDefaultDistributions();
-    fetchDefaultContributions();
-    fetchAllDistributions();
-    fetchAllContributions();
+    fetchDefaultDistributions().catch(e =>
+      setError(e)
+    )
+    fetchDefaultContributions().catch(e =>
+      setError(e)
+    )
+    fetchAllDistributions().catch(e =>
+      setError(e)
+    )
+    fetchAllContributions().catch(e =>
+      setError(e)
+    )
   }, [])
 
+
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   return (<div> <CalendarButton state={state}  setState={setState}/>
                 <br />
                <CalenderListView key={state} state={state}

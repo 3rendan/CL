@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import {getAssetClasses, AssetClassColumns,
         AssetClass, updateAssetClass} from '../serverAPI/assetClass.js'
@@ -10,12 +10,13 @@ import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 const AssetClassTable = (props) => {
   const [AssetClassData, setAssetClassData]  = useState(null);
   const [BenchmarkData, setBenchmarkData]  = useState([]);
+  const [error, setError] = useState(null);
 
   const colNames = AssetClassColumns.map((colName) => {
     const fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (colName.includes('Benchmark')) {
       return {title: colName, field: fieldName, responsive: 0, editor:"autocomplete",
-              editorParams:{freetext: true, allowEmpty: true, values: BenchmarkData.map(i => i.name)},
+              editorParams:{freetext: true, allowEmpty: true, values: BenchmarkData ? BenchmarkData.map(i => i.name) : true},
               cellEdited:function(cell) {
                 const newData = cell.getData();
                   const newAssetClass = new AssetClass(newData)
@@ -34,15 +35,24 @@ const AssetClassTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       const result = await getAssetClasses();
+      if (!result) {
+        throw 'Server Disconnected: null Asset Classes'
+      }
       setAssetClassData(result);
 
       const benchmarks = await getBenchmarks();
+      if (!benchmarks) {
+        throw 'Server Disconnected: null Benchmarks'
+      }
       setBenchmarkData(benchmarks);
     }
-    fetchData();
+    fetchData().catch(e =>  setError(e) )
 
   }, []);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (AssetClassData === null) {
     return null;
   }

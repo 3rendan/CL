@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import {getAllTransfers, Transfer, TransferColumns} from '../serverAPI/transfers.js'
 
@@ -10,6 +10,7 @@ const ipcRenderer  = electron.ipcRenderer;
 
 const TransferTable = (props) => {
   const [TransferData, setTransferData] = useState(null);
+  const [error, setError] = useState(null);
 
   ipcRenderer.on('replyTransfer', (event, message) => {
     let copyTableData = [new Transfer(message)]
@@ -24,13 +25,20 @@ const TransferTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       let result = await getAllTransfers();
-      console.log(result)
+      if (!result) {
+        throw 'Server Disconnected: Null Transfers'
+      }
       setTransferData(result);
     }
-    fetchData();
+    fetchData().catch(e =>
+      setError(e)
+    )
 
   }, []);
 
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (TransferData === null) {
     return null;
   }
