@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "InvestmentApp",
   "author": "Matthew Yeh",
   "homepage": "./",
   "version": "0.1.0",
@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "electron-is-dev": "^1.2.0",
+    "electron-packager": "^15.0.0",
     "electron-reload": "^1.5.0",
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
@@ -43,6 +44,8 @@
     "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-pack": "build --em.main=build/electron.js",
     "preelectron-pack": "yarn build",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=public/bank.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=public/favicon.ico --prune=true --out=release-builds",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
