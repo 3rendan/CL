@@ -179,9 +179,9 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
     return column;
   }
   else if (!dropdownColumns.includes(colName)) {
-    const column = {title: colName, field: fieldName, responsive: 0,
-                    editor: true};
+    const column = {title: colName, field: fieldName, responsive: 0};
     if (!readOnly) {
+      column['editor'] = true;
       column['cellEdited'] = function(cell) {
           const newData = cell.getData();
           const newInvestment = new Investment(newData);
@@ -205,8 +205,6 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
     column['cellEdited'] = function(cell) {
         const newData = cell.getData();
         const newInvestment = new Investment(newData);
-        console.log(newInvestment)
-        console.log('update!')
         updateInvestment(newInvestment);
     };
     column['editorParams'] = {
@@ -238,14 +236,12 @@ const DetailInvestmentTable = (props) => {
     BenchmarkData: props.BenchmarkData,
   };
 
-  console.log(props.data)
 
 
   let columns = columnNames.map((colName) => {
     return columnNameToDefintion(colName, readOnly, dataDictionary);
   });
 
-  console.log(columns)
 
   const addButton = readOnly ? null : (
   <div style ={{float: "right", width: "130px", display: "inline-block"}}>
@@ -253,7 +249,10 @@ const DetailInvestmentTable = (props) => {
       {
         const data = new Investment(null);
         insertInvestment(data).then((response) => {
-          console.log(response)
+          if (response === 'duplicate key') {
+            alert('Failed to insert! duplicate long_name; maybe an entry with a blank long name')
+            return;
+          }
           ref.current.table.addData(response)
         });
       }

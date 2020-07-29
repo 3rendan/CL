@@ -20,7 +20,6 @@ const NAVEventTable = (props) => {
     if (NAVEventData !== null) {
       copyTableData = [...NAVEventData, message]
     }
-    console.log('new key')
     setNAVEventData(copyTableData);
     setKey(key => key + 1)
   });
