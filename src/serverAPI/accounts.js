@@ -30,22 +30,22 @@ Account.prototype.toString = function() {
 }
 
 const updateAccount = async (account) => {
-    try {
-      const body = account.body();
-      const response = await fetch(
-        `http://${databaseHost}:5000/accounts/${account.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
-      return true;
-    } catch (err) {
-      console.error(err.message);
-      return false;
-    }
-  };
+  try {
+    const body = account.body();
+    const response = await fetch(
+      `http://${databaseHost}:5000/accounts/${account.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+    return true;
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
 const insertAccount = async (account) => {
   try {
