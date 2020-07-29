@@ -5,15 +5,17 @@ class Benchmark {
     if (data === undefined || data === null) {
       this.id = null;
       this.name = "";
+      this.long_name = "";
     }
     else {
       this.name = data.name;
+      this.long_name = data.long_name;
       this.id = data.id;
     }
   }
 
   body() {
-    return {name: this.name}
+    return {name: this.name, long_name: this.long_name}
   }
 }
 
@@ -97,7 +99,7 @@ const getBenchmark = async id => {
   }
 };
 
-const BenchmarkColumns = ['Name'];
+const BenchmarkColumns = ['Name', 'Long Name'];
 export {
   Benchmark,
   BenchmarkColumns,
