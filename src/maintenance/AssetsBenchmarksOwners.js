@@ -82,7 +82,10 @@ const MaintenanceTable = (props) => {
                   data = new Account(null);
                 }
                 insertFunc(data).then((response) => {
-                  console.log(response)
+                  if (response === 'duplicate key') {
+                    alert('Failed to insert! duplicate long_name; maybe an entry with a blank long name')
+                    return;
+                  }
                   ref.current.table.addData(response)
                 })
               }
