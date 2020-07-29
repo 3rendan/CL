@@ -6,6 +6,8 @@ import {Benchmark, insertBenchmark, updateBenchmark, deleteBenchmark} from '../s
 import {AssetClass, getAssetClasss, insertAssetClass, updateAssetClass, deleteAssetClass} from '../serverAPI/assetClass';
 import {Account, insertAccount, updateAccount, deleteAccount} from '../serverAPI/accounts';
 
+import 'font-awesome/css/font-awesome.css';
+
 // data and info
 import "react-tabulator/lib/styles.css"; // default theme
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
