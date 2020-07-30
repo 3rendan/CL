@@ -14,9 +14,6 @@ import moment from 'moment';
 
 const navColumns = ['Date', 'NAV', 'NET CONTRIB', 'P/L'];
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
-
 function groupByMonth(array) {
   const result = array.reduce(function (r, a) {
     let element = a.date;

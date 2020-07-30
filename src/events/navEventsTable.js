@@ -4,9 +4,6 @@ import {getSingleEntrys, SingleEntry, getNAVEvents, NAVColumns} from '../serverA
 
 import MaintenanceTable from './allTables'
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
-
 const NAVEventTable = (props) => {
   const [NAVEventData, setNAVEventData] = useState(null);
   const [key, setKey] = useState(0);
@@ -14,16 +11,6 @@ const NAVEventTable = (props) => {
 
   const investmentName = props.investment;
   const investmentID = props.investmentID;
-
-  ipcRenderer.on('replyNAVEvent', (event, message) => {
-    let copyTableData = [message]
-    if (NAVEventData !== null) {
-      copyTableData = [...NAVEventData, message]
-    }
-    setNAVEventData(copyTableData);
-    setKey(key => key + 1)
-  });
-
 
   useEffect(() => {
     async function fetchData() {

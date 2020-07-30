@@ -4,23 +4,9 @@ import {getAllTransfers, Transfer, TransferColumns} from '../serverAPI/transfers
 
 import MaintenanceTable from './allTables'
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
-
-
 const TransferTable = (props) => {
   const [TransferData, setTransferData] = useState(null);
   const [error, setError] = useState(null);
-
-  ipcRenderer.on('replyTransfer', (event, message) => {
-    let copyTableData = [new Transfer(message)]
-    if (TransferData !== null) {
-      copyTableData = [...TransferData, new Transfer(message)]
-    }
-
-    setTransferData(copyTableData);
-  });
-
 
   useEffect(() => {
     async function fetchData() {

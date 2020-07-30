@@ -9,8 +9,6 @@ import {getCommissionsInvestment, CommissionColumns} from '../serverAPI/commissi
 
 import MaintenanceTable from './allTables'
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
 
 const moneyColumns = ['Net Amount']
 
