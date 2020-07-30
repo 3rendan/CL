@@ -128,8 +128,8 @@ const RowCurrencyNet = (props) => {
 const RowCurrency = (props) => {
   let placeholder = props.name;
   let currency = 'USD';
-  const positiveTransactions = ['INFLOW', 'INT', 'DIV']
-  const negativeTransactions = ['OUTFLOW']
+  const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
+  const negativeTransactions = ['OUTFLOW', 'EXPENSE']
 
   const [currMoney, setCurrMoney] = useState(0);
 
