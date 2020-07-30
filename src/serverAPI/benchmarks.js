@@ -15,7 +15,8 @@ class Benchmark {
   }
 
   body() {
-    return {name: this.name, long_name: this.long_name}
+    return {name: this.name,
+            long_name: this.long_name}
   }
 }
 
