@@ -35,7 +35,7 @@ function createMainWindow() {
 
   mainWindow.on('closed', ()=> mainWindow=null);
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   // Build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
@@ -68,7 +68,7 @@ ipcMain.on('viewEvents', (event, args) => {
 
   newWindow.on('closed', ()=> newWindow=null);
 
-  newWindow.webContents.openDevTools();
+  // newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('message', args);
   });
@@ -98,7 +98,7 @@ ipcMain.on('viewTransfers', (event, args) => {
 
   newWindow.on('closed', ()=> newWindow=null);
 
-  newWindow.webContents.openDevTools();
+  // newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('message', args);
   });
@@ -131,7 +131,7 @@ ipcMain.on('popupEvent', (event, args) => {
 
   newWindow.on('closed', ()=> newWindow=null);
 
-  newWindow.webContents.openDevTools();
+  // newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('popupMessage', args);
   });
@@ -160,7 +160,7 @@ ipcMain.on('popupNAVEvent', (event, args) => {
 
   newWindow.on('closed', ()=> newWindow=null);
 
-  newWindow.webContents.openDevTools();
+  // newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('popupNAVMessage', args);
   });
@@ -188,7 +188,7 @@ ipcMain.on('popupTransfer', (event, args) => {
   newWindow.loadURL(isDev ? 'http://localhost:3000/#/popup/transfer' : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
-  newWindow.webContents.openDevTools();
+  // newWindow.webContents.openDevTools();
   newWindow.webContents.on('did-finish-load', () => {
     newWindow.webContents.send('popupTransferMessage', args);
   });
