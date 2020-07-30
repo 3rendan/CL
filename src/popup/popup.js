@@ -372,6 +372,12 @@ const eventToRow = (event, state) => {
     event.from_investment = state['From Investment'].value.name;
     return event;
   }
+  else if (event.type === 'TRANSFER') {
+    event.to_investment = state['To Investment'].value.name;
+    event.from_investment = state['From Investment'].value.name;
+    event.amount = parseFloat(event.amount);
+    return event;
+  }
   else {
     event.investment = state.Investment.value.name;
     event.date_due = event.date;
