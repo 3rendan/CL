@@ -157,6 +157,15 @@ const MaintenanceTable = (props) => {
     setData(copyTableData);
   });
 
+  ipcRenderer.on('replyTransfer', (event, message) => {
+    let copyTableData = [message]
+    if (data !== null) {
+      copyTableData = [...data, message]
+    }
+
+    setData(copyTableData);
+  });
+
 
 
   let colNames = columnNames.map((colName) => {
