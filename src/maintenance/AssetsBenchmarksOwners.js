@@ -16,7 +16,7 @@ import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
 // settings I use across tables
-import {defaultTabulatorSettings} from '../SpecialColumn';
+import {defaultTabulatorSettings, copyCol} from '../SpecialColumn';
 
 const MaintenanceTable = (props) => {
   const tableData = props.data;
@@ -26,6 +26,7 @@ const MaintenanceTable = (props) => {
   const ref = useRef();
 
   const columns = [
+    copyCol,
     {rowHandle:true, formatter:"handle", headerSort:false,
       responsive:0, width:30, minWidth:30},
     ...props.colNames,

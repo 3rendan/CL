@@ -274,7 +274,8 @@ const MaintenanceTable = (props) => {
 
 
   const columns = [
-    ...colNames
+    ...colNames,
+    copyCol
   ];
 
   if (tableName !== 'NAV') {

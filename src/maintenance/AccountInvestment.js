@@ -2,13 +2,14 @@ import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 import {myMoneyFormatter, eventsCol, defaultTabulatorSettings,
-        myDateSort,
+        myDateSort, copyCol,
         rightClickMoney, initialMoneyFormatter} from '../SpecialColumn';
 
 import moment from 'moment';
 
 
-import {Investment, updateInvestment, insertInvestment, colToInvestmentFields} from '../serverAPI/investments.js'
+import {Investment, updateInvestment, insertInvestment, deleteInvestment,
+  colToInvestmentFields} from '../serverAPI/investments.js'
 
 import 'font-awesome/css/font-awesome.css';
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
@@ -224,6 +225,8 @@ const DetailInvestmentTable = (props) => {
   const readOnly = props.readOnly;
 
   const [tableData, setTableData] = useState(props.data);
+  const [hasAdded, setHasAdded] = useState(false);
+
   const tableName = props.name;
   const columnNames = props.columns;
   const ref = useRef();
@@ -254,6 +257,7 @@ const DetailInvestmentTable = (props) => {
             return;
           }
           ref.current.table.addData(response)
+          setHasAdded(true);
         });
       }
       }
@@ -264,7 +268,23 @@ const DetailInvestmentTable = (props) => {
   if (readOnly) {
     columns = [eventsCol, ...columns];
   }
+  if (hasAdded) {
+    const trashCol = {formatter:function(cell, formatterParams, onRendered){ //plain text value
+         return "<i class='fa fa-trash'></i>";
+     }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+       const confirmed = window.confirm('Confirm Delete?')
+       if (!confirmed) {
+         return;
+       }
+       const deletedData = cell.getData();
+       deleteInvestment(deletedData.id)
 
+       cell.getRow().delete();
+    }};
+    columns = [...columns, trashCol]
+  }
+
+  columns = [copyCol, ...columns];
 
 
   //add table holder element to DOM
