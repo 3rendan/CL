@@ -5,6 +5,7 @@ import {getSingleEntrys, SingleEntryColumns} from '../serverAPI/singleEntry.js'
 import {getDistributionsInvestment} from '../serverAPI/distributions.js'
 import {getContributionsInvestment} from '../serverAPI/contributions.js'
 import {getCommissionsInvestment} from '../serverAPI/commissions.js'
+import {getTransfers} from '../serverAPI/transfers.js'
 
 import MaintenanceTable from './allTables'
 
@@ -50,7 +51,14 @@ const EventTable = (props) => {
         return contr;
       })
 
-      setEventData([...singleEntry, ...commission, ...distribution, ...contribution]);
+      let transfers = await getTransfers(investmentID);
+      transfers = transfers.map((transfer) => {
+        transfer['type'] = 'TRANSFER'
+        return transfer;
+      })
+
+      setEventData([...singleEntry, ...commission,
+            ...distribution, ...contribution, ...transfers]);
     }
     fetchData().catch(e =>
       setError(e)
