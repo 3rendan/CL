@@ -265,6 +265,11 @@ const DetailInvestmentTable = (props) => {
     className="btn btn-success btn-lg">Add Row</button>
   </div>);
 
+  const copyButton = (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName}.csv`)}}
+          className="btn btn-success btn-lg">Copy Data</button>
+  </div>)
+
   if (readOnly) {
     columns = [eventsCol, ...columns];
   }
@@ -293,6 +298,7 @@ const DetailInvestmentTable = (props) => {
           <br />
           <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
           {addButton}
+          {copyButton}
           <br />
           <br />
       </div>

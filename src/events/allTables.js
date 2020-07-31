@@ -13,7 +13,7 @@ import {deleteContribution} from '../serverAPI/contributions';
 import {deleteDistribution} from '../serverAPI/distributions';
 import {deleteCommission} from '../serverAPI/commissions';
 
-import {getInvestments} from '../serverAPI/investments'
+import {getInvestments, getInvestment} from '../serverAPI/investments'
 
 import moment from 'moment';
 import {copyCol, myDateSort, myMoneyFormatter,
@@ -47,6 +47,8 @@ const MaintenanceTable = (props) => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
+  const [investmentName, setInvestmentName] = useState('');
+
   const ref = React.createRef();
 
   // manual transforms
@@ -54,15 +56,27 @@ const MaintenanceTable = (props) => {
     // turn other money fileds into money
   useEffect(() => {
     async function fetchInvestments() {
+      if (tableName === 'Transfer') {
+        setInvestmentName('Data')
+      }
+      else {
+        const thisInvestment = await getInvestment(investmentID);
+        setInvestmentName(thisInvestment.long_name)
+      }
+
       if (tableName === 'NAV' || tableName === 'NAV Entries') {
         setData(props.data);
         return;
       }
 
+
       const investmentsTemp = await getInvestments();
       const investments = {};
       investmentsTemp.map((investment) => {
         investments[investment.id] = investment;
+        if (investment.id === investmentID) {
+          setInvestmentName(investment.long_name);
+        }
       })
 
       // rename data
@@ -298,6 +312,10 @@ const MaintenanceTable = (props) => {
     <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
           className="btn btn-success btn-lg">Add Row</button>
   </div>);
+  const copyButton = (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName}_${investmentName}.csv`)}}
+          className="btn btn-success btn-lg">Copy Data</button>
+  </div>)
 
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
@@ -309,6 +327,7 @@ const MaintenanceTable = (props) => {
         <br />
         <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
         {addRow}
+        {copyButton}
         <br />
         <br />
       </div>
@@ -317,7 +336,9 @@ const MaintenanceTable = (props) => {
         columns={columns}
         data={data}
         options={{layout: "fitData",
-                  initialSort: [{column: "date_due", dir:'asc'}]}}
+                  initialSort: [{column: "date_due", dir:'asc'}],
+                  downloadDataFormatter: (data) => data,
+                  downloadReady: (fileContents, blob) => blob}}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />

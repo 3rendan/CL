@@ -54,6 +54,10 @@ const MaintenanceTable = (props) => {
     }}
   ];
 
+  const copyButton = (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName} Data.csv`)}}
+          className="btn btn-success btn-lg">Copy Data</button>
+  </div>)
 
   return (
     <div>
@@ -93,6 +97,7 @@ const MaintenanceTable = (props) => {
              id="myButton"
             className="btn btn-success btn-lg">Add Row</button>
           </div>
+          {copyButton}
           <br />
           <br />
       </div>

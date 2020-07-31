@@ -197,6 +197,8 @@ const defaultTabulatorSettings = {
   resizableColumns:false,
   resizableRows:true,
   layoutColumnsOnNewData:true,
+  downloadDataFormatter: (data) => data,
+  downloadReady: (fileContents, blob) => blob
 };
 
 export {copyCol, myMoneyFormatter, initialMoneyFormatter, rightClickMoney,
