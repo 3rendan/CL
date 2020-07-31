@@ -77,7 +77,7 @@ function initialMoneyFormatter(cell, formatterParams, onRendered){
   if (cell.getValue() === undefined) {
     return '';
   }
-  const a= myMoneyFormatter(cell.getValue(), false);
+  const a = myMoneyFormatter(cell.getValue(), false);
   return a;
 }
 
@@ -171,6 +171,7 @@ function calcNAV(group, investmentID, nav) {
     }
     let amount = current.amount ? current.amount : current.net_amount;
     if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
+      // amount is negative for type distribution
       if (current.from_investment === investmentID) {
         return accumulator - amount;
       }
