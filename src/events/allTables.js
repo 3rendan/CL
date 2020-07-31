@@ -16,8 +16,8 @@ import {deleteCommission} from '../serverAPI/commissions';
 import {getInvestments} from '../serverAPI/investments'
 
 import moment from 'moment';
-import {copyCol, myDateSort,
-  myMoneyFormatter, initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
+import {copyCol, myDateSort, myMoneyFormatter,
+   initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
@@ -73,7 +73,10 @@ const MaintenanceTable = (props) => {
         if (datum.to_investment !== undefined) {
           datum.to_investment = investments[datum.to_investment].name;
         }
-        if (datum.investment !== undefined) {
+        if (datum.investment === undefined) {
+          datum.investment = datum.to_investment
+        }
+        else { // if (datum.investment !== undefined) {
           datum.investment = investments[datum.investment].name;
         }
         if (datum.date !== undefined) {
