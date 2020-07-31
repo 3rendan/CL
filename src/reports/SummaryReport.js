@@ -127,7 +127,8 @@ const SummaryReport = (props) => {
   return (<div>
     <MaintenanceTable name={"Summary Report"} data={data}
             columns={columns} frozenColumns={frozenColumns}
-            moneyColumns={moneyColumns}/>
+            moneyColumns={moneyColumns}
+            sumColumns={true}/>
         </div>
             );
 }

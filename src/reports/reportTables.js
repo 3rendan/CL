@@ -15,7 +15,8 @@ import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React
 
 const MaintenanceTable = (props) => {
   const [error, setError] = useState(null);
-  
+  const sumColumns = props.sumColumns !== undefined;
+
   const columnNames = props.columns;
   const tableName = props.name;
   const [data, setData] = useState([]);
@@ -39,6 +40,10 @@ const MaintenanceTable = (props) => {
         formatter: initialMoneyFormatter, headerTooltip: 'Right Click to toggle cents',
         headerSort:false, sorter:'number',
         headerContext:rightClickMoney};
+      if (sumColumns) {
+        column['bottomCalc'] = 'sum';
+        column['bottomCalcFormatter'] = initialMoneyFormatter;
+      }
       return column;
     }
     return {title: colName, field: fieldName, responsive: 0,
