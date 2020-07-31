@@ -65,7 +65,8 @@ const MaintenanceTable = (props) => {
         data={data}
         options={{layout: "fitData",
                   dataTree: true,
-                  initialSort: [{column: "date_due", dir:'asc'}]}}
+                  initialSort: [{column: "date_due", dir:'asc'},
+                                {column: "name", dir:'asc'}]}}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />
