@@ -37,10 +37,10 @@ const EventTable = (props) => {
         comm['type'] = 'COMMISH'
         return comm;
       });
-      console.log('here')
+
       let transfers = await getTransfers(investmentID);
       transfers = transfers ? transfers : [];
-      console.log(transfers)
+      
       setEventData([...singleEntry, ...commission, ...transfers]);
     }
 
