@@ -17,7 +17,7 @@ var investmentOptions = [];
 async function fetchData() {
   InvestmentData = await getInvestments();
   investmentOptions = InvestmentData.map((data) => {
-    const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
+    const label = data.long_name
     return {label: label, value: data};
   })
 }
@@ -229,7 +229,7 @@ const RowInvestment = (props) => {
     async function fetchData() {
       InvestmentData = await getInvestments();
       investmentOptions = InvestmentData.map((data) => {
-        const label = data.long_name + " " + data.account + " " + data.owner + " " + data.commitment
+        const label = data.long_name
         if (data.id === defaultInvestment) {
           setValue({label: label, value: data})
           const newState = {
