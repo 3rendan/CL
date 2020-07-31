@@ -1,8 +1,8 @@
 import React, { Fragment, Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Spinner from 'react-bootstrap/Spinner'
+
+import LoadingFallback from './LoadingFallbackPage'
 import './index.css';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 
@@ -48,16 +48,6 @@ const EventsPage = (props) => {
   )
 }
 
-const LoadingFallback = (
-    <div className="d-flex align-items-center">
-  <strong style={{'fontSize': 'xxx-large'}}>Loading...</strong>
-  <div className="spinner-border ml-auto" role="status" aria-hidden="true"
-    style={{'width': '5rem', 'height': '5rem',
-     'border': '.5em solid black', 'borderRightColor': 'transparent',
-            'marginRight': '10%'}}>
-  </div>
-    </div>
-);
 
 // render
 ReactDOM.render(
