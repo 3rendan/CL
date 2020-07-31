@@ -105,7 +105,7 @@ const getTransfers = async (id) => {
 };
 
 const TransferColumns = [
-  'date', 'from investment', 'to investment', 'amount', 'notes'
+  'Date', 'From Investment', 'To Investment', 'Amount', 'Notes'
 ];
 
 
