@@ -144,7 +144,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
   }
   else if (currencyColumns.includes(colName)) {
     const column = {title: colName,
-      field: fieldName, responsive: 0,
+      field: fieldName, responsive: 0, align: 'right',
       formatter: initialMoneyFormatter, headerTooltip: 'Right Click to toggle cents',
       headerContext: rightClickMoney};
 
@@ -284,7 +284,6 @@ const DetailInvestmentTable = (props) => {
     columns = [...columns, trashCol]
   }
 
-  columns = [copyCol, ...columns];
 
 
   //add table holder element to DOM

@@ -396,7 +396,7 @@ const mainMenuTemplate = [
         }
       },
       {
-        label: 'Calendar View',
+        label: 'View Contrib. And Distrib. in Calendar',
         click() {
           loadCalendarView();
         }

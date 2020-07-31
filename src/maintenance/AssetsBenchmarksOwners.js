@@ -26,7 +26,6 @@ const MaintenanceTable = (props) => {
   const ref = useRef();
 
   const columns = [
-    copyCol,
     {rowHandle:true, formatter:"handle", headerSort:false,
       responsive:0, width:30, minWidth:30},
     ...props.colNames,
