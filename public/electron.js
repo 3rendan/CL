@@ -331,32 +331,27 @@ const mainMenuTemplate = [
   { role: 'appMenu' },
   { role: 'fileMenu' },
   { role: 'editMenu' },
-  {label: 'View',
+  { role: 'View' },
+  { label: 'Investments',
     submenu: [
-      { role: 'reload' },
-      { role: 'forcereload' },
-      { role: 'toggledevtools' },
-      { type: 'separator' },
-      { role: 'resetzoom' },
-      { role: 'zoomin' },
-      { role: 'zoomout' },
-      { type: 'separator' },
-      { role: 'togglefullscreen' },
-      { type: 'separator' },
       {
         label: 'Investment View',
         click() {
           loadInvestmentView();
         }
-      },
+      }
+    ]
+  },
+  { label: 'Maintenance',
+    submenu: [
       {
-        label: 'Maintain Accounts and Investments',
+        label: 'Maintain Accounts, Owners, and Investments',
         click() {
           loadMaintenanceAccountInvestmentView();
         }
       },
       {
-        label: 'Maintain Owners, Benchmarks, and Asset Classes',
+        label: 'Maintain Benchmarks and Asset Classes',
         click() {
           loadMaintenanceAssetsBenchmarksOwnersView();
         }
@@ -366,7 +361,11 @@ const mainMenuTemplate = [
         click() {
           loadBackupView();
         }
-      },
+      }
+    ]
+  },
+  { label: 'Transfers',
+    submenu: [
       {
         label: 'Transfer View',
         click() {
@@ -375,7 +374,7 @@ const mainMenuTemplate = [
       }
     ]
   },
-  {label: 'Summary Reports',
+  {label: 'Reports',
     submenu: [
       {
         label: 'Asset Allocation Report',

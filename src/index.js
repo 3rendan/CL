@@ -63,12 +63,12 @@ ReactDOM.render(
         <Route path="/events/:investment/:id"    component={EventsPage}   />
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
-          <InvestmentTable />
           <AccountTable    />
+          <OwnerTable      />
+          <InvestmentTable />
         </Route>
         <Route path="/maintenance/AssetsBenchmarksOwners">
           <AssetClassTable />
-          <OwnerTable      />
           <BenchmarkTable  />
         </Route>
         // POPUPs
