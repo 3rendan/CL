@@ -4,6 +4,7 @@ import {getSingleEntrys, SingleEntry, SingleEntryColumns} from '../serverAPI/sin
 
 
 import {getDistributionsInvestment, DistributionColumns} from '../serverAPI/distributions.js'
+import {getTransfers} from '../serverAPI/transfers.js'
 import {getContributionsInvestment, ContributionColumns} from '../serverAPI/contributions.js'
 import {getCommissionsInvestment, CommissionColumns} from '../serverAPI/commissions.js'
 
@@ -35,8 +36,12 @@ const EventTable = (props) => {
       commission = commission.map((comm) => {
         comm['type'] = 'COMMISH'
         return comm;
-      })
-      setEventData([...singleEntry, ...commission]);
+      });
+      console.log('here')
+      let transfers = await getTransfers(investmentID);
+      transfers = transfers ? transfers : [];
+      console.log(transfers)
+      setEventData([...singleEntry, ...commission, ...transfers]);
     }
 
     fetchData().catch(e =>
