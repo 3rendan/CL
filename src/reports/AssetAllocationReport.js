@@ -106,13 +106,10 @@ const AssetAllocationReport = (props) => {
   if (asset === null) {
     return <div> hi </div>;
   }
-  return (<div>
-    <MaintenanceTable name={"Asset NAV"} data={asset}
+  return (<MaintenanceTable name={"Asset NAV"} data={asset}
             columns={['Asset', 'NAV']}
             moneyColumns={['NAV']}
-            noButton={true}/>
-        </div>
-            );
+            noButton={true}/>);
 }
 
 export default AssetAllocationReport;

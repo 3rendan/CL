@@ -124,13 +124,10 @@ const SummaryReport = (props) => {
   if (data === null) {
     return <div> hi </div>;
   }
-  return (<div>
-    <MaintenanceTable name={"Summary Report"} data={data}
+  return (<MaintenanceTable name={"Summary Report"} data={data}
             columns={columns} frozenColumns={frozenColumns}
             moneyColumns={moneyColumns}
-            sumColumns={true}/>
-        </div>
-            );
+            sumColumns={true}/>);
 }
 
 export default SummaryReport;
