@@ -39,8 +39,11 @@ const EventTable = (props) => {
       });
 
       let transfers = await getTransfers(investmentID);
-      transfers = transfers ? transfers : [];
-      
+      transfers = transfers.map((transfer) => {
+        transfer['type'] = 'TRANSFER'
+        return transfer;
+      })
+
       setEventData([...singleEntry, ...commission, ...transfers]);
     }
 
