@@ -476,6 +476,29 @@ const FormSheet = (props) => {
 
   }, [transcationType, netAmount, state]);
 
+  const onClick = (e) => {
+    if (transcationType === 'DISTRIBUTION') {
+      if (netAmount >= 0) {
+        const confirmed = window.confirm('DISTRIBUTION Net Amount is Positive. Are you sure?')
+        if (!confirmed) {
+          e.preventDefault();
+          // return false;
+        }
+      }
+    }
+    if (transcationType === 'CONTRIBUTION') {
+      if (netAmount <= 0) {
+        const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
+        if (!confirmed) {
+          e.preventDefault();
+          // return false;
+        }
+      }
+    }
+
+    return false;
+    // onSubmit();
+  }
 
   const onSubmit = () => {
     state['Type'] = transcationType;
@@ -505,7 +528,7 @@ const FormSheet = (props) => {
        <form style={{visibility: hasSelected ? 'visible' : 'hidden'}}
               onSubmit={onSubmit}>
          {rows}
-         <input id="submitForm" type="submit" />
+         <input id="submitForm" type="submit" onClick={onClick} />
        </form>
      </div>
   );
