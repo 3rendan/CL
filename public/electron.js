@@ -331,7 +331,7 @@ const mainMenuTemplate = [
   { role: 'appMenu' },
   { role: 'fileMenu' },
   { role: 'editMenu' },
-  { role: 'View' },
+  { role: 'viewMenu' },
   { label: 'Investments',
     submenu: [
       {
