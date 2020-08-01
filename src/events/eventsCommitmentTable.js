@@ -15,7 +15,7 @@ const moneyColumns = ['Net Amount', 'Main',
 'Fees', 'Tax', 'Outside Main', 'Outside Fees', 'Outside Tax', 'Net Commitment']
 
 const eventColumns = ['Type', 'Date Due', 'Date Sent',
-    'Investment', 'From Investment',
+    'Investment',
     ...moneyColumns,
     'Notes']
 
