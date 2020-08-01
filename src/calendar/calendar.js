@@ -259,12 +259,12 @@ const CalendarButton = (props) => {
       <div className="text">
       Start Date:
       </div>
-      <input type="text" id="startDate" style={{width: '30%'}}
+      <input type="text" id="startDate" style={{width: '15%'}}
       defaultValue={startDateString} onBlur={handleChange.bind(this)}/>
       <div className="text">
       End Date:
       </div>
-      <input type="text" id="endDate" style={{width: '30%'}}
+      <input type="text" id="endDate" style={{width: '15%'}}
       defaultValue={endDateString} onBlur={handleChange.bind(this)}/>
     </div>
   );
