@@ -32,7 +32,7 @@ function groupByMonth(array) {
 const SummaryReport = (props) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
-  const frozenColumns = ['name'];
+  const frozenColumns = ['Investment'];
   const [columns, setColumns] = useState(null);
   const [moneyColumns, setMoneyColumns] = useState(null);
 
@@ -92,7 +92,7 @@ const SummaryReport = (props) => {
           var minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
 
           let nav = 0;
-          const investmentRow = {name: investment.name}
+          const investmentRow = {investment: investment.name}
 
           while (minDate <= currEndMonth) {
             nav = calcNAV(groups[minDate], investment.id, nav);
@@ -109,8 +109,12 @@ const SummaryReport = (props) => {
         })
       )
 
+      investmentData.push({investment: ' '})
+
+
+
       setMoneyColumns(allDates);
-      setColumns(['name', ...allDates]);
+      setColumns(['Investment', ...allDates]);
       setData(investmentData)
     }
 
