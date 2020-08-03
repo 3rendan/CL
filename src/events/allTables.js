@@ -191,6 +191,7 @@ const MaintenanceTable = (props) => {
         field: fieldName, responsive: 0,
         align: 'right',
         formatter: initialMoneyFormatter,
+        minWidth: 150,
         headerTooltip: 'Right Click to toggle cents',
         headerSort:false, sorter:'number',
         headerContext: rightClickMoney};

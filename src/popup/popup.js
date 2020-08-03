@@ -197,7 +197,9 @@ const RowCurrency = (props) => {
     props.setState(state => {
       const newState = {...state}
       newState[name] =  localStringToNumber(value)
-      newState['Net Amount'] = newState['Net Amount'] + localStringToNumber(value) - currMoney
+      if (newState['Net Amount'] !== undefined) {
+        newState['Net Amount'] = newState['Net Amount'] + localStringToNumber(value) - currMoney
+      }
       return newState;
     });
 
@@ -420,6 +422,10 @@ const eventToRow = (event, state) => {
     event.investment = state.Investment.value.name;
     event.date_due = event.date;
     event.net_amount = parseFloat(event.amount);
+    if (isNaN(event.net_amount)) {
+      alert('nan!')
+      event.net_amount = 0;
+    }
     return event;
   }
 }
@@ -447,12 +453,9 @@ const FormSheet = (props) => {
     setState(props.initial)
   }
 
-  console.log(state)
-
   const [netAmount, setNetAmount] = useState(0.0);
 
   useEffect(()=> {
-    console.log(state)
     if (state['Date Sent'] === undefined && state['Date Due'] !== undefined) {
       state['Date Sent'] = state['Date Due'];
     }
@@ -541,7 +544,19 @@ const FormSheet = (props) => {
         }
       }
     }
-
+    Object.keys(state).map(column => {
+      if (column.includes('Amount') || column.includes('$')) {
+        state[column] = parseFloat(state[column]);
+        // const a = parseFloat(state[column]);
+        // console.log(state)
+        // alert('hello: ' + a)
+        // const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
+        // if (!confirmed) {
+        //   e.preventDefault();
+        //   // return false;
+        // }
+      }
+    })
     return false;
     // onSubmit();
   }
@@ -565,6 +580,8 @@ const FormSheet = (props) => {
       state: state,
       netAmount: netAmount
     });
+    console.log(newEvent)
+    window.confirm('adfad')
 
 
     newEvent['type'] = transcationType;
