@@ -1,5 +1,10 @@
-import databaseHost from './database';
 import moment from 'moment';
+
+const electron = window.require('electron');
+const remote = electron.remote;
+const ipcRenderer  = electron.ipcRenderer;
+
+const databaseHost = remote.getGlobal('database').ip;
 
 class Contribution {
   constructor(data) {

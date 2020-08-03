@@ -34,6 +34,8 @@ const EventCommitmentPopup = lazy(() => import("./popup/eventCommitment.js"))
 const NavEventPopup = lazy(() => import("./popup/navEvent.js"))
 const TransferPopup = lazy(() => import("./popup/transfer.js"))
 
+const Connection = lazy(() => import('./connection'))
+
 const EventsPage = (props) => {
   return (
     <Fragment>
@@ -54,6 +56,9 @@ ReactDOM.render(
   <Router>
     <Suspense fallback={LoadingFallback}>
       <Switch>
+        <Route path="/connection">
+          <Connection />
+        </Route>
         <Route path="/investments">
           <ViewOnlyInvestmentTable />
         </Route>

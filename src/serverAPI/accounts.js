@@ -1,4 +1,8 @@
-import databaseHost from './database';
+const electron = window.require('electron');
+const remote = electron.remote;
+const ipcRenderer  = electron.ipcRenderer;
+
+const databaseHost = remote.getGlobal('database').ip;
 
 class Account {
   constructor(data) {

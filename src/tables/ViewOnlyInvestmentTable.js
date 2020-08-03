@@ -3,11 +3,16 @@ import ReactDOM from 'react-dom';
 import DetailInvestmentTable from '../maintenance/AccountInvestment'
 import {getInvestments, InvestmentColumns} from '../serverAPI/investments.js'
 
+const electron = window.require('electron');
+const remote = electron.remote;
+const ipcRenderer  = electron.ipcRenderer;
+
 const ViewOnlyInvestmentTable = () => {
   const [InvestmentData, setInvestmentData]  = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log(remote.getGlobal('database'));
     async function fetchData() {
       const investments = await getInvestments();
       if (!investments) {
