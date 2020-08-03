@@ -41,7 +41,7 @@ const updateSingleEntry = async (singleEntry) => {
     try {
       const body = singleEntry.body();
       const response = await fetch(
-        `http://${databaseHost}:5000/SingleEntry/${singleEntry.id}`,
+        `http://${databaseHost}:5000/singleEntrys/${singleEntry.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

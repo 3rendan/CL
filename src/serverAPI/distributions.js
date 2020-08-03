@@ -127,7 +127,7 @@ const updateDistribution = async (distribution) => {
     try {
       const body = distribution.body();
       const response = await fetch(
-        `http://${databaseHost}:5000/Distribution/${distribution.id}`,
+        `http://${databaseHost}:5000/distributions/${distribution.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

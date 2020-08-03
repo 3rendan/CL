@@ -138,7 +138,7 @@ const updateContribution = async (contribution) => {
     try {
       const body = contribution.body();
       const response = await fetch(
-        `http://${databaseHost}:5000/Contribution/${contribution.id}`,
+        `http://${databaseHost}:5000/contributions/${contribution.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

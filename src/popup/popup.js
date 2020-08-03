@@ -453,7 +453,6 @@ const FormSheet = (props) => {
     setState(props.initial)
   }
 
-  const [netAmount, setNetAmount] = useState(0.0);
 
   useEffect(()=> {
     if (state['Date Sent'] === undefined && state['Date Due'] !== undefined) {
@@ -471,18 +470,15 @@ const FormSheet = (props) => {
     )
 
     let mainColumns = null;
-    let passFunc = null;
     switch (transcationType) {
       case 'CONTRIBUTION':
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount',
         'Main $', 'Fees $', 'Tax $',
         'Outside Main $', 'Outside Fees $', 'Outside Tax $',
          'Investment', 'From Investment', 'Notes'];
-        passFunc = setNetAmount;
         break;
       case 'DISTRIBUTION':
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Investment', 'From Investment', 'Notes'];
-        passFunc = setNetAmount;
         break;
       case 'TRANSFER':
         mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];
@@ -500,13 +496,13 @@ const FormSheet = (props) => {
 
     const newRows = mainColumns.map((column) => {
        if (column === 'Amount' || column.includes('$')) {
-         return <RowCurrency netAmount={netAmount} setNetAmount={passFunc}
+         return <RowCurrency
                                 key={column + transcationType} name={column} size={maxSize}
                                 state={state} setState={setState}
                                 transcationType={transcationType}/>;
        }
        else if (column === 'Net Amount') {
-         return <RowCurrencyNet netAmount={netAmount} key={column + transcationType}
+         return <RowCurrencyNet key={column + transcationType}
                                 name={column} size={maxSize}
                                 state={state} setState={setState}/>;
        }
@@ -523,11 +519,11 @@ const FormSheet = (props) => {
     });
     setRows(newRows);
 
-  }, [transcationType, netAmount, state]);
+  }, [transcationType, state]);
 
   const onClick = (e) => {
     if (transcationType === 'DISTRIBUTION') {
-      if (netAmount >= 0) {
+      if (state['Net Amount'] >= 0) {
         const confirmed = window.confirm('DISTRIBUTION Net Amount is Positive. Are you sure?')
         if (!confirmed) {
           e.preventDefault();
@@ -536,7 +532,7 @@ const FormSheet = (props) => {
       }
     }
     if (transcationType === 'CONTRIBUTION') {
-      if (netAmount <= 0) {
+      if (state['Net Amount'] <= 0) {
         const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
         if (!confirmed) {
           e.preventDefault();
@@ -556,20 +552,28 @@ const FormSheet = (props) => {
         //   // return false;
         // }
       }
-    })
-    return false;
-    // onSubmit();
+    });
+    // state['Type'] = transcationType;
+    // const updatedEvent = updateEvent({
+    //   state: state
+    // });
+    // console.log(state)
+    // console.log(updatedEvent)
+    // console.log(updatedEvent)
+    // return false;
+    onSubmit(e);
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
     state['Type'] = transcationType;
     if (state.Id !== undefined) {
       console.log(state)
       const updatedEvent = updateEvent({
-        state: state,
-        netAmount: netAmount
+        state: state
       });
-
+      console.log(updatedEvent)
+      alert('stop')
+      e.preventDefault();
       updatedEvent['type'] = transcationType;
       const newRow = eventToRow(updatedEvent, state);
       ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
@@ -577,8 +581,7 @@ const FormSheet = (props) => {
 
     }
     const newEvent = createEvent({
-      state: state,
-      netAmount: netAmount
+      state: state
     });
     console.log(newEvent)
     window.confirm('adfad')
