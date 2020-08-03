@@ -567,13 +567,11 @@ const FormSheet = (props) => {
   const onSubmit = (e) => {
     state['Type'] = transcationType;
     if (state.Id !== undefined) {
-      console.log(state)
       const updatedEvent = updateEvent({
         state: state
       });
-      console.log(updatedEvent)
-      alert('stop')
-      e.preventDefault();
+
+
       updatedEvent['type'] = transcationType;
       const newRow = eventToRow(updatedEvent, state);
       ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
