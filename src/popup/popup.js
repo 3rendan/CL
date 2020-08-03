@@ -371,7 +371,16 @@ const RowBland = (props) => {
 
   placeholder = "Enter ".concat(placeholder.toLowerCase());
 
-
+  if (props.name === 'Notes') {
+    return (
+      <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
+          <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
+          <input type={type} min={min} onChange={onChange.bind(this)} onBlur={onBlur.bind(this)}
+              value={props.state[props.name]}
+              className="form-control" placeholder={placeholder} />
+      </div>
+    );
+  }
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
