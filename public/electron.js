@@ -106,9 +106,16 @@ ipcMain.on('viewTransfers', (event, args) => {
 });
 
 ipcMain.on('popupEvent', (event, args) => {
+  console.log(args.dataID)
   let destURL = `popup/event/${args.investmentID}`;
   if (args.hasCommitment) {
     destURL = `popup/event/commitment/${args.investmentID}`
+  }
+  if (args.dataID !== undefined && args.hasCommitment) {
+    destURL = `popup/event/commitment/edit/${args.investmentID}/${args.dataID}/${args.dataType}`;
+  }
+  if (args.dataID !== undefined && !args.hasCommitment) {
+    destURL = `popup/event/edit/${args.investmentID}/${args.dataID}/${args.dataType}`;
   }
   console.log(destURL)
   // Create new window

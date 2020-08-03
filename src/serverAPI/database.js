@@ -1,3 +1,3 @@
-const databaseHost = '10.106.20.46';
+const databaseHost = 'localhost';
 
 export default databaseHost;

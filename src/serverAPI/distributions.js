@@ -104,6 +104,24 @@ const getDistributionsInvestment = async (id) => {
   }
 }
 
+const getDistributionsId = async (id) => {
+  try {
+    const response = await fetch(
+      `http://${databaseHost}:5000/distributions/id/${id}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+    const jsonData = await response.json();
+
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
+
 
 const updateDistribution = async (distribution) => {
     try {
@@ -164,6 +182,7 @@ export {
   getDistributionEventsTime,
   getAllDistributionEvents,
   getDistributionsInvestment,
+  getDistributionsId,
   updateDistribution,
   insertDistribution,
   deleteDistribution

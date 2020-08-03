@@ -116,6 +116,24 @@ const getContributionsInvestment = async (id) => {
   }
 }
 
+const getContributionsId = async (id) => {
+  try {
+    const response = await fetch(
+      `http://${databaseHost}:5000/contributions/id/${id}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+    const jsonData = await response.json();
+
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
+
 const updateContribution = async (contribution) => {
     try {
       const body = contribution.body();
@@ -174,6 +192,7 @@ export {
   getContributionEventsTime,
   getAllContributionEvents,
   getContributionsInvestment,
+  getContributionsId,
   updateContribution,
   insertContribution,
   deleteContribution

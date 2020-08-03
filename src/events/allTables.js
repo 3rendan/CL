@@ -37,7 +37,19 @@ function AddRow(props) {
   else if (props.name === 'Transfer') {
     ipcRenderer.send('popupTransfer', props);
   }
+};
 
+function EditRow(props) {
+  props['id'] = BrowserWindow.getFocusedWindow().id;
+  if (props.name === 'Event') {
+    ipcRenderer.send('popupEvent', props);
+  }
+  else if (props.name === 'NAV Entries') {
+    ipcRenderer.send('popupNAVEvent', props);
+  }
+  else if (props.name === 'Transfer') {
+    ipcRenderer.send('popupTransfer', props);
+  }
 };
 
 const MaintenanceTable = (props) => {
@@ -338,7 +350,11 @@ const MaintenanceTable = (props) => {
         options={{layout: "fitData",
                   initialSort: [{column: "date_due", dir:'asc'}],
                   downloadDataFormatter: (data) => data,
-                  downloadReady: (fileContents, blob) => blob}}
+                  downloadReady: (fileContents, blob) => blob,
+                  rowDblClick:function(e, row){
+                      EditRow({dataID: row.getData().id, dataType: row.getData().type, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})
+                  }
+                }}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />

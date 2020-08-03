@@ -1,14 +1,20 @@
 import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from "react-dom";
 
-
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 
-import {createEvent} from '../serverAPI/eventsAndTransfers'
+import {createEvent, updateEvent} from '../serverAPI/eventsAndTransfers'
 
 import AsyncSelect from 'react-select/async';
+
+import {getContributionsId} from '../serverAPI/contributions.js'
+import {getDistributionsId} from '../serverAPI/distributions.js'
+import {getCommissionsId} from '../serverAPI/commissions.js'
+import {getTransfersId} from '../serverAPI/transfers.js'
+import {getSingleEntry} from '../serverAPI/singleEntry.js'
+
 
 import {getInvestments} from '../serverAPI/investments.js'
 var InvestmentData = [];
@@ -68,9 +74,8 @@ const loadNonCommitOptions = inputValue =>
   });
 
 
-
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
+const electron       = window.require('electron');
+const ipcRenderer    = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
 
 var senderWindow = null;
@@ -98,7 +103,7 @@ ipcRenderer.on('popupTransferMessage', (event, message) => {
 const RowCurrencyNet = (props) => {
   let currency = 'USD';
 
-  const value = props.netAmount;
+  const value = props.state[props.name] ? props.state[props.name] : props.netAmount;
   const min = 0;
 
   function localStringToNumber( s ){
@@ -131,7 +136,23 @@ const RowCurrency = (props) => {
   const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
   const negativeTransactions = ['OUTFLOW', 'EXPENSE']
 
-  const [currMoney, setCurrMoney] = useState(0);
+  const [currMoney, setCurrMoney] = useState(props.state[props.name]);
+
+
+  let defaultValue = null;
+  if (props.state[props.name] !== undefined) {
+    var options = {
+        maximumFractionDigits : 2,
+        currency              : currency,
+        style                 : "currency",
+        currencyDisplay       : "symbol"
+    };
+
+    defaultValue = props.state[props.name]
+      ? localStringToNumber(props.state[props.name]).toLocaleString(undefined, options)
+      : '';
+  }
+
 
   const min = 0;
 
@@ -170,15 +191,15 @@ const RowCurrency = (props) => {
       : '';
 
 
-    if (props.setNetAmount != null) {
-      props.setNetAmount(props.netAmount + localStringToNumber(value) - currMoney);
-    }
+
     setCurrMoney(localStringToNumber(value));
-    const newState = {
-      ...props.state,
-    }
-    newState[props.name] = value
-    props.setState(newState);
+    const name = props.name
+    props.setState(state => {
+      const newState = {...state}
+      newState[name] =  localStringToNumber(value)
+      newState['Net Amount'] = newState['Net Amount'] + localStringToNumber(value) - currMoney
+      return newState;
+    });
 
   }
 
@@ -193,14 +214,16 @@ const RowCurrency = (props) => {
               id={props.name}>{props.name}</span>
         <input type={'currency'} onFocus={onFocus.bind(this)}
                 onBlur={onBlur.bind(this)} min={min}
-                className="form-control" placeholder={placeholder} required/>
+                className="form-control" placeholder={placeholder}
+                defaultValue={defaultValue} required/>
     </div>
   );
 };
 
 const RowInvestment = (props) => {
   const [defaultOptions, setDefaultOptions] = useState(investmentOptions);
-  const defaultInvestment = props.investmentID;
+  const defaultInvestment = props.state[props.name] ? props.state[props.name] : props.investmentID;
+
   const [value, setValue] = useState(null);
 
   let loadOptions = loadAllOptions;
@@ -215,28 +238,33 @@ const RowInvestment = (props) => {
   }
 
   const onChange = (inputText) => {
-    const newState = {
-      ...props.state,
-    }
-    newState[props.name] = inputText
-    props.setState(newState)
+    props.setState(state => {
+      const newState = {...state}
+      newState[props.name] =  inputText
+      return newState;
+    });
     setValue(inputText)
   }
 
   const size = props.size * 10 + "px";
 
   useEffect(() => {
+    if (typeof(defaultInvestment) !== 'string') {
+      setValue(defaultInvestment)
+    }
+
     async function fetchData() {
       InvestmentData = await getInvestments();
       investmentOptions = InvestmentData.map((data) => {
         const label = data.long_name
         if (data.id === defaultInvestment) {
           setValue({label: label, value: data})
-          const newState = {
-            ...props.state,
-          }
-          newState[props.name] = {label: label, value: data};
-          props.setState(newState)
+          props.setState(state => {
+            const newState = {...state}
+            newState[props.name] = {label: label, value: data}
+            return newState;
+          });
+          // props.setState((state) => (props.name: {label: label, value: data} ))
         }
         return {label: label, value: data};
       })
@@ -277,6 +305,7 @@ const RowInvestment = (props) => {
 
 const RowBland = (props) => {
   let placeholder = props.name;
+
 
   let type = "";
   let min = null;
@@ -347,7 +376,7 @@ const RowBland = (props) => {
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
         <input type={type} min={min} onChange={onChange.bind(this)} onBlur={onBlur.bind(this)}
-            defaultValue={props.state[props.name]}
+            value={props.state[props.name]}
             className="form-control" placeholder={placeholder} required />
     </div>
   );
@@ -386,7 +415,10 @@ const eventToRow = (event, state) => {
   }
 }
 
+
+
 const FormSheet = (props) => {
+  // for all data
   const [InvestmentData, setInvestmentData] = useState(null);
   const getInvestmentData = props.getInvestmentData;
 
@@ -398,12 +430,20 @@ const FormSheet = (props) => {
 
   const investmentID = props.investmentID;
 
-  const [state, setState] = useState({});
+  const [state, setState] = useState(props.initial ? props.initial : {});
+
   const [error, setError] = useState(null);
+  if (props.initial !== undefined && Object.keys(state).length === 0
+      && Object.keys(props.initial).length !== 0) {
+    setState(props.initial)
+  }
+
+  console.log(state)
 
   const [netAmount, setNetAmount] = useState(0.0);
 
   useEffect(()=> {
+    console.log(state)
     if (state['Date Sent'] === undefined && state['Date Due'] !== undefined) {
       state['Date Sent'] = state['Date Due'];
     }
@@ -442,19 +482,16 @@ const FormSheet = (props) => {
         mainColumns = ['Date', 'Investment', 'Amount', 'Notes'];
     }
 
-    const mainLengths = mainColumns.map((a) => { return a.length });
-    const maxSize = mainLengths.reduce((a, b) => {
-        return Math.max(a, b);
-    });
+    const mainLengths = mainColumns.map(a => a.length );
+    const maxSize = mainLengths.reduce((a, b) =>  Math.max(a, b));
 
 
     const newRows = mainColumns.map((column) => {
        if (column === 'Amount' || column.includes('$')) {
-         const a = <RowCurrency netAmount={netAmount} setNetAmount={passFunc}
+         return <RowCurrency netAmount={netAmount} setNetAmount={passFunc}
                                 key={column + transcationType} name={column} size={maxSize}
                                 state={state} setState={setState}
                                 transcationType={transcationType}/>;
-         return a;
        }
        else if (column === 'Net Amount') {
          return <RowCurrencyNet netAmount={netAmount} key={column + transcationType}
@@ -502,13 +539,24 @@ const FormSheet = (props) => {
 
   const onSubmit = () => {
     state['Type'] = transcationType;
+    if (state.Id !== undefined) {
+      console.log(state)
+      const updatedEvent = updateEvent({
+        state: state,
+        netAmount: netAmount
+      });
+
+      updatedEvent['type'] = transcationType;
+      const newRow = eventToRow(updatedEvent, state);
+      ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
+      return;
+
+    }
     const newEvent = createEvent({
       state: state,
       netAmount: netAmount
     });
 
-    console.log(state)
-    console.log(newEvent)
 
     newEvent['type'] = transcationType;
     const newRow = eventToRow(newEvent, state);

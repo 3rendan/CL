@@ -104,6 +104,17 @@ const getTransfers = async (id) => {
   }
 };
 
+const getTransfersId = async (id) => {
+  try {
+    const response = await fetch(`http://${databaseHost}:5000/transfers/id/${id}`);
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+};
+
 const TransferColumns = [
   'Date', 'From Investment', 'To Investment', 'Amount', 'Notes'
 ];
@@ -116,5 +127,6 @@ export {
   insertTransfer,
   deleteTransfer,
   getTransfers,
-  getAllTransfers
+  getAllTransfers,
+  getTransfersId
 }

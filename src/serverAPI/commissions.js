@@ -53,6 +53,24 @@ const getCommissionsInvestment = async (id) => {
   }
 }
 
+const getCommissionsId = async (id) => {
+  try {
+    const response = await fetch(
+      `http://${databaseHost}:5000/commissions/id/${id}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+    const jsonData = await response.json();
+
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
+
 const updateCommission = async (commission) => {
     try {
       const body = commission.body();
@@ -108,6 +126,7 @@ export {
   Commission,
   CommissionColumns,
   getCommissionsInvestment,
+  getCommissionsId,
   updateCommission,
   insertCommission,
   deleteCommission
