@@ -67,6 +67,7 @@ const MaintenanceTable = (props) => {
     // 1) Date -> Date Due
     // turn other money fileds into money
   useEffect(() => {
+    // setBrowserWindow()
     async function fetchInvestments() {
       if (tableName === 'Transfer') {
         setInvestmentName('Data')
@@ -169,30 +170,15 @@ const MaintenanceTable = (props) => {
   }, [])
 
   ipcRenderer.on('replyEvent', (event, message) => {
-    let copyTableData = [message]
-    if (data !== null) {
-      copyTableData = [...data, message]
-    }
-
-    setData(copyTableData);
+    BrowserWindow.getAllWindows().map(window => window.reload())
   });
 
   ipcRenderer.on('replyNAVEvent', (event, message) => {
-    let copyTableData = [message]
-    if (data !== null) {
-      copyTableData = [...data, message]
-    }
-
-    setData(copyTableData);
+    BrowserWindow.getAllWindows().map(window => window.reload())
   });
 
   ipcRenderer.on('replyTransfer', (event, message) => {
-    let copyTableData = [message]
-    if (data !== null) {
-      copyTableData = [...data, message]
-    }
-
-    setData(copyTableData);
+    BrowserWindow.getAllWindows().map(window => window.reload())
   });
 
 
