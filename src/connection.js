@@ -9,7 +9,6 @@ import initializeDatabase from './serverAPI/databaseInitialize'
 
 
 const electron = window.require('electron');
-const remote = electron.remote;
 const ipcRenderer  = electron.ipcRenderer;
 
 const Connection = (props) => {
