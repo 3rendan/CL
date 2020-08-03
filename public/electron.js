@@ -10,8 +10,26 @@ const isDev = require('electron-is-dev');
 const path = require('path');
 const url = require('url');
 
+global.database = {ip: null, username: null, password: null};
+
 
 let mainWindow;
+
+ipcMain.on("setDatabase", ( event, databaseVars ) => {
+  global.database = databaseVars;
+
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: `investments`,
+      protocol: 'file',
+      slashes: true,
+  });
+  // Load html into window
+  mainWindow.loadURL(isDev ? `http://localhost:3000/#/investments` : fileURL);
+
+} );
+
 
 function createMainWindow() {
   // Create new window
@@ -25,13 +43,13 @@ function createMainWindow() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: 'investments',
+      hash: 'connection',
       protocol: 'file',
       slashes: true,
   });
 
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/investments' : fileURL);
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/connection' : fileURL);
 
   mainWindow.on('closed', ()=> mainWindow=null);
 

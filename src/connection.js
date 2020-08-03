@@ -37,17 +37,17 @@ const Connection = (props) => {
         <Form onSubmit={onSubmit}>
           <Form.Group controlId="formBasicIP">
             <Form.Label>Database IP Address</Form.Label>
-            <Form.Control type="text" placeholder="Enter IP address" />
+            <Form.Control required type="text" placeholder="Enter IP address" />
           </Form.Group>
 
           <Form.Group controlId="formBasicUsername">
             <Form.Label>Database Username</Form.Label>
-            <Form.Control type="text" placeholder="Enter username" />
+            <Form.Control required type="text" placeholder="Enter username" />
           </Form.Group>
 
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Database Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
+            <Form.Control required type="password" placeholder="Password" />
           </Form.Group>
           <Button variant="primary" type="submit">
             Submit
