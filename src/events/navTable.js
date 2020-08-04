@@ -36,7 +36,7 @@ function calcNetContribute(group, investmentID, nav) {
   group.sort(myDateSort);
   return group.reduce((accumulator, current) => {
     if (current.type === 'TRANSFER') {
-      if (current.investment === investmentID) {
+      if (current.to_investment === investmentID) {
         return accumulator + current.amount;
       }
       return accumulator - current.amount;
