@@ -561,7 +561,7 @@ const FormSheet = (props) => {
     // console.log(updatedEvent)
     // console.log(updatedEvent)
     // return false;
-    onSubmit(e);
+    // onSubmit(e);
   }
 
   const onSubmit = (e) => {
@@ -582,7 +582,6 @@ const FormSheet = (props) => {
       state: state
     });
     console.log(newEvent)
-    window.confirm('adfad')
 
 
     newEvent['type'] = transcationType;
