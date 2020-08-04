@@ -197,7 +197,7 @@ const RowCurrency = (props) => {
     props.setState(state => {
       const newState = {...state}
       newState[name] =  localStringToNumber(value)
-      if (newState['Net Amount'] !== undefined) {
+      if (newState['Net Amount'] !== undefined && props.name !== 'Withhold $') {
         if (currMoney === undefined) {
           newState['Net Amount'] = newState['Net Amount'] + localStringToNumber(value)
         }
