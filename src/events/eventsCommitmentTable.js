@@ -29,12 +29,31 @@ const EventTable = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-      let singleEntry = await getSingleEntrys(investmentID);
-      singleEntry = singleEntry ? singleEntry : [];
-      let commission = await getCommissionsInvestment(investmentID);
-      commission = commission ? commission : [];
-      commission = commission.map((comm) => {
+      let singleEntrys = await getSingleEntrys(investmentID);
+      singleEntrys = singleEntrys ? singleEntrys : [];
+      const copySingle = [...singleEntrys.map(transfer => { return {...transfer} })]
+      console.log(copySingle)
+      singleEntrys = singleEntrys.map((entry) => {
+        if (entry.from_investment === investmentID) {
+          entry.from_investment = entry.investment
+        }
+        else if (entry.investment === investmentID) {
+          entry.investment = entry.from_investment
+        }
+        return entry;
+      })
+
+
+      let commissions = await getCommissionsInvestment(investmentID);
+      commissions = commissions ? commissions : [];
+      commissions = commissions.map((comm) => {
         comm['type'] = 'COMMISH'
+        if (comm.from_investment === investmentID) {
+          comm.from_investment = comm.investment
+        }
+        else if (comm.investment === investmentID) {
+          comm.investment = comm.from_investment
+        }
         return comm;
       })
       let distributions = await getDistributionsInvestment(investmentID);
@@ -45,9 +64,12 @@ const EventTable = (props) => {
 
       distributions = distributions.map((dist) => {
         dist['type'] = 'DISTRIBUTION'
-        // if (dist.from_investment === investmentID) {
-        //   dist.amount = -dist.amount;
-        // }
+        if (dist.from_investment === investmentID) {
+          dist.from_investment = dist.investment
+        }
+        else if (dist.investment === investmentID) {
+          dist.investment = dist.from_investment
+        }
         return dist;
       })
 
@@ -59,6 +81,12 @@ const EventTable = (props) => {
 
       contributions = contributions.map((contr) => {
         contr['type'] = 'CONTRIBUTION'
+        if (contr.from_investment === investmentID) {
+          contr.from_investment = contr.investment
+        }
+        else if (contr.investment === investmentID) {
+          contr.investment = contr.from_investment
+        }
         return contr;
       })
 
@@ -68,10 +96,13 @@ const EventTable = (props) => {
         if (transfer.from_investment === investmentID) {
           transfer.amount = -transfer.amount;
         }
+        if (transfer.to_investment === investmentID) {
+          transfer.to_investment = transfer.from_investment
+        }
         return transfer;
       })
 
-      setEventData([...singleEntry, ...commission,
+      setEventData([...singleEntrys, ...commissions,
             ...distributions, ...contributions, ...transfers]);
     }
     fetchData().catch(e =>

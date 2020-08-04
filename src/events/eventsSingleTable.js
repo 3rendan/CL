@@ -29,28 +29,50 @@ const EventTable = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-      let singleEntry = await getSingleEntrys(investmentID);
-      singleEntry = singleEntry ? singleEntry : [];
-      let commission = await getCommissionsInvestment(investmentID);
-      commission = commission ? commission : [];
-      commission = commission.map((comm) => {
+      let singleEntrys = await getSingleEntrys(investmentID);
+      singleEntrys = singleEntrys ? singleEntrys : [];
+      // const copySingle = [...singleEntrys.map(transfer => { return {...transfer} })]
+      // console.log(copySingle)
+      singleEntrys = singleEntrys.map((entry) => {
+        if (entry.from_investment === investmentID) {
+          entry.from_investment = entry.investment
+        }
+        else if (entry.investment === investmentID) {
+          entry.investment = entry.from_investment
+        }
+        return entry;
+      })
+
+      let commissions = await getCommissionsInvestment(investmentID);
+      commissions = commissions ? commissions : [];
+      commissions = commissions.map((comm) => {
         comm['type'] = 'COMMISH'
+        if (comm.from_investment === investmentID) {
+          comm.from_investment = comm.investment
+        }
+        else if (comm.investment === investmentID) {
+          comm.investment = comm.from_investment
+        }
         return comm;
-      });
+      })
 
       let transfers = await getTransfers(investmentID);
-      // const copyTransfers = [...transfers.map(transfer => { return {...transfer} })]
-      // console.log(copyTransfers)
+      const copyTransfers = [...transfers.map(transfer => { return {...transfer} })]
+      console.log(copyTransfers)
+      console.log(investmentID)
       transfers = transfers.map((transfer) => {
         transfer['type'] = 'TRANSFER'
         if (transfer.from_investment === investmentID) {
           transfer.amount = -transfer.amount;
         }
+        if (transfer.to_investment === investmentID) {
+          transfer.to_investment = transfer.from_investment
+        }
 
         return transfer;
       })
 
-      setEventData([...singleEntry, ...commission, ...transfers]);
+      setEventData([...singleEntrys, ...commissions, ...transfers]);
     }
 
     fetchData().catch(e =>
