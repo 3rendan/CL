@@ -15,6 +15,9 @@ const ViewOnlyInvestmentTable = () => {
     console.log(remote.getGlobal('database'));
     async function fetchData() {
       const investments = await getInvestments();
+      if (investments === false) {
+        throw 'Failed to Authenticate'
+      }
       if (!investments) {
         throw 'Server Disconnected: null investments'
       }
@@ -30,7 +33,7 @@ const ViewOnlyInvestmentTable = () => {
     return null;
   }
   return (<DetailInvestmentTable data={InvestmentData}
-    name={'Investment Data'}
+    name={'Investment'}
    columns={InvestmentColumns} readOnly={true}/>);
 }
 

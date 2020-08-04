@@ -44,6 +44,9 @@ const InvestmentTable = () => {
       setBenchmarkData(benchmarks);
 
       const investments = await getInvestments();
+      if (investments === false) {
+        throw 'Failed to Authenticate'
+      }
       if (!investments) {
         throw 'Server Disconnected: null investments'
       }
@@ -61,7 +64,7 @@ const InvestmentTable = () => {
   return (<DetailInvestmentTable     data={InvestmentData}
       AssetClassData={AssetClassData}  OwnerData={OwnerData}
       BenchmarkData={BenchmarkData} AccountData={AccountData}
-    name={'Investment Data'} columns={InvestmentColumns}
+    name={'Investment'} columns={InvestmentColumns}
     readOnly={false} />);
 }
 
