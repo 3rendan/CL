@@ -37,16 +37,27 @@ const EventTable = (props) => {
         comm['type'] = 'COMMISH'
         return comm;
       })
-      let distribution = await getDistributionsInvestment(investmentID);
-      distribution = distribution ? distribution : [];
-      distribution = distribution.map((dist) => {
+      let distributions = await getDistributionsInvestment(investmentID);
+      distributions = distributions ? distributions : [];
+
+      const copyDist = [...distributions.map(transfer => { return {...transfer} })]
+      console.log(copyDist)
+
+      distributions = distributions.map((dist) => {
         dist['type'] = 'DISTRIBUTION'
+        // if (dist.from_investment === investmentID) {
+        //   dist.amount = -dist.amount;
+        // }
         return dist;
       })
 
-      let contribution = await getContributionsInvestment(investmentID);
-      contribution = contribution ? contribution : [];
-      contribution = contribution.map((contr) => {
+      let contributions = await getContributionsInvestment(investmentID);
+      contributions = contributions ? contributions : [];
+
+      const copyContr = [...contributions.map(transfer => { return {...transfer} })]
+      console.log(copyContr)
+
+      contributions = contributions.map((contr) => {
         contr['type'] = 'CONTRIBUTION'
         return contr;
       })
@@ -54,11 +65,14 @@ const EventTable = (props) => {
       let transfers = await getTransfers(investmentID);
       transfers = transfers.map((transfer) => {
         transfer['type'] = 'TRANSFER'
+        if (transfer.from_investment === investmentID) {
+          transfer.amount = -transfer.amount;
+        }
         return transfer;
       })
 
       setEventData([...singleEntry, ...commission,
-            ...distribution, ...contribution, ...transfers]);
+            ...distributions, ...contributions, ...transfers]);
     }
     fetchData().catch(e =>
       setError(e)

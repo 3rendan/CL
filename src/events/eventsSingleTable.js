@@ -39,8 +39,14 @@ const EventTable = (props) => {
       });
 
       let transfers = await getTransfers(investmentID);
+      // const copyTransfers = [...transfers.map(transfer => { return {...transfer} })]
+      // console.log(copyTransfers)
       transfers = transfers.map((transfer) => {
         transfer['type'] = 'TRANSFER'
+        if (transfer.from_investment === investmentID) {
+          transfer.amount = -transfer.amount;
+        }
+
         return transfer;
       })
 
