@@ -45,7 +45,7 @@ function calcNetContribute(group, investmentID, nav) {
     if (current.type === 'COMMISH' || current.type === 'NAV') {
       return accumulator;
     }
-    let amount = current.amount ? current.amount : current.net_amount;
+    let amount = current.amount !== undefined ? current.amount : current.net_amount;
     return accumulator + amount;
   }, nav);
 }
@@ -105,10 +105,12 @@ const NAVTable = (props) => {
       const myData = await fetchData();
       const groups = groupByMonth(myData);
 
-      var minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
+      let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
 
       const today = new Date();
-      const currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      let currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
+      finalMonth = new Date(Math.max(currEndMonth, finalMonth));
 
       let nav = 0;
       let netContribute = 0;
@@ -116,7 +118,7 @@ const NAVTable = (props) => {
       const monthNav = {}
       const monthNetContribute = {};
       const monthPL = {};
-      while (minDate <= currEndMonth) {
+      while (minDate <= finalMonth) {
         nav = calcNAV(groups[minDate], investmentID, nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         const formatDate = moment(minDate).format('L')

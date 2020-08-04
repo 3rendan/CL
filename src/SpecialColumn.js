@@ -169,7 +169,7 @@ function calcNAV(group, investmentID, nav) {
     if (current.type === 'NAV') {
       return current.amount;
     }
-    let amount = current.amount ? current.amount : current.net_amount;
+    let amount = current.amount !== undefined ? current.amount : current.net_amount;
     if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
       // amount is negative for type distribution
       if (current.from_investment === investmentID) {
