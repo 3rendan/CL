@@ -264,7 +264,7 @@ const SummaryReport = (props) => {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
   if (data === null) {
-    return <div> hi </div>;
+    return <div> </div>;
   }
   return (<MaintenanceTable name={"Summary Report"} data={data}
             columns={columns} frozenColumns={frozenColumns}

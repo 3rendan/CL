@@ -117,7 +117,11 @@ const deleteInvestment = async id => {
     const deleteInvestment = await fetch(`http://${databaseHost}:5000/investments/${id}`, {
       method: "DELETE"
     });
+    const jsonData = await deleteInvestment.json();
 
+    if (jsonData === 'Failed! Contains event') {
+      return false;
+    }
     return true;
   } catch (err) {
     console.error(err.message);

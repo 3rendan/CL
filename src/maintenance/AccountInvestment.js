@@ -282,9 +282,17 @@ const DetailInvestmentTable = (props) => {
          return;
        }
        const deletedData = cell.getData();
-       deleteInvestment(deletedData.id)
+       deleteInvestment(deletedData.id).then((result) => {
+         if(result) {
+           cell.getRow().delete();
+         }
+         else {
+           alert('Cannot delete investment. It likely has events.')
+         }
+       })
 
-       cell.getRow().delete();
+
+
     }};
     columns = [...columns, trashCol]
   }
