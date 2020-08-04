@@ -311,7 +311,8 @@ const MaintenanceTable = (props) => {
     <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
           className="btn btn-success btn-lg">Add Row</button>
   </div>);
-  const copyButton = (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+  const marginRight = tableName === 'NAV' ? '130px' : '0px';
+  const copyButton = (<div style ={{float: "right", marginRight: marginRight, width: "130px", display: "inline-block"}}>
     <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName}_${investmentName}.csv`)}}
           className="btn btn-success btn-lg">Copy Data</button>
   </div>)
