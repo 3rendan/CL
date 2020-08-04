@@ -63,7 +63,7 @@ const MaintenanceTable = (props) => {
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
           <br />
-          <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
+          <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} </h1>
           <div style ={{float: "right", width: "130px", display: "inline-block"}}>
             <button type="button" onClick={() =>
               {

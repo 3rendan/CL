@@ -392,7 +392,7 @@ const mainMenuTemplate = [
   { label: 'Transfers',
     submenu: [
       {
-        label: 'Transfer View',
+        label: 'Transfer List',
         click() {
           loadTransferView();
         }

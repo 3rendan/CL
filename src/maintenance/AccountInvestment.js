@@ -296,7 +296,7 @@ const DetailInvestmentTable = (props) => {
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
           <br />
-          <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
+          <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} </h1>
           {addButton}
           {copyButton}
           <br />
