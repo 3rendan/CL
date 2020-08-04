@@ -129,6 +129,9 @@ const getInvestments = async () => {
   try {
     const response = await fetch(`http://${databaseHost}:5000/investments`);
     const jsonData = await response.json();
+    if (jsonData === 'failure') {
+      return false;
+    }
     return jsonData;
   } catch (err) {
     console.error(err.message);
