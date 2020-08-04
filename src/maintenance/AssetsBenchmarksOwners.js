@@ -26,8 +26,8 @@ const MaintenanceTable = (props) => {
   const ref = useRef();
 
   const columns = [
-    {rowHandle:true, formatter:"handle", headerSort:false,
-      responsive:0, width:30, minWidth:30},
+    // {rowHandle:true, formatter:"handle", headerSort:false,
+    //   responsive:0, width:30, minWidth:30},
     ...props.colNames,
     {formatter:function(cell, formatterParams, onRendered){ //plain text value
          return "<i class='fa fa-trash'></i>";
