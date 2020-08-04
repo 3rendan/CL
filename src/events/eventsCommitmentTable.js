@@ -34,10 +34,7 @@ const EventTable = (props) => {
       const copySingle = [...singleEntrys.map(transfer => { return {...transfer} })]
       console.log(copySingle)
       singleEntrys = singleEntrys.map((entry) => {
-        if (entry.from_investment === investmentID) {
-          entry.from_investment = entry.investment
-        }
-        else if (entry.investment === investmentID) {
+        if (entry.investment === investmentID) {
           entry.investment = entry.from_investment
         }
         return entry;
@@ -48,10 +45,7 @@ const EventTable = (props) => {
       commissions = commissions ? commissions : [];
       commissions = commissions.map((comm) => {
         comm['type'] = 'COMMISH'
-        if (comm.from_investment === investmentID) {
-          comm.from_investment = comm.investment
-        }
-        else if (comm.investment === investmentID) {
+        if (comm.investment === investmentID) {
           comm.investment = comm.from_investment
         }
         return comm;
@@ -64,10 +58,7 @@ const EventTable = (props) => {
 
       distributions = distributions.map((dist) => {
         dist['type'] = 'DISTRIBUTION'
-        if (dist.from_investment === investmentID) {
-          dist.from_investment = dist.investment
-        }
-        else if (dist.investment === investmentID) {
+        if (dist.investment === investmentID) {
           dist.investment = dist.from_investment
         }
         return dist;
@@ -81,10 +72,7 @@ const EventTable = (props) => {
 
       contributions = contributions.map((contr) => {
         contr['type'] = 'CONTRIBUTION'
-        if (contr.from_investment === investmentID) {
-          contr.from_investment = contr.investment
-        }
-        else if (contr.investment === investmentID) {
+        if (contr.investment === investmentID) {
           contr.investment = contr.from_investment
         }
         return contr;
