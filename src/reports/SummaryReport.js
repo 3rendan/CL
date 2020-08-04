@@ -111,9 +111,20 @@ const SummaryReport = (props) => {
 
       investmentData.push({investment: ' '})
 
-
-
+      // sort dates
+      allDates.sort(function(a,b) {
+        const aDate = new Date(a)
+        const bDate = new Date(b)
+        if (aDate < bDate) {
+          return -1;
+        }
+        else if (aDate > bDate) {
+          return 1;
+        }
+        return 0;
+      })
       setMoneyColumns(allDates);
+      // console.log(allDates)
       setColumns(['Investment', ...allDates]);
       setData(investmentData)
     }
