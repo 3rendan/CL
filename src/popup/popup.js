@@ -192,16 +192,23 @@ const RowCurrency = (props) => {
 
 
 
-    setCurrMoney(localStringToNumber(value));
+
     const name = props.name
     props.setState(state => {
       const newState = {...state}
       newState[name] =  localStringToNumber(value)
       if (newState['Net Amount'] !== undefined) {
-        newState['Net Amount'] = newState['Net Amount'] + localStringToNumber(value) - currMoney
+        if (currMoney === undefined) {
+          newState['Net Amount'] = newState['Net Amount'] + localStringToNumber(value)
+        }
+        else {
+          newState['Net Amount'] = newState['Net Amount'] + localStringToNumber(value) - currMoney
+        }
+
       }
       return newState;
     });
+    setCurrMoney(localStringToNumber(value));
 
   }
 
@@ -445,7 +452,7 @@ const FormSheet = (props) => {
 
   const investmentID = props.investmentID;
 
-  const [state, setState] = useState(props.initial ? props.initial : {});
+  const [state, setState] = useState(props.initial ? props.initial : {'Net Amount': 0});
 
   const [error, setError] = useState(null);
   if (props.initial !== undefined && Object.keys(state).length === 0
@@ -455,6 +462,7 @@ const FormSheet = (props) => {
 
 
   useEffect(()=> {
+    console.log(state)
     if (state['Date Sent'] === undefined && state['Date Due'] !== undefined) {
       state['Date Sent'] = state['Date Due'];
     }
