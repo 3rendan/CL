@@ -359,7 +359,7 @@ const RowBland = (props) => {
       const difference = now.getTime() - then.getTime();
       const year_difference = difference / (1000 * 3600 * 24 * 365);
       // console.log(year_difference)
-      const max_years = 5;
+      const max_years = 20;
       if (Math.abs(year_difference) >= max_years ) {
         const confirmed = window.confirm(`The date you entered is more than ${max_years} years away. Are you sure?`)
         if (!confirmed) {
