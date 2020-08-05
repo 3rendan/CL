@@ -108,16 +108,19 @@ const SummaryReport = (props) => {
     }
 
     async function getTotalOutflow(groups) {
-      const inflows = {}
+      const outflow = {}
       Object.keys(groups).map(month => {
-        inflows[month] = groups[month].reduce(function (a,b) {
+        // console.log(month)
+        // console.log(groups[month])
+        outflow[month] = groups[month].reduce(function (a,b) {
           if (b.type === 'OUTFLOW') {
             return a + b.amount;
           }
           return a;
         }, 0)
       })
-      return inflows;
+      // console.log(outflow)
+      return outflow;
     }
 
     async function manipulateData() {
@@ -133,17 +136,16 @@ const SummaryReport = (props) => {
 
       const investmentData = await Promise.all(
         investments.map(async (investment) => {
-          const data = await fetchData(investment.id);
+          const data   = await fetchData(investment.id);
           const groups = groupByMonth(data);
 
-          const netExpenses = await getNetExpenses(groups)
-          const inflows = await getTotalInflow(groups)
-          const outflows = await getTotalOutflow(groups)
+          let netExpenses = await getNetExpenses(groups);
+          let inflows     = await getTotalInflow(groups);
+          let outflows    = await getTotalOutflow(groups);
 
-          console.log(netExpenses)
+
           Object.keys(netExpenses).map(date => {
             const dateFormat = moment(new Date(date)).format('L')
-            console.log(netExpenses[date])
             if (date in netExpensesByDate) {
               netExpensesByDate[dateFormat] += netExpenses[date] === undefined ? 0 : netExpenses[date]
             }
@@ -153,31 +155,35 @@ const SummaryReport = (props) => {
           })
 
           Object.keys(inflows).map(date => {
-            date = moment(new Date(date)).format('L')
-            if (date in inflowsByDate) {
-              inflowsByDate[date] += inflows[date] === undefined ? 0 : inflows[date]
+            const dateFormat = moment(new Date(date)).format('L')
+            if (dateFormat in inflowsByDate) {
+              inflowsByDate[dateFormat] += inflows[date] === undefined ? 0 : inflows[date]
             }
             else {
-              inflowsByDate[date] = inflows[date] === undefined ? 0 : inflows[date]
+              inflowsByDate[dateFormat] = inflows[date] === undefined ? 0 : inflows[date]
             }
           })
 
           Object.keys(outflows).map(date => {
-            date = moment(new Date(date)).format('L')
-            if (date in outflowsByDate) {
-              outflowsByDate[date] += outflows[date] === undefined ? 0 : outflows[date]
+            const dateFormat = moment(new Date(date)).format('L')
+            if (dateFormat in outflowsByDate) {
+              outflowsByDate[dateFormat] += outflows[date] === undefined ? 0 : outflows[date]
             }
             else {
-              outflowsByDate[date] = outflows[date] === undefined ? 0 : outflows[date]
+              outflowsByDate[dateFormat] = outflows[date] === undefined ? 0 : outflows[date]
             }
           })
 
           var minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
+          const today = new Date();
+          let currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+          let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
+          finalMonth = new Date(Math.max(currEndMonth, finalMonth));
 
           let nav = 0;
           const investmentRow = {investment: investment.name}
 
-          while (minDate <= currEndMonth) {
+          while (minDate <= finalMonth) {
             nav = calcNAV(groups[minDate], investment.id, nav);
             const formatDate = moment(minDate).format('L')
             const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -193,7 +199,7 @@ const SummaryReport = (props) => {
       )
 
       // sumNAVs
-      const sumNAVs = {investment: 'Sum NAV'}
+      const sumNAVs = {investment: 'Total NAV'}
       allDates.map(date => {
         if (!(date in netExpensesByDate)) {
           netExpensesByDate[date] = 0;
@@ -218,12 +224,6 @@ const SummaryReport = (props) => {
       investmentData.push({investment: ' '})
       investmentData.push(sumNAVs)
 
-      console.log(netExpensesByDate)
-      investmentData.push(netExpensesByDate)
-      investmentData.push(inflowsByDate)
-      investmentData.push(outflowsByDate)
-
-
       // sort dates
       allDates.sort(function(a,b) {
         const aDate = new Date(a)
@@ -237,19 +237,62 @@ const SummaryReport = (props) => {
         return 0;
       })
 
-      const gainsByDate = {investment: 'Gains'}
-      for (let i = 0; i < allDates.length; i++) {
-        const currDate = allDates[i];
-        if (i===0) {
+      const gainsByDate = {investment: 'Gain ($)'}
+      const gainPercentByDate = {investment: 'Gain (%)'}
+      const gainPercentDisplayByDate = {investment: 'Gain (%)'}
+
+      const gains12ByDate = {investment: 'T12M Gain ($)', months: 12}
+      const gains12PercentByDate = {investment: 'T12M Gain (%)'}
+      const gains36ByDate = {investment: 'T36M Gain ($)', months: 36}
+      const gains36PercentByDate = {investment: 'T36M Gain (%)'}
+      allDates.map((currDate, i) => {
+        if (i === 0) {
           gainsByDate[currDate] = sumNAVs[currDate] - inflowsByDate[currDate] + outflowsByDate[currDate] + netExpensesByDate[currDate];
         }
         else {
           const prevDate = allDates[i-1];
           gainsByDate[currDate] = sumNAVs[currDate] - sumNAVs[prevDate] - inflowsByDate[currDate] + outflowsByDate[currDate] + netExpensesByDate[currDate];
+          gainPercentByDate[currDate] = (gainsByDate[currDate] / sumNAVs[prevDate] * 100)
+          gainPercentDisplayByDate[currDate] = gainPercentByDate[currDate].toFixed(2) + '%'
         }
-      }
+
+        if (i >= gains12ByDate.months - 1) {
+          const dateRange = allDates.slice(i - (gains12ByDate.months - 1), i+1)
+          gains12ByDate[currDate] = dateRange.reduce(function (acc, date) {
+            return acc + gainsByDate[date];
+          }, 0);
+          if (i >= gains12ByDate.months) {
+            const percent = dateRange.reduce(function (acc, date) {
+              return acc * (1 + gainPercentByDate[date]);
+            }, 1) - 1;
+            gains12PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
+          }
+        }
+        if (i >= gains36ByDate.months - 1) {
+          const dateRange = allDates.slice(i - gains36ByDate.months, i)
+          gains36ByDate[currDate] = dateRange.reduce(function (acc, date) {
+            return acc + gainsByDate[date];
+          }, 0);
+          if (i >= gains36ByDate.months) {
+            const percent = dateRange.reduce(function (acc, date) {
+              return acc * (1 + gainPercentByDate[date]);
+            }, 1) - 1;
+            gains36PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
+          }
+        }
+      })
 
       investmentData.push(gainsByDate)
+      investmentData.push(gainPercentDisplayByDate)
+
+      investmentData.push(gains12ByDate)
+      investmentData.push(gains12PercentByDate)
+      investmentData.push(gains36ByDate)
+      investmentData.push(gains36PercentByDate)
+
+      investmentData.push(netExpensesByDate)
+      investmentData.push(inflowsByDate)
+      investmentData.push(outflowsByDate)
       setMoneyColumns(allDates);
       // console.log(allDates)
       setColumns(['Investment', ...allDates]);
@@ -268,7 +311,8 @@ const SummaryReport = (props) => {
   }
   return (<MaintenanceTable name={"Summary Report"} data={data}
             columns={columns} frozenColumns={frozenColumns}
-            moneyColumns={moneyColumns}/>);
+            moneyColumns={moneyColumns}
+            scrollTo={columns[columns.length - 1]}/>);
 }
 
 export default SummaryReport;
