@@ -62,7 +62,24 @@ function createMainWindow() {
   Menu.setApplicationMenu(mainMenu);
 }
 
-app.on('ready', createMainWindow);
+app.on('ready', () => {
+  let loading = new BrowserWindow({show: false, frame: false})
+
+  loading.once('show', () => {
+    createMainWindow();
+    mainWindow.webContents.once('dom-ready', () => {
+      // console.log('main loaded')
+      mainWindow.show()
+      loading.hide()
+      loading.close()
+    })
+    // long loading html
+    // mainWindow.loadURL('http://spacecrafts3d.org')
+  })
+  loading.loadURL('loading.html')
+  loading.show()
+
+});
 
 ipcMain.on('viewEvents', (event, args) => {
   // Create new window
