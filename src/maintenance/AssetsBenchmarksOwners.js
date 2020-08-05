@@ -18,6 +18,9 @@ import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React
 // settings I use across tables
 import {defaultTabulatorSettings, copyCol} from '../SpecialColumn';
 
+const electron = window.require('electron');
+const dialog = electron.remote.dialog
+
 const MaintenanceTable = (props) => {
   const tableData = props.data;
   const columnNames = props.columns;
@@ -32,8 +35,13 @@ const MaintenanceTable = (props) => {
     {formatter:function(cell, formatterParams, onRendered){ //plain text value
          return "<i class='fa fa-trash'></i>";
      }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
-       const confirmed = window.confirm('Confirm Delete?')
-       if (!confirmed) {
+       let options  = {
+        buttons: ["Yes","No"],
+        message: 'Confirm Delete?'
+       }
+       const confirmed = dialog.showMessageBoxSync(options)
+       // const confirmed = window.confirm('Confirm Delete?')
+       if (confirmed === 1) {
          return;
        }
        const deletedData = cell.getData();
@@ -87,7 +95,12 @@ const MaintenanceTable = (props) => {
                 }
                 insertFunc(data).then((response) => {
                   if (response === 'duplicate key') {
-                    alert('Failed to insert! duplicate long_name; maybe an entry with a blank long name')
+                    let options  = {
+                     buttons: ["Ok"],
+                     message: 'Failed to insert! duplicate long_name; maybe an entry with a blank long name'
+                    }
+                    const confirmed = dialog.showMessageBoxSync(options)
+                    // alert('Failed to insert! duplicate long_name; maybe an entry with a blank long name')
                     return;
                   }
                   ref.current.table.addData(response)

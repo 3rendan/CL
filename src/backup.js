@@ -9,6 +9,8 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import {Backup, getBackups, insertBackup,
   deleteBackup, restore} from './serverAPI/backups.js'
 
+const electron = window.require('electron');
+const dialog = electron.remote.dialog
 
 const createBackup = (setKey) => {
   const backup = new Backup();
@@ -33,8 +35,14 @@ const BackupItem = (props) => {
       <ListGroup.Item key={backup.id}>
         {moment(backup.date).format('LLL')}
         <button type="button" style = {{marginLeft: "25px"}} onClick={() =>   {
-          const confirmed = window.confirm('Confirm Restore?')
-          if (!confirmed) {
+          //Minimum options object
+          let options  = {
+           buttons: ["Yes","No"],
+           message: 'Confirm Restore?'
+          }
+          const confirmed = dialog.showMessageBoxSync(options)
+          // const confirmed = window.confirm('Confirm Restore?')
+          if (confirmed === 1) {
             return
           }
           restore(backup.id)
@@ -43,8 +51,13 @@ const BackupItem = (props) => {
           }
         className="btn btn-success btn-lg">Restore Backup</button>
         <button type="button" style = {{marginLeft: "25px"}} onClick={() => {
-          const confirmed = window.confirm('Confirm Delete?')
-          if (!confirmed) {
+          let options  = {
+           buttons: ["Yes","No"],
+           message: 'Confirm Delete?'
+          }
+          const confirmed = dialog.showMessageBoxSync(options)
+          // const confirmed = window.confirm('Confirm Delete?')
+          if (confirmed == 1) {
             return
           }
           deleteBackup(backup.id)

@@ -17,6 +17,9 @@ import {getSingleEntry} from '../serverAPI/singleEntry.js'
 
 
 import {getInvestments} from '../serverAPI/investments.js'
+const electron = window.require('electron');
+const dialog = electron.remote.dialog
+
 var InvestmentData = [];
 var investmentOptions = [];
 
@@ -74,7 +77,7 @@ const loadNonCommitOptions = inputValue =>
   });
 
 
-const electron       = window.require('electron');
+// const electron       = window.require('electron');
 const ipcRenderer    = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
 
@@ -168,12 +171,22 @@ const RowCurrency = (props) => {
   function onBlur(e){
     var value = e.target.value;
     if (positiveTransactions.includes(props.transcationType) && e.target.value < 0) {
-      alert('Amount must be positive!')
+      let options  = {
+       buttons: ["Ok"],
+       message: 'Amount must be positive!'
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      // alert('Amount must be positive!')
       e.target.value = 0;
       value = 0;
     }
     if (negativeTransactions.includes(props.transcationType) && e.target.value > 0) {
-      alert('Amount must be negative!')
+      let options  = {
+       buttons: ["Ok"],
+       message: 'Amount must be negative!'
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      // alert('Amount must be negative!')
       e.target.value = 0;
       value = 0;
     }
@@ -343,12 +356,17 @@ const RowBland = (props) => {
       const now = new Date();
       const then = new Date(e.target.value)
       if (then === 'Invalid Date') {
-        const confirmed = window.confirm(`The date you entered is technically not correct (Possibly Feb 31st). Are you sure?`)
-        if (!confirmed) {
+        let options  = {
+         buttons: ["Yes","No"],
+         message: `The date you entered is technically not correct (Possibly Feb 31st). Are you sure?`
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        // const confirmed = window.confirm(`The date you entered is technically not correct (Possibly Feb 31st). Are you sure?`)
+        if (confirmed === 1) {
           e.target.value = null;
           e.target.focus();
         }
-        if (confirmed) {
+        else {
           // console.log('confirmed!');
           // e.target.blur();
           return;
@@ -361,15 +379,20 @@ const RowBland = (props) => {
       // console.log(year_difference)
       const max_years = 20;
       if (Math.abs(year_difference) >= max_years ) {
-        const confirmed = window.confirm(`The date you entered is more than ${max_years} years away. Are you sure?`)
-        if (!confirmed) {
+        let options  = {
+         buttons: ["Yes","No"],
+         message: `The date you entered is more than ${max_years} years away. Are you sure?`
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        // const confirmed = window.confirm(`The date you entered is more than ${max_years} years away. Are you sure?`)
+        if (confirmed === 1) {
           e.target.value = null;
           e.target.focus();
         }
-        if (confirmed) {
+        else {
           // console.log('confirmed!');
           // e.target.blur();
-          return;
+          e.preventDefault();
         }
 
       }
@@ -430,7 +453,12 @@ const eventToRow = (event, state) => {
     event.date_due = event.date;
     event.net_amount = parseFloat(event.amount);
     if (isNaN(event.net_amount)) {
-      alert('nan!')
+      let options  = {
+       buttons: ["Ok"],
+       message: 'nan!'
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      // alert('nan!')
       event.net_amount = 0;
     }
     return event;
@@ -532,7 +560,12 @@ const FormSheet = (props) => {
   const onClick = (e) => {
     if (transcationType === 'DISTRIBUTION') {
       if (state['Net Amount'] >= 0) {
-        const confirmed = window.confirm('DISTRIBUTION Net Amount is Positive. Are you sure?')
+        let options  = {
+         buttons: ["Yes","No"],
+         message: 'DISTRIBUTION Net Amount is Positive. Are you sure?'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        // const confirmed = window.confirm('DISTRIBUTION Net Amount is Positive. Are you sure?')
         if (!confirmed) {
           e.preventDefault();
           // return false;
@@ -541,7 +574,12 @@ const FormSheet = (props) => {
     }
     if (transcationType === 'CONTRIBUTION') {
       if (state['Net Amount'] <= 0) {
-        const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
+        let options  = {
+         buttons: ["Yes","No"],
+         message: 'CONTRIBUTION Net Amount is Negative. Are you sure?'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        // const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
         if (!confirmed) {
           e.preventDefault();
           // return false;

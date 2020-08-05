@@ -10,6 +10,9 @@ import {getContributionEventsTime as getContributions, getAllContributionEvents 
 
 import {getInvestment} from '../serverAPI/investments'
 
+const electron = window.require('electron');
+const dialog = electron.remote.dialog
+
 function groupBy(array, item) {
   if (item.includes('date')) {
     const result = array.reduce(function (r, a) {
@@ -247,7 +250,12 @@ const CalendarButton = (props) => {
           newState.timeout = false;
           setState(newState);
       }, 1000);
-      alert(e.target.id + " is not in valid date format");
+      let options  = {
+       buttons: ["Ok"],
+       message: e.target.id + " is not in valid date format"
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      // alert(e.target.id + " is not in valid date format");
       e.target.focus();
     }
 

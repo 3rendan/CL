@@ -23,6 +23,7 @@ import {copyCol, myDateSort, myMoneyFormatter,
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
 const electron = window.require('electron');
+const dialog = electron.remote.dialog
 const ipcRenderer  = electron.ipcRenderer;
 const BrowserWindow = electron.remote.BrowserWindow;
 
@@ -271,8 +272,13 @@ const MaintenanceTable = (props) => {
   const trashCol = {formatter:function(cell, formatterParams, onRendered){ //plain text value
        return "<i class='fa fa-trash'></i>";
    }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
-     const confirmed = window.confirm('Confirm Delete?')
-     if (!confirmed) {
+     let options  = {
+      buttons: ["Yes","No"],
+      message: 'Confirm Delete?'
+     }
+     const confirmed = dialog.showMessageBoxSync(options)
+     // const confirmed = window.confirm('Confirm Delete?')
+     if (confirmed === 1) {
        return;
      }
      const deletedData = cell.getData();
