@@ -57,8 +57,8 @@ const NAVTable = (props) => {
 
   const investmentName = props.investment;
   const investmentID = props.investmentID;
-  const NAVColumns = ['Date', 'NAV', 'Net Contribute', 'P/L']
-  const moneyColumns = ['NAV', 'Net Contribute', 'P/L'];
+  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L']
+  const moneyColumns = ['NAV', 'Net Contribution', 'P/L'];
 
   useEffect(() => {
     async function fetchData() {
@@ -122,7 +122,7 @@ const NAVTable = (props) => {
         nav = calcNAV(groups[minDate], investmentID, nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         const formatDate = moment(minDate).format('L')
-        navDates.push({date: formatDate, nav: nav, net_contribute: netContribute, 'p/l': nav - netContribute})
+        navDates.push({date: formatDate, nav: nav, net_contribution: netContribute, 'p/l': nav - netContribute})
 
 
         // get next end of month
