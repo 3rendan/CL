@@ -87,7 +87,8 @@ ipcMain.on('viewEvents', (event, args) => {
     webPreferences: {
       nodeIntegration: true
     },
-    minWidth: 780
+    minWidth: 780,
+    height: 800
   });
 
   const fileURL = url.format({
@@ -116,7 +117,8 @@ ipcMain.on('viewTransfers', (event, args) => {
     webPreferences: {
       nodeIntegration: true
     },
-    minWidth: 780
+    minWidth: 780,
+    height: 800
   });
 
 
@@ -158,7 +160,8 @@ ipcMain.on('popupEvent', (event, args) => {
     webPreferences: {
       nodeIntegration: true
     },
-    minWidth: 780
+    minWidth: 780,
+    height: 800
   });
 
   const fileURL = url.format({
@@ -186,7 +189,8 @@ ipcMain.on('popupNAVEvent', (event, args) => {
     webPreferences: {
       nodeIntegration: true
     },
-    minWidth: 780
+    minWidth: 780,
+    height: 800
   });
 
   const fileURL = url.format({
@@ -215,7 +219,8 @@ ipcMain.on('popupTransfer', (event, args) => {
     webPreferences: {
       nodeIntegration: true
     },
-    minWidth: 780
+    minWidth: 780,
+    height: 800
   });
 
   const fileURL = url.format({
