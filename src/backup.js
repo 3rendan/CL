@@ -61,7 +61,7 @@ const BackupItem = (props) => {
             return
           }
           deleteBackup(backup.id)
-          setShowSelf(false)
+          setShowSelf(false) // hide this item immediately after delete
           // CALL DELETE HERE
           }
           }
