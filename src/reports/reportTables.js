@@ -13,6 +13,36 @@ import {myMoneyFormatter, initialMoneyFormatter, rightClickMoney} from '../Speci
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
+const electron = window.require('electron');
+const remote   = electron.remote;
+
+function initialMoneyPercentFormatter(cell, formatterParams, onRendered){
+  if (cell.getValue() !== undefined && cell.getValue().toString().includes('%')) {
+    return cell.getValue();
+  }
+  return initialMoneyFormatter(cell, formatterParams, onRendered);
+}
+
+function rightClickMoneyPercent(e, column){
+  if (column.getCells().length === 0) {
+    return;
+  }
+  const showCentsColumn = column.getCells().map(cell => {
+    return cell.getElement().innerText.includes('.')
+  });
+  let showCents = showCentsColumn.reduce(function (a, b) {
+    return a || b;
+  }, false)
+
+  var cells = column.getCells();
+  cells.forEach((cell, _) => {
+    if (cell.getValue() !== undefined) {
+      if (!cell.getValue().includes('%')) {
+        cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
+      }
+    }
+  });
+}
 
 const MaintenanceTable = (props) => {
   const [error, setError] = useState(null);
@@ -20,17 +50,23 @@ const MaintenanceTable = (props) => {
 
   const columnNames = props.columns;
   const tableName = props.name;
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
+
+  const ref = useRef();
 
   useEffect(() => {
     async function fetchInvestments() {
       setData(props.data);
     }
     fetchInvestments().catch(e => setError(e))
+    // console.log(ref.current.table)
+    // ref.current.table.scrollToColumn(props.scrollTo, "middle", false).then(function() {
+    //   console.log('here')
+    // })
   }, [])
 
 
-  const ref = useRef();
+
 
   let columns = columnNames.map((colName) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
@@ -38,13 +74,9 @@ const MaintenanceTable = (props) => {
     if (props.moneyColumns !== undefined && props.moneyColumns.includes(colName)) {
       const column = {title: colName, align: 'right',
         field: fieldName, responsive: 0, minWidth: 150,
-        formatter: initialMoneyFormatter, headerTooltip: 'Right Click to toggle cents',
+        formatter: initialMoneyPercentFormatter, headerTooltip: 'Right Click to toggle cents',
         headerSort:false, sorter:'number',
-        headerContext:rightClickMoney};
-      if (sumColumns) {
-        column['bottomCalc'] = 'sum';
-        column['bottomCalcFormatter'] = initialMoneyFormatter;
-      }
+        headerContext:rightClickMoneyPercent};
       return column;
     }
     return {title: colName, field: fieldName, responsive: 0,
@@ -53,6 +85,9 @@ const MaintenanceTable = (props) => {
 
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
+  if (data === null) {
+    return <h1> Loading Summary Table... </h1>
   }
   return (
     <div>
@@ -65,9 +100,19 @@ const MaintenanceTable = (props) => {
         columns={columns}
         data={data}
         options={{layout: "fitData",
+                  scrollToColumnPosition: "right",
                   dataTree: true,
+                  maxHeight: parseInt(remote.getCurrentWindow().getSize()[1] * 0.9) + 'px',
                   initialSort: [{column: "date_due", dir:'asc'},
-                                {column: "name", dir:'asc'}]}}
+                                {column: "name", dir:'asc'}],
+                  rowFormatter:function(row){
+                    //row - row component
+                    let data = row.getData();
+                    if(["Total NAV", 'Gain ($)', 'Gain (%)'].includes(data.investment)){
+                        row.getElement().style.fontWeight = "bold"; //apply css change to row element
+                    }
+                  }
+            }}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />
