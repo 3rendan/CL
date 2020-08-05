@@ -12,8 +12,6 @@ import MaintenanceTable from './allTables'
 
 import moment from 'moment';
 
-const navColumns = ['Date', 'NAV', 'NET CONTRIB', 'P/L'];
-
 function groupByMonth(array) {
   const result = array.reduce(function (r, a) {
     let element = a.date;
@@ -57,8 +55,8 @@ const NAVTable = (props) => {
 
   const investmentName = props.investment;
   const investmentID = props.investmentID;
-  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L']
-  const moneyColumns = ['NAV', 'Net Contribution', 'P/L'];
+  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L (LTD)']
+  const moneyColumns = ['NAV', 'Net Contribution', 'P/L (LTD)'];
 
   useEffect(() => {
     async function fetchData() {
@@ -122,7 +120,7 @@ const NAVTable = (props) => {
         nav = calcNAV(groups[minDate], investmentID, nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         const formatDate = moment(minDate).format('L')
-        navDates.push({date: formatDate, nav: nav, net_contribution: netContribute, 'p/l': nav - netContribute})
+        navDates.push({date: formatDate, nav: nav, net_contribution: netContribute, 'p/l_(ltd)': nav - netContribute})
 
 
         // get next end of month
