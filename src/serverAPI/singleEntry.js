@@ -137,7 +137,7 @@ const SingleEntryColumns = [
   'Amount', 'Date', 'Notes', 'Type'
 ];
 const NAVColumns = [
-  'Amount', 'Date', 'Notes'
+  'Date', 'Amount', 'Notes'
 ];
 
 export {

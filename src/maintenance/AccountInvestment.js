@@ -12,6 +12,7 @@ import {Investment, updateInvestment, insertInvestment, deleteInvestment,
   colToInvestmentFields} from '../serverAPI/investments.js'
 
 import 'font-awesome/css/font-awesome.css';
+import '../centerHeaders.css';
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 

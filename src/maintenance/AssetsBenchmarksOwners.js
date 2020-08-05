@@ -7,6 +7,7 @@ import {AssetClass, getAssetClasss, insertAssetClass, updateAssetClass, deleteAs
 import {Account, insertAccount, updateAccount, deleteAccount} from '../serverAPI/accounts';
 
 import 'font-awesome/css/font-awesome.css';
+import '../centerHeaders.css';
 
 // data and info
 import "react-tabulator/lib/styles.css"; // default theme

@@ -6,6 +6,7 @@ import "react-tabulator/lib/styles.css"; // default theme
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 import 'font-awesome/css/font-awesome.css';
+import '../centerHeaders.css';
 
 import {deleteSingleEntry} from '../serverAPI/singleEntry';
 import {deleteTransfer} from '../serverAPI/transfers';
@@ -342,7 +343,8 @@ const MaintenanceTable = (props) => {
         columns={columns}
         data={data}
         options={{layout: "fitData",
-                  initialSort: [{column: "date_due", dir:'asc'}],
+                  initialSort: [{column: "date_due", dir:'asc'},
+                                {column: "date", dir:'asc'}],
                   downloadDataFormatter: (data) => data,
                   downloadReady: (fileContents, blob) => blob,
                   rowDblClick:function(e, row){
