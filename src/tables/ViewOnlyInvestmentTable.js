@@ -33,7 +33,7 @@ const ViewOnlyInvestmentTable = () => {
     return null;
   }
   return (<DetailInvestmentTable data={InvestmentData}
-    name={'Investment'}
+    name={'Investments'}
    columns={InvestmentColumns} readOnly={true}/>);
 }
 

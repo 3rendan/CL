@@ -64,7 +64,7 @@ const InvestmentTable = () => {
   return (<DetailInvestmentTable     data={InvestmentData}
       AssetClassData={AssetClassData}  OwnerData={OwnerData}
       BenchmarkData={BenchmarkData} AccountData={AccountData}
-    name={'Investment'} columns={InvestmentColumns}
+    name={'Investments'} columns={InvestmentColumns}
     readOnly={false} />);
 }
 
