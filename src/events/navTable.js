@@ -129,10 +129,7 @@ const NAVTable = (props) => {
                           'p/l_(mtd)': mtd})
         }
         else {
-          console.log('ltd: ' + (nav - netContribute))
           const mtd = (nav - netContribute - last_pl)
-          console.log('mtd: ' + mtd)
-          console.log(typeof(mtd))
           navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
                           'p/l_(ltd)': nav - netContribute,
                           'p/l_(mtd)': mtd})

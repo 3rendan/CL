@@ -559,7 +559,7 @@ const FormSheet = (props) => {
 
   const onClick = (e) => {
     if (transcationType === 'DISTRIBUTION') {
-      if (state['Net Amount'] >= 0) {
+      if (state['Net Amount'] > 0) {
         let options  = {
          buttons: ["Yes","No"],
          message: 'DISTRIBUTION Net Amount is Positive. Are you sure?'
@@ -573,7 +573,7 @@ const FormSheet = (props) => {
       }
     }
     if (transcationType === 'CONTRIBUTION') {
-      if (state['Net Amount'] <= 0) {
+      if (state['Net Amount'] < 0) {
         let options  = {
          buttons: ["Yes","No"],
          message: 'CONTRIBUTION Net Amount is Negative. Are you sure?'
@@ -616,7 +616,6 @@ const FormSheet = (props) => {
       const updatedEvent = updateEvent({
         state: state
       });
-
 
       updatedEvent['type'] = transcationType;
       const newRow = eventToRow(updatedEvent, state);
