@@ -42,7 +42,7 @@ const updateTransfer = async (transfer) => {
   try {
     const body = transfer.body();
     const response = await fetch(
-      `http://${databaseHost}:5000/transfer/${transfer.id}`,
+      `http://${databaseHost}:5000/transfers/${transfer.id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

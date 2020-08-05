@@ -69,7 +69,11 @@ const FilledFormSheet = (props) => {
             if (month < 10) {
               month = '0' + month;
             }
-            const formatDate = date.getFullYear() + '-' + month + '-' + date.getDate()
+            let day = (date.getDate() + 1);
+            if (day < 10) {
+              day = '0' + day;
+            }
+            const formatDate = date.getFullYear() + '-' + month + '-' + day
             result[key] = formatDate;
           }
 
