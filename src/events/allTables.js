@@ -29,7 +29,7 @@ const BrowserWindow = electron.remote.BrowserWindow;
 
 function AddRow(props) {
   props['id'] = BrowserWindow.getFocusedWindow().id;
-  if (props.name === 'Event') {
+  if (props.name === 'Events') {
     ipcRenderer.send('popupEvent', props);
   }
   else if (props.name === 'NAV Entries') {
@@ -42,7 +42,7 @@ function AddRow(props) {
 
 function EditRow(props) {
   props['id'] = BrowserWindow.getFocusedWindow().id;
-  if (props.name === 'Event') {
+  if (props.name === 'Events') {
     ipcRenderer.send('popupEvent', props);
   }
   else if (props.name === 'NAV Entries') {
@@ -282,7 +282,7 @@ const MaintenanceTable = (props) => {
        return;
      }
      const deletedData = cell.getData();
-     if (tableName === 'Event' || tableName === 'NAV Entries') {
+     if (tableName === 'Events' || tableName === 'NAV Entries') {
        if (deletedData.type === 'CONTRIBUTION') {
          deleteContribution(deletedData.id)
        }

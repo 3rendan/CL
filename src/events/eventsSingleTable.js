@@ -81,7 +81,7 @@ const EventTable = (props) => {
   if (EventData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Event"} data={EventData}
+  return (<MaintenanceTable name={"Events"} data={EventData}
             columns={eventColumns} hasCommitment={false}
             investmentID={investmentID}
             moneyColumns={moneyColumns}

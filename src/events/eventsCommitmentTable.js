@@ -105,7 +105,7 @@ const EventTable = (props) => {
   if (EventData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Event"} data={EventData}
+  return (<MaintenanceTable name={"Events"} data={EventData}
             columns={eventColumns} hasCommitment={true}
             commitment={props.commitment}
             frozenColumns={props.frozenColumns}
