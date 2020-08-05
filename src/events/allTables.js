@@ -302,6 +302,7 @@ const MaintenanceTable = (props) => {
      }
 
      cell.getRow().delete();
+     BrowserWindow.getAllWindows().map(window => window.reload())
   }};
 
 
