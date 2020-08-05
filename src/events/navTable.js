@@ -55,8 +55,8 @@ const NAVTable = (props) => {
 
   const investmentName = props.investment;
   const investmentID = props.investmentID;
-  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L (LTD)']
-  const moneyColumns = ['NAV', 'Net Contribution', 'P/L (LTD)'];
+  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)']
+  const moneyColumns = ['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)'];
 
   useEffect(() => {
     async function fetchData() {
@@ -116,11 +116,30 @@ const NAVTable = (props) => {
       const monthNav = {}
       const monthNetContribute = {};
       const monthPL = {};
+      let last_pl = null;
       while (minDate <= finalMonth) {
         nav = calcNAV(groups[minDate], investmentID, nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         const formatDate = moment(minDate).format('L')
-        navDates.push({date: formatDate, nav: nav, net_contribution: netContribute, 'p/l_(ltd)': nav - netContribute})
+
+        if (last_pl === null) {
+          const mtd = nav - netContribute
+          navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
+                          'p/l_(ltd)': nav - netContribute,
+                          'p/l_(mtd)': mtd})
+        }
+        else {
+          console.log('ltd: ' + (nav - netContribute))
+          const mtd = (nav - netContribute - last_pl)
+          console.log('mtd: ' + mtd)
+          console.log(typeof(mtd))
+          navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
+                          'p/l_(ltd)': nav - netContribute,
+                          'p/l_(mtd)': mtd})
+        }
+        last_pl = (nav - netContribute).valueOf()
+
+
 
 
         // get next end of month

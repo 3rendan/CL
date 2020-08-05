@@ -105,11 +105,12 @@ function myDateSort(a, b) {
   let aDate = a.date ? a.date : a.date_due;
   let bDate = b.date ? b.date : b.date_due;
 
+
   if (typeof(a) === 'string') {
-    aDate = a;
+    aDate = new Date(a);
   }
   if (typeof(b) === 'string') {
-    bDate = b;
+    bDate = new Date(b);
   }
 
   let firstDay = null;
