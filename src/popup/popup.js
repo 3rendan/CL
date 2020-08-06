@@ -81,9 +81,9 @@ const loadNonCommitOptions = inputValue =>
 const ipcRenderer    = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
 
-var senderWindow = null;
-var senderWindowId = null;
-var replyChannel = null;
+var senderWindow    = null;
+var senderWindowId  = null;
+var replyChannel    = null;
 
 ipcRenderer.on('popupMessage', (event, message) => {
   replyChannel = 'replyEvent';
@@ -487,10 +487,7 @@ const FormSheet = (props) => {
 
 
   useEffect(()=> {
-    console.log(state)
-    if (state['Date Sent'] === undefined && state['Date Due'] !== undefined) {
-      state['Date Sent'] = state['Date Due'];
-    }
+    state['Date Sent'] = state['Date Due'];
     async function fetchData() {
       const result = await getInvestmentData();
       if (!result) {
@@ -563,7 +560,7 @@ const FormSheet = (props) => {
         }
         const confirmed = dialog.showMessageBoxSync(options)
         // const confirmed = window.confirm('DISTRIBUTION Net Amount is Positive. Are you sure?')
-        if (!confirmed) {
+        if (confirmed === 1) {
           e.preventDefault();
           // return false;
         }
@@ -577,7 +574,7 @@ const FormSheet = (props) => {
         }
         const confirmed = dialog.showMessageBoxSync(options)
         // const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
-        if (!confirmed) {
+        if (confirmed === 1) {
           e.preventDefault();
           // return false;
         }
