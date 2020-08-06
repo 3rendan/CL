@@ -81,7 +81,14 @@ const AssetAllocationReport = (props) => {
         }
 
         if (assetClass in subAssets) {
-          subAssets[assetClass].push({asset: subAssetClass, nav: nav});
+          const possibleSubAsset = subAssets[assetClass].filter(i => i.asset === subAssetClass);
+          if (possibleSubAsset.length === 0) { // has asset but not this subAsset
+            subAssets[assetClass].push({asset: subAssetClass, nav: nav});
+          }
+          else { // already has subAsset for this asset
+            possibleSubAsset[0].nav += nav;
+          }
+
         }
         else {
           subAssets[assetClass] = [{asset: subAssetClass, nav: nav}];
@@ -89,8 +96,15 @@ const AssetAllocationReport = (props) => {
       }));
 
       const allAssets = Object.keys(assets);
+      console.log(assets)
       let totalNAV = allAssets.reduce((a,b) => a+assets[b], 0);
       const assetData = allAssets.map((asset) => {
+        console.log(asset)
+        console.log(subAssets[asset])
+        subAssets[asset].map(subAsset => {
+          subAsset['nav_(%)'] = (subAsset.nav/totalNAV * 100).toFixed(2) + '%'
+          return subAsset
+        })
         return {asset: asset, nav: assets[asset], _children: subAssets[asset],
                 'nav_(%)': (assets[asset]/totalNAV * 100).toFixed(2) + '%'
         }
