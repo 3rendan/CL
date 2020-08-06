@@ -246,39 +246,34 @@ const SummaryReport = (props) => {
       const gains36ByDate = {investment: 'T36M Gain ($)', months: 36}
       const gains36PercentByDate = {investment: 'T36M Gain (%)'}
       allDates.map((currDate, i) => {
-        if (i === 0) {
-          gainsByDate[currDate] = sumNAVs[currDate] - inflowsByDate[currDate] + outflowsByDate[currDate] + netExpensesByDate[currDate];
-        }
-        else {
+        if (i !== 0) {
           const prevDate = allDates[i-1];
           gainsByDate[currDate] = sumNAVs[currDate] - sumNAVs[prevDate] - inflowsByDate[currDate] + outflowsByDate[currDate] + netExpensesByDate[currDate];
           gainPercentByDate[currDate] = (gainsByDate[currDate] / sumNAVs[prevDate] * 100)
           gainPercentDisplayByDate[currDate] = gainPercentByDate[currDate].toFixed(2) + '%'
         }
 
-        if (i >= gains12ByDate.months - 1) {
+        if (i >= gains12ByDate.months) {
           const dateRange = allDates.slice(i - (gains12ByDate.months - 1), i+1)
           gains12ByDate[currDate] = dateRange.reduce(function (acc, date) {
             return acc + gainsByDate[date];
           }, 0);
-          if (i >= gains12ByDate.months) {
-            const percent = dateRange.reduce(function (acc, date) {
-              return acc * (1 + gainPercentByDate[date]/100);
-            }, 1) - 1;
-            gains12PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
-          }
+          
+          const percent = dateRange.reduce(function (acc, date) {
+            return acc * (1 + gainPercentByDate[date]/100);
+          }, 1) - 1;
+          gains12PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
         }
-        if (i >= gains36ByDate.months - 1) {
+        if (i >= gains36ByDate.months) {
           const dateRange = allDates.slice(i - (gains36ByDate.months - 1), i + 1)
           gains36ByDate[currDate] = dateRange.reduce(function (acc, date) {
             return acc + gainsByDate[date];
           }, 0);
-          if (i >= gains36ByDate.months) {
-            const percent = dateRange.reduce(function (acc, date) {
-              return acc * (1 + gainPercentByDate[date]/100);
-            }, 1) - 1;
-            gains36PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
-          }
+
+          const percent = dateRange.reduce(function (acc, date) {
+            return acc * (1 + gainPercentByDate[date]/100);
+          }, 1) - 1;
+          gains36PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
         }
       })
 
