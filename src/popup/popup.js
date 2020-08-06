@@ -294,6 +294,11 @@ const RowInvestment = (props) => {
         const nonCommit = investmentOptions.filter(i => !i.value.has_commitment)
         setDefaultOptions(nonCommit);
         setValue(nonCommit[0])
+        props.setState(state => {
+          const newState = {...state}
+          newState[props.name] = {label: nonCommit[0].name, value: nonCommit[0]}
+          return newState;
+        });
       }
       if (loadOptions === loadAllOptions) {
         setDefaultOptions(investmentOptions);
@@ -467,6 +472,7 @@ const eventToRow = (event, state) => {
 const FormSheet = (props) => {
   // for all data
   const [InvestmentData, setInvestmentData] = useState(null);
+  const [InvestmentName, setInvestmentName] = useState(null);
   const getInvestmentData = props.getInvestmentData;
 
   const isSelected = props.transcationType !== undefined;
@@ -487,6 +493,7 @@ const FormSheet = (props) => {
 
 
   useEffect(()=> {
+    console.log(state)
     state['Date Sent'] = state['Date Due'];
     async function fetchData() {
       const result = await getInvestmentData();
@@ -494,6 +501,11 @@ const FormSheet = (props) => {
         throw 'Server Disconnected: Investment data null'
       }
       setInvestmentData(result);
+      result.map(data => {
+        if (data.id === investmentID) {
+          setInvestmentName(data.name)
+        }
+      })
     }
     fetchData().catch(e =>
       setError(e)
@@ -505,16 +517,16 @@ const FormSheet = (props) => {
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount',
         'Main $', 'Fees $', 'Tax $',
         'Outside Main $', 'Outside Fees $', 'Outside Tax $',
-         'Investment', 'From Investment', 'Notes'];
+         'Investment', 'Notes'];
         break;
       case 'DISTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Investment', 'From Investment', 'Notes'];
+        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Investment', 'Notes'];
         break;
       case 'TRANSFER':
-        mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];
+        mainColumns = ['Date', 'To Investment', 'Amount', 'Notes'];
         break;
       case 'COMMISH':
-        mainColumns = ['Date', 'Amount', 'Investment', 'From Investment', 'Notes']
+        mainColumns = ['Date', 'Amount', 'Investment', 'Notes']
         break;
       default: // single entry transaction details
         mainColumns = ['Date', 'Investment', 'Amount', 'Notes'];
@@ -628,6 +640,17 @@ const FormSheet = (props) => {
     ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
   };
 
+  let contributionWarning = null;
+  if (transcationType === 'DISTRIBUTION') {
+    contributionWarning = <h3> Distribution net amount must be negative  </h3>
+  }
+
+  let displayInvestmentName;
+  if(InvestmentName) {
+    displayInvestmentName = <h2> Investment = {InvestmentName} </h2>
+  }
+
+
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
@@ -640,6 +663,8 @@ const FormSheet = (props) => {
        <br />
        <form style={{visibility: hasSelected ? 'visible' : 'hidden'}}
               onSubmit={onSubmit}>
+         {displayInvestmentName}
+         {contributionWarning}
          {rows}
          <input id="submitForm" type="submit" onClick={onClick} />
        </form>
