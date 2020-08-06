@@ -21,6 +21,11 @@ const electron = window.require('electron');
 const dialog = electron.remote.dialog
 const remote = electron.remote;
 
+const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
+const negativeTransactions = ['OUTFLOW', 'EXPENSE']
+
+
+
 var InvestmentData = [];
 var investmentOptions = [];
 
@@ -108,7 +113,6 @@ const RowCurrencyNet = (props) => {
   let currency = 'USD';
 
   const value = props.state[props.name] ? props.state[props.name] : props.netAmount;
-  const min = 0;
 
   function localStringToNumber( s ){
     return Number(String(s).replace(/[^0-9.-]+/g,""))
@@ -127,7 +131,7 @@ const RowCurrencyNet = (props) => {
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
-        <input readOnly type={'currency'} min={min}
+        <input readOnly type={'currency'}
                value={localStringToNumber(value).toLocaleString(undefined, options)}
                className="form-control"  />
     </div>
@@ -137,25 +141,18 @@ const RowCurrencyNet = (props) => {
 const RowCurrency = (props) => {
   let placeholder = props.name;
   let currency = 'USD';
-  const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
-  const negativeTransactions = ['OUTFLOW', 'EXPENSE']
 
   const [currMoney, setCurrMoney] = useState(props.state[props.name] ? props.state[props.name] : 0);
 
   let defaultValue = null;
-  if (currMoney !== undefined) {
-    var options = {
-        maximumFractionDigits : 2,
-        currency              : currency,
-        style                 : "currency",
-        currencyDisplay       : "symbol"
-    };
+  var options = {
+      maximumFractionDigits : 2,
+      currency              : currency,
+      style                 : "currency",
+      currencyDisplay       : "symbol"
+  };
 
-    defaultValue = localStringToNumber(currMoney).toLocaleString(undefined, options);
-  }
-
-
-  const min = 0;
+  defaultValue = localStringToNumber(currMoney).toLocaleString(undefined, options);
 
   function localStringToNumber( s ){
     return Number(String(s).replace(/[^0-9.-]+/g,""))
@@ -166,43 +163,57 @@ const RowCurrency = (props) => {
     e.target.value = value ? localStringToNumber(value) : ''
   }
 
+  function onChange(e) {
+    var value = e.target.value;
+    const valAsNumber = localStringToNumber(value)
+    if (isNaN(valAsNumber)) {
+      return;
+    }
+    props.setState(state => {
+      const newState = {...state}
+      console.log(valAsNumber)
+      newState[props.name] =  valAsNumber
+      if (newState['Net Amount'] !== undefined && props.name !== 'Withhold $') {
+        if (currMoney === undefined) {
+          newState['Net Amount'] = newState['Net Amount'] + valAsNumber
+        }
+        else {
+          newState['Net Amount'] = newState['Net Amount'] + valAsNumber - currMoney
+        }
+
+      }
+      return newState;
+    });
+    setCurrMoney(valAsNumber);
+
+  }
+
   function onBlur(e){
     var value = e.target.value;
-    if (positiveTransactions.includes(props.transcationType) && e.target.value < 0) {
-      let options  = {
-       buttons: ["Ok"],
-       message: 'Amount must be positive!'
-      }
-      const confirmed = dialog.showMessageBoxSync(options)
-      // alert('Amount must be positive!')
-      e.target.value = 0;
-      value = 0;
-    }
-    if (negativeTransactions.includes(props.transcationType) && e.target.value > 0) {
-      let options  = {
-       buttons: ["Ok"],
-       message: 'Amount must be negative!'
-      }
-      const confirmed = dialog.showMessageBoxSync(options)
-      // alert('Amount must be negative!')
-      e.target.value = 0;
-      value = 0;
-    }
-
-
-    var options = {
-        maximumFractionDigits : 2,
-        currency              : currency,
-        style                 : "currency",
-        currencyDisplay       : "symbol"
-    };
+    // if (positiveTransactions.includes(props.transcationType) && e.target.value < 0) {
+    //   let options  = {
+    //    buttons: ["Ok"],
+    //    message: 'Amount must be positive!'
+    //   }
+    //   const confirmed = dialog.showMessageBoxSync(options)
+    //   // alert('Amount must be positive!')
+    //   e.target.value = 0;
+    //   value = 0;
+    // }
+    // if (negativeTransactions.includes(props.transcationType) && e.target.value > 0) {
+    //   let options  = {
+    //    buttons: ["Ok"],
+    //    message: 'Amount must be negative!'
+    //   }
+    //   const confirmed = dialog.showMessageBoxSync(options)
+    //   // alert('Amount must be negative!')
+    //   e.target.value = 0;
+    //   value = 0;
+    // }
 
     e.target.value = value
       ? localStringToNumber(value).toLocaleString(undefined, options)
       : '';
-
-
-
 
     const name = props.name
     props.setState(state => {
@@ -220,20 +231,18 @@ const RowCurrency = (props) => {
       return newState;
     });
     setCurrMoney(localStringToNumber(value));
-
   }
 
   const size = props.size * 10 + "px";
 
   placeholder = "Enter ".concat(placeholder.toLowerCase());
 
-
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon"
               id={props.name}>{props.name}</span>
         <input type={'currency'} onFocus={onFocus.bind(this)}
-                onBlur={onBlur.bind(this)} min={min}
+                onBlur={onBlur.bind(this)} onChange={onChange.bind(this)}
                 className="form-control" placeholder={placeholder}
                 defaultValue={defaultValue} required/>
     </div>
@@ -297,7 +306,7 @@ const RowInvestment = (props) => {
         setValue(nonCommit[0])
         props.setState(state => {
           const newState = {...state}
-          newState[props.name] = {label: nonCommit[0].name, value: nonCommit[0]}
+          newState[props.name] = nonCommit[0]
           return newState;
         });
       }
@@ -333,13 +342,11 @@ const RowBland = (props) => {
 
 
   let type = "";
-  let min = null;
   if (props.name.includes("Date")) {
     type = "date";
   }
   else if (props.name.includes("Amount")) {
     type = "number";
-    min = "0";
   }
   else {
     type="text";
@@ -410,7 +417,7 @@ const RowBland = (props) => {
     return (
       <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
           <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
-          <input type={type} min={min} onChange={onChange.bind(this)} onBlur={onBlur.bind(this)}
+          <input type={type} onChange={onChange.bind(this)} onBlur={onBlur.bind(this)}
               value={props.state[props.name]}
               className="form-control" placeholder={placeholder} />
       </div>
@@ -419,55 +426,12 @@ const RowBland = (props) => {
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
         <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
-        <input type={type} min={min} onChange={onChange.bind(this)} onBlur={onBlur.bind(this)}
+        <input type={type} onChange={onChange.bind(this)} onBlur={onBlur.bind(this)}
             value={props.state[props.name]}
             className="form-control" placeholder={placeholder} required />
     </div>
   );
 };
-
-const eventToRow = (event, state) => {
-  let net_commitment = 0;
-  if (event.type === 'COMMISH') {
-    event.net_amount = parseFloat(event.amount);
-    event.investment = state.Investment.value.name;
-    event.from_investment = state['From Investment'].value.name;
-    event.date_due = event.date;
-    return event;
-  }
-  else if (event.type === 'CONTRIBUTION') {
-    event.investment = state.Investment.value.name;
-    event.from_investment = state['From Investment'].value.name;
-    return event;
-  }
-  else if (event.type === 'DISTRIBUTION') {
-    event.investment = state.Investment.value.name;
-    event.from_investment = state['From Investment'].value.name;
-    return event;
-  }
-  else if (event.type === 'TRANSFER') {
-    event.to_investment = state['To Investment'].value.name;
-    event.from_investment = state['From Investment'].value.name;
-    event.amount = parseFloat(event.amount);
-    return event;
-  }
-  else {
-    event.investment = state.Investment.value.name;
-    event.date_due = event.date;
-    event.net_amount = parseFloat(event.amount);
-    if (isNaN(event.net_amount)) {
-      let options  = {
-       buttons: ["Ok"],
-       message: 'nan!'
-      }
-      const confirmed = dialog.showMessageBoxSync(options)
-      // alert('nan!')
-      event.net_amount = 0;
-    }
-    return event;
-  }
-}
-
 
 
 const FormSheet = (props) => {
@@ -484,7 +448,7 @@ const FormSheet = (props) => {
 
   const investmentID = props.investmentID;
 
-  const [state, setState] = useState(props.initial ? props.initial : {'Net Amount': 0});
+  const [state, setState] = useState(props.initial ? props.initial : {'Net Amount': 0, 'From Investment ID': investmentID});
 
   const [error, setError] = useState(null);
   if (props.initial !== undefined && Object.keys(state).length === 0
@@ -593,6 +557,28 @@ const FormSheet = (props) => {
         }
       }
     }
+
+    if(positiveTransactions.includes(transcationType)) {
+      if (state['Net Amount'] < 0) {
+        let options  = {
+         buttons: ["Ok"],
+         message: 'Amount must be positive!'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        e.preventDefault()
+      }
+    }
+    if(negativeTransactions.includes(transcationType)) {
+      if (state['Net Amount'] > 0) {
+        let options  = {
+         buttons: ["Ok"],
+         message: 'Amount must be negative!'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        e.preventDefault()
+      }
+    }
+
     Object.keys(state).map(column => {
       if (column.includes('Amount') || column.includes('$')) {
         state[column] = parseFloat(state[column]);
@@ -625,8 +611,7 @@ const FormSheet = (props) => {
       });
 
       updatedEvent['type'] = transcationType;
-      const newRow = eventToRow(updatedEvent, state);
-      ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
+      ipcRenderer.sendTo(senderWindowId, replyChannel, {})
       return;
 
     }
@@ -637,8 +622,7 @@ const FormSheet = (props) => {
 
 
     newEvent['type'] = transcationType;
-    const newRow = eventToRow(newEvent, state);
-    ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
+    ipcRenderer.sendTo(senderWindowId, replyChannel, {})
   };
 
   const exit = (e) => {
