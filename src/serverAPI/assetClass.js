@@ -41,7 +41,6 @@ AssetClass.prototype.toString = function() {
 const updateAssetClass = async (assetClass) => {
     try {
       const body = assetClass.body();
-      console.log(body)
       const response = await fetch(
         `http://${databaseHost}:5000/assetClasses/${assetClass.id}`,
         {
