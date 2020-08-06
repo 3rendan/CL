@@ -269,7 +269,7 @@ const SummaryReport = (props) => {
           }
         }
         if (i >= gains36ByDate.months - 1) {
-          const dateRange = allDates.slice(i - gains36ByDate.months, i)
+          const dateRange = allDates.slice(i - (gains36ByDate.months - 1), i + 1)
           gains36ByDate[currDate] = dateRange.reduce(function (acc, date) {
             return acc + gainsByDate[date];
           }, 0);
