@@ -8,41 +8,13 @@ import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 import 'font-awesome/css/font-awesome.css';
 import '../centerHeaders.css';
 
-import {myMoneyFormatter, initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
+import {initialMoneyPercentFormatter, rightClickMoneyPercent} from '../SpecialColumn';
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
 const electron = window.require('electron');
 const remote   = electron.remote;
-
-function initialMoneyPercentFormatter(cell, formatterParams, onRendered){
-  if (cell.getValue() !== undefined && cell.getValue().toString().includes('%')) {
-    return cell.getValue();
-  }
-  return initialMoneyFormatter(cell, formatterParams, onRendered);
-}
-
-function rightClickMoneyPercent(e, column){
-  if (column.getCells().length === 0) {
-    return;
-  }
-  const showCentsColumn = column.getCells().map(cell => {
-    return cell.getElement().innerText.includes('.')
-  });
-  let showCents = showCentsColumn.reduce(function (a, b) {
-    return a || b;
-  }, false)
-
-  var cells = column.getCells();
-  cells.forEach((cell, _) => {
-    if (cell.getValue() !== undefined) {
-      if (!cell.getValue().includes('%')) {
-        cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
-      }
-    }
-  });
-}
 
 const MaintenanceTable = (props) => {
   const [error, setError] = useState(null);
@@ -109,6 +81,14 @@ const MaintenanceTable = (props) => {
                     //row - row component
                     let data = row.getData();
                     if(["Total NAV", 'Gain ($)', 'Gain (%)'].includes(data.investment)){
+                        row.getElement().style.fontWeight = "bold"; //apply css change to row element
+                    }
+                    // asset allocation report
+                    if(["Total NAV"].includes(data.asset)){
+                        row.getElement().style.fontWeight = "bold"; //apply css change to row element
+                    }
+                    // Accont Balance
+                    if(["Total NAV"].includes(data.account)){
                         row.getElement().style.fontWeight = "bold"; //apply css change to row element
                     }
                   }

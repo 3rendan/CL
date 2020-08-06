@@ -89,11 +89,13 @@ const AssetAllocationReport = (props) => {
       }));
 
       const allAssets = Object.keys(assets);
+      let totalNAV = allAssets.reduce((a,b) => a+assets[b], 0);
       const assetData = allAssets.map((asset) => {
-        return {asset: asset, nav: assets[asset], _children: subAssets[asset]
+        return {asset: asset, nav: assets[asset], _children: subAssets[asset],
+                'nav_(%)': (assets[asset]/totalNAV * 100).toFixed(2) + '%'
         }
       })
-
+      assetData.push({asset: 'Total NAV', nav: totalNAV})
       setAsset(assetData);
     }
     manipulateData().catch(e => setError(e))
@@ -107,8 +109,8 @@ const AssetAllocationReport = (props) => {
     return <div> hi </div>;
   }
   return (<MaintenanceTable name={"Asset NAV"} data={asset}
-            columns={['Asset', 'NAV']}
-            moneyColumns={['NAV']}
+            columns={['Asset', 'NAV', 'NAV (%)']}
+            moneyColumns={['NAV', 'NAV (%)']}
             noButton={true}/>);
 }
 

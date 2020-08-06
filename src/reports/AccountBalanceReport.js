@@ -78,10 +78,13 @@ const AccountBalanceReport = (props) => {
       }));
       console.log(accounts)
       const allAccounts = Object.keys(accounts);
+      let totalNAV = allAccounts.reduce((a,b) => a+accounts[b], 0);
       console.log(allAccounts)
       const accountData = allAccounts.map((account) => {
-        return {account: account, nav: accounts[account]}
+        return {account: account, nav: accounts[account],
+                'nav_(%)': (accounts[account]/totalNAV * 100).toFixed(2) + '%'}
       })
+      accountData.push({account: 'Total NAV', nav: totalNAV})
       console.log(accountData)
       setData(accountData);
     }
@@ -93,11 +96,11 @@ const AccountBalanceReport = (props) => {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
   if (data === null) {
-    return <div> hi </div>;
+    return <div> </div>;
   }
   return (<MaintenanceTable name={"Account NAV"} data={data}
-            columns={['Account', 'NAV']}
-            moneyColumns={['NAV']}
+            columns={['Account', 'NAV', 'NAV (%)']}
+            moneyColumns={['NAV', 'NAV (%)']}
             noButton={true}/>);
 }
 

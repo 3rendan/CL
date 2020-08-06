@@ -100,6 +100,35 @@ function rightClickMoney(e, column){
   });
 }
 
+function initialMoneyPercentFormatter(cell, formatterParams, onRendered){
+  if (cell.getValue() !== undefined && cell.getValue().toString().includes('%')) {
+    return cell.getValue();
+  }
+  return initialMoneyFormatter(cell, formatterParams, onRendered);
+}
+
+function rightClickMoneyPercent(e, column){
+  if (column.getCells().length === 0) {
+    return;
+  }
+  const showCentsColumn = column.getCells().map(cell => {
+    return cell.getElement().innerText.includes('.')
+  });
+  let showCents = showCentsColumn.reduce(function (a, b) {
+    return a || b;
+  }, false)
+
+  var cells = column.getCells();
+  cells.forEach((cell, _) => {
+    if (cell.getValue() !== undefined) {
+      if (!cell.getValue().includes('%')) {
+        cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
+      }
+    }
+  });
+}
+
+
 // date sorting
 function myDateSort(a, b) {
   let aDate = a.date ? a.date : a.date_due;
@@ -202,5 +231,6 @@ const defaultTabulatorSettings = {
   downloadReady: (fileContents, blob) => blob
 };
 
-export {copyCol, myMoneyFormatter, initialMoneyFormatter, rightClickMoney,
+export {copyCol, myMoneyFormatter, initialMoneyFormatter, initialMoneyPercentFormatter,
+  rightClickMoneyPercent, rightClickMoney,
   eventsCol, defaultTabulatorSettings, calcNAV, myDateSort};
