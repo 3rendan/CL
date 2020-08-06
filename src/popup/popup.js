@@ -19,6 +19,7 @@ import {getSingleEntry} from '../serverAPI/singleEntry.js'
 import {getInvestments} from '../serverAPI/investments.js'
 const electron = window.require('electron');
 const dialog = electron.remote.dialog
+const remote = electron.remote;
 
 var InvestmentData = [];
 var investmentOptions = [];
@@ -640,6 +641,11 @@ const FormSheet = (props) => {
     ipcRenderer.sendTo(senderWindowId, replyChannel, newRow)
   };
 
+  const exit = (e) => {
+    var window = remote.getCurrentWindow();
+    window.close();
+  }
+
   let contributionWarning = null;
   if (transcationType === 'DISTRIBUTION') {
     contributionWarning = <h3> Distribution net amount must be negative  </h3>
@@ -667,6 +673,8 @@ const FormSheet = (props) => {
          {contributionWarning}
          {rows}
          <input id="submitForm" type="submit" onClick={onClick} />
+         <input id="cancel" type="button" value="Cancel" onClick={exit}
+                  style={{float: "right", marginRight: "10%"}}/>
        </form>
      </div>
   );
