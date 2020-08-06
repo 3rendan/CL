@@ -174,7 +174,7 @@ function calcNAV(group, investmentID, nav) {
     if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
       // amount is negative for type distribution
       if (current.from_investment === investmentID) {
-        return accumulator - amount;
+        return accumulator + amount;
       }
     }
     return accumulator + amount;
