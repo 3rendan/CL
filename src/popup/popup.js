@@ -139,11 +139,10 @@ const RowCurrency = (props) => {
   const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
   const negativeTransactions = ['OUTFLOW', 'EXPENSE']
 
-  const [currMoney, setCurrMoney] = useState(props.state[props.name]);
-
+  const [currMoney, setCurrMoney] = useState(props.state[props.name] ? props.state[props.name] : 0);
 
   let defaultValue = null;
-  if (props.state[props.name] !== undefined) {
+  if (currMoney !== undefined) {
     var options = {
         maximumFractionDigits : 2,
         currency              : currency,
@@ -151,9 +150,7 @@ const RowCurrency = (props) => {
         currencyDisplay       : "symbol"
     };
 
-    defaultValue = props.state[props.name]
-      ? localStringToNumber(props.state[props.name]).toLocaleString(undefined, options)
-      : '';
+    defaultValue = localStringToNumber(currMoney).toLocaleString(undefined, options);
   }
 
 
@@ -163,7 +160,7 @@ const RowCurrency = (props) => {
     return Number(String(s).replace(/[^0-9.-]+/g,""))
   }
 
-  function onFocus(e){
+  function onFocus(e) {
     var value = e.target.value;
     e.target.value = value ? localStringToNumber(value) : ''
   }
