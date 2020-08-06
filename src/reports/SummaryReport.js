@@ -263,7 +263,7 @@ const SummaryReport = (props) => {
           }, 0);
           if (i >= gains12ByDate.months) {
             const percent = dateRange.reduce(function (acc, date) {
-              return acc * (1 + gainPercentByDate[date]);
+              return acc * (1 + gainPercentByDate[date]/100);
             }, 1) - 1;
             gains12PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
           }
@@ -275,7 +275,7 @@ const SummaryReport = (props) => {
           }, 0);
           if (i >= gains36ByDate.months) {
             const percent = dateRange.reduce(function (acc, date) {
-              return acc * (1 + gainPercentByDate[date]);
+              return acc * (1 + gainPercentByDate[date]/100);
             }, 1) - 1;
             gains36PercentByDate[currDate] = (percent * 100).toFixed(2) + '%'
           }
