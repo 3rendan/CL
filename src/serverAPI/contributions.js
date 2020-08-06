@@ -27,18 +27,18 @@ class Contribution {
       this.date_due = data['Date Due'];
       this.date_sent = data['Date Sent'];
 
-      this.main = data['Main $'];
-      this.fees = data['Fees $'];
-      this.tax = data['Tax $'];
-      this.outside_main = data['Outside Main $'];
-      this.outside_fees = data['Outside Fees $'];
-      this.outside_tax = data['Outside Tax $'];
+      this.main = data['Main $'] ? data['Main $'] : 0;
+      this.fees = data['Fees $'] ? data['Fees $'] : 0;
+      this.tax = data['Tax $'] ? data['Tax $'] : 0;
+      this.outside_main = data['Outside Main $'] ? data['Outside Main $'] : 0;
+      this.outside_fees = data['Outside Fees $'] ? data['Outside Fees $'] : 0;
+      this.outside_tax = data['Outside Tax $'] ? data['Outside Tax $'] : 0;
 
       this.net_amount = parseFloat(this.main) + parseFloat(this.fees) +
                 parseFloat(this.tax) +  parseFloat(this.outside_main) +
                 parseFloat(this.outside_fees) + parseFloat(this.outside_tax);
       this.investment = data['Investment'].value.id;
-      this.from_investment = data['From Investment'].value.id;
+      this.from_investment = data['From Investment'] ? data['From Investment'].value.id : data['From Investment ID'];
       this.notes = data.Notes;
     }
   }

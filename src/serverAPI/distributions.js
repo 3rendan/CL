@@ -21,14 +21,14 @@ class Distribution {
     }
     else {
       this.id = data.id;
-      this.date_due = data['Date Due'];
-      this.date_sent = data['Date Sent'];
-      this.withhold = data['Withhold $'];
-      this.recallable = data['Recallable $'];
-      this.main = data['Main $'];
+      this.date_due = data['Date Due'] ? data['Date Due'] : 0;
+      this.date_sent = data['Date Sent'] ? data['Date Sent'] : 0;
+      this.withhold = data['Withhold $'] ? data['Withhold $'] : 0;
+      this.recallable = data['Recallable $'] ? data['Recallable $'] : 0;
+      this.main = data['Main $'] ? data['Main $'] : 0;
       this.net_amount = parseFloat(this.recallable) + parseFloat(this.main);
       this.investment = data['Investment'].value.id;
-      this.from_investment = data['From Investment'].value.id;
+      this.from_investment = data['From Investment'] ? data['From Investment'].value.id : data['From Investment ID'];
       this.notes = data.Notes;
     }
   }
@@ -148,6 +148,7 @@ const updateDistribution = async (distribution) => {
 const insertDistribution = async (distribution) => {
   try {
     const body = distribution.body();
+    console.log(body)
     const response = await fetch(`http://${databaseHost}:5000/distributions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
