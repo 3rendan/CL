@@ -388,7 +388,7 @@ const RowBland = (props) => {
         }
         else {
           // console.log('confirmed!');
-          // e.target.blur();
+          e.target.blur();
           e.preventDefault();
         }
 
