@@ -37,7 +37,9 @@ function createMainWindow() {
     webPreferences: {
       nodeIntegration: true
     },
-    minWidth: 780
+    minWidth: 780,
+    width: 1500,
+    height: 800
   });
 
   const fileURL = url.format({
@@ -88,6 +90,7 @@ ipcMain.on('viewEvents', (event, args) => {
       nodeIntegration: true
     },
     minWidth: 780,
+    width: 1500,
     height: 800
   });
 
@@ -118,6 +121,7 @@ ipcMain.on('viewTransfers', (event, args) => {
       nodeIntegration: true
     },
     minWidth: 780,
+    width: 1500,
     height: 800
   });
 
@@ -161,6 +165,7 @@ ipcMain.on('popupEvent', (event, args) => {
       nodeIntegration: true
     },
     minWidth: 780,
+    width: 1500,
     height: 800
   });
 
@@ -190,6 +195,7 @@ ipcMain.on('popupNAVEvent', (event, args) => {
       nodeIntegration: true
     },
     minWidth: 780,
+    width: 1500,
     height: 800
   });
 
@@ -220,6 +226,7 @@ ipcMain.on('popupTransfer', (event, args) => {
       nodeIntegration: true
     },
     minWidth: 780,
+    width: 1500,
     height: 800
   });
 
