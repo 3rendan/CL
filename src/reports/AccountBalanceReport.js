@@ -9,6 +9,8 @@ import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 import {getInvestments} from '../serverAPI/investments'
 
+import {getAccounts} from '../serverAPI/accounts'
+
 import {calcNAV} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
@@ -59,33 +61,37 @@ const AccountBalanceReport = (props) => {
         ...transfers];
     }
 
+    async function getAccountIdToName() {
+      const accounts = await getAccounts();
+      const accountIdToName = {};
+      accounts.map(account => {
+        accountIdToName[account.id] = account.name;
+      })
+      return accountIdToName;
+    }
+
     async function manipulateData() {
-      const investments = await getInvestments();
+      const [investments, accountIdToName] = await Promise.all([getInvestments(), getAccountIdToName()]);
+
       const accounts = {}
-      console.log(accounts)
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
-        console.log(investment)
-        console.log(data)
         const nav = calcNAV(data, investment.id, 0);
-        console.log(nav)
-        if (investment.account in accounts) {
-          accounts[investment.account] += nav;
+        const account = accountIdToName[investment.account];
+        if (account in accounts) {
+          accounts[account] += nav;
         }
         else {
-          accounts[investment.account] = nav;
+          accounts[account] = nav;
         }
       }));
-      console.log(accounts)
       const allAccounts = Object.keys(accounts);
       let totalNAV = allAccounts.reduce((a,b) => a+accounts[b], 0);
-      console.log(allAccounts)
       const accountData = allAccounts.map((account) => {
         return {account: account, nav: accounts[account],
                 'nav_(%)': (accounts[account]/totalNAV * 100).toFixed(2) + '%'}
       })
       accountData.push({account: 'Total NAV', nav: totalNAV})
-      console.log(accountData)
       setData(accountData);
     }
     manipulateData().catch(e => setError(e))
