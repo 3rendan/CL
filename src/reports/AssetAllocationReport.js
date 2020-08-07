@@ -9,6 +9,8 @@ import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 import {getInvestments} from '../serverAPI/investments'
 
+import {getAssetClasses} from '../serverAPI/assetClass'
+
 import {calcNAV} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
@@ -60,8 +62,17 @@ const AssetAllocationReport = (props) => {
         ...transfers];
     }
 
+    async function getAssetClassIdToName() {
+      const assetClasses = await getAssetClasses();
+      const assetClassIdToName = {};
+      assetClasses.map(assetClass => {
+        assetClassIdToName[assetClass.id] = assetClass.name;
+      })
+      return assetClassIdToName;
+    }
+
     async function manipulateData() {
-      const investments = await getInvestments();
+      const [investments, assetClassIdToName] = await Promise.all([getInvestments(), getAssetClassIdToName()]);
       const assets = {}
       const subAssets = {}
 
@@ -69,8 +80,8 @@ const AssetAllocationReport = (props) => {
         const data = await fetchData(investment.id);
         const nav = calcNAV(data, investment.id, 0);
 
-        const assetClass = investment.asset_class;
-        const subAssetClass = investment.sub_asset_class;
+        const assetClass = assetClassIdToName[investment.asset_class];
+        const subAssetClass = assetClassIdToName[investment.sub_asset_class];
 
         const combined = `${assetClass} - ${subAssetClass}`;
         if (assetClass in assets) {
@@ -112,6 +123,7 @@ const AssetAllocationReport = (props) => {
       assetData.push({asset: 'Total NAV', nav: totalNAV})
       setAsset(assetData);
     }
+
     manipulateData().catch(e => setError(e))
 
   }, []);
