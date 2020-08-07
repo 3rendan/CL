@@ -31,6 +31,15 @@ const dateColumns = ['End of Term', 'Close Date'];
 const dropdownColumns = ['Primary Benchmark', 'Secondary Benchmark',
                   'Asset Class', 'Sub Asset Class', 'Account', 'Owner']
 
+var accountNameToId = {}
+var accountNames = []
+var assetClassNameToId = {}
+var assetClassNames = []
+var benchmarkNameToId = {}
+var benchmarkNames = []
+var ownerNameToId = {}
+var ownerNames = []
+
 //Create Date Editor
 var dateEditor = function(cell, onRendered, success, cancel){
     //cell - the cell component for the editable cell
@@ -81,34 +90,25 @@ var dateEditor = function(cell, onRendered, success, cancel){
 };
 
 // get the values that each column should display
-const myValues = function(colName, nameDictionary) {
-  const AssetClassData = nameDictionary['AssetClassData'];
-  const BenchmarkData = nameDictionary['BenchmarkData'];
-  const AccountData = nameDictionary['AccountData'];
-  const OwnerData = nameDictionary['OwnerData'];
-
-
+const myValues = function(colName) {
   if (colName.includes('Asset Class')) {
-    return AssetClassData;
+    return assetClassNames;
   }
   else if (colName.includes('Benchmark')) {
-    return BenchmarkData;
+    return benchmarkNames;
   }
   else if (colName === 'Account') {
-    return AccountData;
+    return accountNames;
   }
   else if (colName ==='Owner') {
-    return OwnerData;
+    return ownerNames;
   }
   else {
     return true;
   }
 };
 
-function columnNameToDefintion(colName, readOnly, nameDictionary,  accountNameToId,
-assetClassNameToId,
-benchmarkNameToId,
-ownerNameToId) {
+function columnNameToDefintion(colName, readOnly) {
   const fieldName = colToInvestmentFields(colName);
   if (colName === 'Commitment (Y/N)') {
     const column = {title:colName, field:fieldName,
@@ -208,6 +208,7 @@ ownerNameToId) {
     return column;
   }
   const column = {title: colName, field: fieldName, responsive: 0};
+
   if (!readOnly) {
     column['editor'] = 'autocomplete';
     column['cellEdited'] = function(cell) {
@@ -234,9 +235,11 @@ ownerNameToId) {
               newData[fieldName] = ownerNameToId[newData[fieldName]]
             }
           }
+          if (newData[fieldName] === '') {
+            newData[fieldName] = null;
+          }
         })
 
-        console.log(newData)
         const newInvestment = new Investment(newData);
         updateInvestment(newInvestment);
     };
@@ -245,7 +248,7 @@ ownerNameToId) {
       freetext: false,
       allowEmpty: true,
       searchingPlaceholder:"Filtering ...", //set the search placeholder
-      values:myValues(colName, nameDictionary)
+      values:myValues(colName)
     }
   }
   return column;
@@ -263,52 +266,34 @@ const DetailInvestmentTable = (props) => {
   const columnNames = props.columns;
   const ref = useRef();
 
-  const accountNameToId = {}
-  const accountNames = props.AccountData.map(i => {
+  accountNameToId = {}
+  accountNames = props.AccountData.map(i => {
     accountNameToId[i.name] = i.id
     return i.name;
   })
 
-  const assetClassNameToId = {}
-  const assetClassNames = props.AssetClassData.map(i => {
+  assetClassNameToId = {}
+  assetClassNames = props.AssetClassData.map(i => {
     assetClassNameToId[i.name] = i.id
     return i.name;
   })
 
-  const benchmarkNameToId = {}
-  const benchmarkNames = props.BenchmarkData.map(i => {
+  benchmarkNameToId = {}
+  benchmarkNames = props.BenchmarkData.map(i => {
     benchmarkNameToId[i.name] = i.id
     return i.name;
   })
 
-  const ownerNameToId = {}
-  const ownerNames = props.OwnerData.map(i => {
+  ownerNameToId = {}
+  ownerNames = props.OwnerData.map(i => {
     ownerNameToId[i.name] = i.id
     return i.name;
   })
-  console.log(ownerNameToId)
 
-  const nameDictionary = {
-    AccountData: accountNames,
-    AssetClassData: assetClassNames,
-    BenchmarkData: benchmarkNames,
-    OwnerData: ownerNames,
-  };
-
-
-  const dataDictionary = {
-    AccountData: props.AccountData,
-    AssetClassData: props.AssetClassData,
-    BenchmarkData: props.BenchmarkData,
-    OwnerData: props.OwnerData,
-  };
+  console.log('render table!')
 
   let columns = columnNames.map((colName) => {
-    return columnNameToDefintion(colName, readOnly, nameDictionary,
-      accountNameToId,
-    assetClassNameToId,
-    benchmarkNameToId,
-    ownerNameToId);
+    return columnNameToDefintion(colName, readOnly);
   });
 
 

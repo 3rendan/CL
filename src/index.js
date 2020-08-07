@@ -70,10 +70,14 @@ ReactDOM.render(
           <AccountTable    />
           <OwnerTable      />
           <InvestmentTable readOnly={false} />
+          <br />
+          <br />
         </Route>
         <Route path="/maintenance/AssetsBenchmarksOwners">
           <AssetClassTable />
           <BenchmarkTable  />
+          <br />
+          <br />
         </Route>
         // POPUPs
         <Route path="/popup/event/commitment/edit/:id/:data/:type" component={EventCommitmentPopup}  />
