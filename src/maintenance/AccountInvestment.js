@@ -81,31 +81,34 @@ var dateEditor = function(cell, onRendered, success, cancel){
 };
 
 // get the values that each column should display
-const myValues = function(colName, dataDictionary) {
-  const AssetClassData = dataDictionary['AssetClassData'];
-  const BenchmarkData = dataDictionary['BenchmarkData'];
-  const AccountData = dataDictionary['AccountData'];
-  const OwnerData = dataDictionary['OwnerData'];
+const myValues = function(colName, nameDictionary) {
+  const AssetClassData = nameDictionary['AssetClassData'];
+  const BenchmarkData = nameDictionary['BenchmarkData'];
+  const AccountData = nameDictionary['AccountData'];
+  const OwnerData = nameDictionary['OwnerData'];
 
 
   if (colName.includes('Asset Class')) {
-    return AssetClassData.map(i => i.name);
+    return AssetClassData;
   }
   else if (colName.includes('Benchmark')) {
-    return BenchmarkData.map(i => i.name);
+    return BenchmarkData;
   }
   else if (colName === 'Account') {
-    return AccountData.map(i => i.name);
+    return AccountData;
   }
   else if (colName ==='Owner') {
-    return OwnerData.map(i => i.name);
+    return OwnerData;
   }
   else {
     return true;
   }
 };
 
-function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) {
+function columnNameToDefintion(colName, readOnly, nameDictionary,  accountNameToId,
+assetClassNameToId,
+benchmarkNameToId,
+ownerNameToId) {
   const fieldName = colToInvestmentFields(colName);
   if (colName === 'Commitment (Y/N)') {
     const column = {title:colName, field:fieldName,
@@ -209,6 +212,31 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
     column['editor'] = 'autocomplete';
     column['cellEdited'] = function(cell) {
         const newData = cell.getData();
+
+        Object.keys(newData).map(fieldName => {
+          if (fieldName.includes('asset_class')) {
+            if (newData[fieldName] in assetClassNameToId) {
+              newData[fieldName] = assetClassNameToId[newData[fieldName]]
+            }
+          }
+          else if (fieldName.includes('benchmark')) {
+            if (newData[fieldName] in benchmarkNameToId) {
+              newData[fieldName] = benchmarkNameToId[newData[fieldName]]
+            }
+          }
+          else if (fieldName === 'account') {
+            if (newData[fieldName] in accountNameToId) {
+              newData[fieldName] = accountNameToId[newData[fieldName]]
+            }
+          }
+          else if (fieldName ==='owner') {
+            if (newData[fieldName] in ownerNameToId) {
+              newData[fieldName] = ownerNameToId[newData[fieldName]]
+            }
+          }
+        })
+
+        console.log(newData)
         const newInvestment = new Investment(newData);
         updateInvestment(newInvestment);
     };
@@ -217,7 +245,7 @@ function columnNameToDefintion(colName, readOnly, dataDictionary, setPrecision) 
       freetext: false,
       allowEmpty: true,
       searchingPlaceholder:"Filtering ...", //set the search placeholder
-      values:myValues(colName, dataDictionary)
+      values:myValues(colName, nameDictionary)
     }
   }
   return column;
@@ -235,18 +263,52 @@ const DetailInvestmentTable = (props) => {
   const columnNames = props.columns;
   const ref = useRef();
 
+  const accountNameToId = {}
+  const accountNames = props.AccountData.map(i => {
+    accountNameToId[i.name] = i.id
+    return i.name;
+  })
 
-  const dataDictionary = {
-    AccountData: props.AccountData,
-    OwnerData: props.OwnerData,
-    AssetClassData: props.AssetClassData,
-    BenchmarkData: props.BenchmarkData,
+  const assetClassNameToId = {}
+  const assetClassNames = props.AssetClassData.map(i => {
+    assetClassNameToId[i.name] = i.id
+    return i.name;
+  })
+
+  const benchmarkNameToId = {}
+  const benchmarkNames = props.BenchmarkData.map(i => {
+    benchmarkNameToId[i.name] = i.id
+    return i.name;
+  })
+
+  const ownerNameToId = {}
+  const ownerNames = props.OwnerData.map(i => {
+    ownerNameToId[i.name] = i.id
+    return i.name;
+  })
+  console.log(ownerNameToId)
+
+  const nameDictionary = {
+    AccountData: accountNames,
+    AssetClassData: assetClassNames,
+    BenchmarkData: benchmarkNames,
+    OwnerData: ownerNames,
   };
 
 
+  const dataDictionary = {
+    AccountData: props.AccountData,
+    AssetClassData: props.AssetClassData,
+    BenchmarkData: props.BenchmarkData,
+    OwnerData: props.OwnerData,
+  };
 
   let columns = columnNames.map((colName) => {
-    return columnNameToDefintion(colName, readOnly, dataDictionary);
+    return columnNameToDefintion(colName, readOnly, nameDictionary,
+      accountNameToId,
+    assetClassNameToId,
+    benchmarkNameToId,
+    ownerNameToId);
   });
 
 

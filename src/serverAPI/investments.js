@@ -9,13 +9,13 @@ class Investment {
       this.id = null;
       this.name = "";
       this.long_name = "";
-      this.asset_class = "";
-      this.sub_asset_class = "";
-      this.account = "";
-      this.owner = "";
+      this.asset_class = null;
+      this.sub_asset_class = null;
+      this.account = null;
+      this.owner = null;
       this.has_commitment = false;
-      this.primary_benchmark = "";
-      this.secondary_benchmark = "";
+      this.primary_benchmark = null;
+      this.secondary_benchmark = null;
       this.commitment = 0;
       this.size = 0;
       this.end_of_term = null;
@@ -80,6 +80,7 @@ Investment.prototype.toString = function() {
 const updateInvestment = async (investment) => {
     try {
       const body = investment.body();
+      console.log(body)
       const response = await fetch(
         `http://${databaseHost}:5000/investments/${investment.id}`,
         {

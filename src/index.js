@@ -14,7 +14,6 @@ const AssetClassTable = lazy(() => import('./tables/AssetClassTable'));
 const AccountTable = lazy(() => import('./tables/AccountTable'));
 const BenchmarkTable = lazy(() => import('./tables/BenchmarkTable'));
 const InvestmentTable = lazy(() => import('./tables/InvestmentTable'));
-const ViewOnlyInvestmentTable = lazy(() => import('./tables/ViewOnlyInvestmentTable'));
 const OwnerTable = lazy(() => import('./tables/OwnerTable'));
 
 
@@ -60,7 +59,7 @@ ReactDOM.render(
           <Connection />
         </Route>
         <Route path="/investments">
-          <ViewOnlyInvestmentTable />
+          <InvestmentTable readOnly={true} />
         </Route>
         <Route path="/calendar" component={Calendar} />
         // EVENTS AND TRANSFERS
@@ -70,7 +69,7 @@ ReactDOM.render(
         <Route path="/maintenance/accountInvestment">
           <AccountTable    />
           <OwnerTable      />
-          <InvestmentTable />
+          <InvestmentTable readOnly={false} />
         </Route>
         <Route path="/maintenance/AssetsBenchmarksOwners">
           <AssetClassTable />

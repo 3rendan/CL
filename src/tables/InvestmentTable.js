@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect, useCallback} from "react";
 import ReactDOM from 'react-dom';
 import DetailInvestmentTable from '../maintenance/AccountInvestment'
 
@@ -8,7 +8,18 @@ import {getBenchmarks, BenchmarkColumns} from '../serverAPI/benchmarks.js'
 import {getInvestments, InvestmentColumns} from '../serverAPI/investments.js'
 import {getOwners, OwnerColumns} from '../serverAPI/owners.js'
 
-const InvestmentTable = () => {
+const getMemoizedNames = (list, id) => {
+  if (id === undefined || list === undefined) {
+    return null;
+  }
+  const filtered = list.filter(i => i.id === id);
+  if (filtered.length === 0) {
+    return null;
+  }
+  return filtered[0].name
+}
+
+const InvestmentTable = (props) => {
   const [AccountData, setAccountData]  = useState(null);
   const [AssetClassData, setAssetClassData]  = useState(null);
   const [BenchmarkData, setBenchmarkData]  = useState(null);
@@ -16,6 +27,10 @@ const InvestmentTable = () => {
   const [OwnerData, setOwnerData]  = useState(null);
   const [error, setError] = useState(null);
 
+  const getAccountName = useCallback((list, id) => getMemoizedNames(list, id), [])
+  const getAssetClassName = useCallback((list, id) => getMemoizedNames(list, id), [])
+  const getBenchmarkName = useCallback((list, id) => getMemoizedNames(list, id), [])
+  const getOwnerName = useCallback((list, id) => getMemoizedNames(list, id), [])
 
   useEffect(() => {
     async function fetchData() {
@@ -50,6 +65,21 @@ const InvestmentTable = () => {
       if (!investments) {
         throw 'Server Disconnected: null investments'
       }
+
+      // map across in this order so that it's memoized better
+      investments.map(investment => {
+        investment.primary_benchmark = getBenchmarkName(benchmarks, investment.primary_benchmark)
+        investment.secondary_benchmark = getBenchmarkName(benchmarks, investment.secondary_benchmark)
+
+        // accounts
+        investment.account = getAccountName(accounts, investment.account)
+
+        investment.asset_class = getAssetClassName(assetClass, investment.asset_class)
+        investment.sub_asset_class = getAssetClassName(assetClass, investment.sub_asset_class)
+
+        investment.owner = getOwnerName(owners, investment.owner)
+      })
+
       setInvestmentData(investments);
     }
     fetchData().catch(e => setError(e))
@@ -65,7 +95,7 @@ const InvestmentTable = () => {
       AssetClassData={AssetClassData}  OwnerData={OwnerData}
       BenchmarkData={BenchmarkData} AccountData={AccountData}
     name={'Investments'} columns={InvestmentColumns}
-    readOnly={false} />);
+    readOnly={props.readOnly} />);
 }
 
 export default InvestmentTable;
