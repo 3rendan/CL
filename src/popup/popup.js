@@ -488,7 +488,7 @@ const FormSheet = (props) => {
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Investment', 'Notes'];
         break;
       case 'TRANSFER':
-        mainColumns = ['Date', 'To Investment', 'Amount', 'Notes'];
+        mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];
         break;
       case 'COMMISH':
         mainColumns = ['Date', 'Amount', 'Investment', 'Notes']
