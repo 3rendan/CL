@@ -16,8 +16,8 @@ class Transfer {
     else {
       this.id = data.id;
       this.date = data.Date;
-      this.from_investment = data['From Investment'].value.id;
-      this.to_investment = data['To Investment'].value.id;
+      this.from_investment = data['From Investment'] ? data['From Investment'].value.id : null;
+      this.to_investment = data['To Investment'] ? data['To Investment'].value.id : null;
       this.amount = data.Amount;
       this.notes = data.Notes;
     }
