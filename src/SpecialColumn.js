@@ -74,6 +74,7 @@ function myMoneyFormatter(value, showCents) {
 };
 
 function initialMoneyFormatter(cell, formatterParams, onRendered){
+  cell.getElement().style.fontSize = "13.8px";
   if (cell.getValue() === undefined) {
     return '';
   }
@@ -224,6 +225,7 @@ const defaultTabulatorSettings = {
   layout: "fitData",
   movableRows: false,
   columnMinWidth:100,
+  maxHeight: "400px",
   resizableColumns:false,
   resizableRows:true,
   layoutColumnsOnNewData:true,
