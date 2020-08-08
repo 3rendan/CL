@@ -80,7 +80,6 @@ Investment.prototype.toString = function() {
 const updateInvestment = async (investment) => {
     try {
       const body = investment.body();
-      console.log(body)
       const response = await fetch(
         `http://${databaseHost}:5000/investments/${investment.id}`,
         {
@@ -89,6 +88,10 @@ const updateInvestment = async (investment) => {
           body: JSON.stringify(body)
         }
       );
+      const jsonData = await response.json();
+      if (jsonData.includes('duplicate')) {
+        return 'duplicate key';
+      }
       return true;
     } catch (err) {
       console.error(err.message);

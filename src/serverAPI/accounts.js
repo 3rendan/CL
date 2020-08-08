@@ -35,6 +35,7 @@ Account.prototype.toString = function() {
 const updateAccount = async (account) => {
   try {
     const body = account.body();
+    console.log(body)
     const response = await fetch(
       `http://${databaseHost}:5000/accounts/${account.id}`,
       {
@@ -43,6 +44,12 @@ const updateAccount = async (account) => {
         body: JSON.stringify(body)
       }
     );
+    console.log(response)
+    const jsonData = await response.json();
+    console.log(jsonData)
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
+    }
     return true;
   } catch (err) {
     console.error(err.message);

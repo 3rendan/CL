@@ -30,7 +30,7 @@ Benchmark.prototype.toString = function() {
 const updateBenchmark = async (benchmark) => {
     try {
       const body = benchmark.body();
-      const _ = await fetch(
+      const response = await fetch(
         `http://${databaseHost}:5000/benchmarks/${benchmark.id}`,
         {
           method: "PUT",
@@ -38,6 +38,10 @@ const updateBenchmark = async (benchmark) => {
           body: JSON.stringify(body)
         }
       );
+      const jsonData = await response.json();
+      if (jsonData.includes('duplicate')) {
+        return 'duplicate key';
+      }
       return true;
     } catch (err) {
       console.error(err.message);

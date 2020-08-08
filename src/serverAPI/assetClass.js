@@ -49,6 +49,10 @@ const updateAssetClass = async (assetClass) => {
           body: JSON.stringify(body)
         }
       );
+      const jsonData = await response.json();
+      if (jsonData.includes('duplicate')) {
+        return 'duplicate key';
+      }
       return true;
     } catch (err) {
       console.error(err.message);
