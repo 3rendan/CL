@@ -64,6 +64,23 @@ function createMainWindow() {
   Menu.setApplicationMenu(mainMenu);
 }
 
+function redirectToLogin() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'connection',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/connection' : fileURL);
+}
+
+ipcMain.on('viewLogin', (event, args) => {
+  redirectToLogin();
+})
+
 app.on('ready', () => {
   let loading = new BrowserWindow({show: false, frame: false})
 

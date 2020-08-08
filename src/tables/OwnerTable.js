@@ -4,6 +4,9 @@ import {getOwners, OwnerColumns, Owner, updateOwner} from '../serverAPI/owners.j
 
 import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 
+const electron = window.require('electron');
+const ipcRenderer  = electron.ipcRenderer;
+
 const OwnerTable = (props) => {
   const [OwnerData, setOwnerData]  = useState(null);
   const [error, setError] = useState(null);
@@ -34,6 +37,17 @@ const OwnerTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       const result = await getOwners();
+      if (result === 'failed login') {
+        const dialog = electron.remote.dialog
+        let options  = {
+         buttons: ["Ok"],
+         message: 'Login Failed!'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        ipcRenderer.send('viewLogin', {});
+        return;
+      }
+
       if (!result) {
         throw 'Server Disconnected: null Owners'
       }

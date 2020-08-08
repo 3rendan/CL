@@ -18,7 +18,14 @@ const Connection = (props) => {
     const password =  e.target.elements.formBasicPassword.value
 
     const database = {ip: ipAddress, username: username, password: password}
-    initializeDatabase(database)
+    initializeDatabase(database).then(res => {
+      console.log(res)
+      if (res === 'failed login') {
+        e.preventDefault();
+        e.stopPropagation();
+
+      }
+    })
 
     ipcRenderer.send('setDatabase', database)
 

@@ -7,6 +7,9 @@ import {getBenchmarks} from '../serverAPI/benchmarks.js'
 
 import MaintenanceTable from '../maintenance/AssetsBenchmarksOwners'
 
+const electron = window.require('electron');
+const ipcRenderer  = electron.ipcRenderer;
+
 var benchmarkNameToId = {};
 var benchmarkNames = [];
 var benchmarkIdToName = {};
@@ -77,6 +80,16 @@ const AssetClassTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       const benchmarks = await getBenchmarks();
+      if (benchmarks === 'failed login') {
+        const dialog = electron.remote.dialog
+        let options  = {
+         buttons: ["Ok"],
+         message: 'Login Failed!'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        ipcRenderer.send('viewLogin', {});
+        return;
+      }
       if (!benchmarks) {
         throw 'Server Disconnected: null Benchmarks'
       }

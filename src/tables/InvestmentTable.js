@@ -19,6 +19,9 @@ const getMemoizedNames = (list, id) => {
   return filtered[0].name
 }
 
+const electron = window.require('electron');
+const ipcRenderer  = electron.ipcRenderer;
+
 const InvestmentTable = (props) => {
   const [AccountData, setAccountData]  = useState(null);
   const [AssetClassData, setAssetClassData]  = useState(null);
@@ -35,6 +38,16 @@ const InvestmentTable = (props) => {
   useEffect(() => {
     async function fetchData() {
       const owners = await getOwners();
+      if (owners === 'failed login') {
+        const dialog = electron.remote.dialog
+        let options  = {
+         buttons: ["Ok"],
+         message: 'Login Failed!'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        ipcRenderer.send('viewLogin', {});
+        return;
+      }
       if (!owners) {
         throw 'Server Disconnected: null owners'
       }
