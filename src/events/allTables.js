@@ -193,7 +193,7 @@ const MaintenanceTable = (props) => {
         field: fieldName, responsive: 0,
         align: 'right',
         formatter: initialMoneyFormatter,
-        minWidth: 150,
+        minWidth: 140,
         headerTooltip: 'Right Click to toggle cents',
         headerSort:false, sorter:'number',
         headerContext: rightClickMoney};
@@ -293,6 +293,9 @@ const MaintenanceTable = (props) => {
        else if (deletedData.type === 'COMMISH') {
          deleteCommission(deletedData.id)
        }
+       else if (deletedData.type === 'TRANSFER') {
+         deleteTransfer(deletedData.id)
+       }
        else {
          deleteSingleEntry(deletedData.id)
        }
@@ -348,6 +351,7 @@ const MaintenanceTable = (props) => {
                                 {column: "date", dir:'asc'}],
                   downloadDataFormatter: (data) => data,
                   downloadReady: (fileContents, blob) => blob,
+                  maxHeight: "400px",
                   rowDblClick:function(e, row){
                       EditRow({dataID: row.getData().id, dataType: row.getData().type, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})
                   }
