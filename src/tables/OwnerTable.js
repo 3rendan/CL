@@ -14,7 +14,19 @@ const OwnerTable = (props) => {
            editor:"input", cellEdited:function(cell) {
              const newData = cell.getData();
              const newOwner = new Owner(newData)
-             updateOwner(newOwner)
+             updateOwner(newOwner).then(a => {
+               if (a === 'duplicate key') {
+                 const electron = window.require('electron');
+                 const dialog = electron.remote.dialog
+                 let options  = {
+                  buttons: ["Ok"],
+                  message: 'Names and Long Names are unique!'
+                 }
+                 const confirmed = dialog.showMessageBoxSync(options)
+                 // const confirmed = window.confirm('Confirm Restore?')
+                 cell.restoreOldValue();
+               }
+             });
            }
         };
   });

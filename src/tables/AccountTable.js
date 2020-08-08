@@ -14,7 +14,19 @@ const AccountTable = (props) => {
            editor:"input", cellEdited:function(cell) {
              const newData = cell.getData();
              const newAccount = new Account(newData)
-             updateAccount(newAccount)
+             updateAccount(newAccount).then(a => {
+               if (a === 'duplicate key') {
+                 const electron = window.require('electron');
+                 const dialog = electron.remote.dialog
+                 let options  = {
+                  buttons: ["Ok"],
+                  message: 'Names and Long Names are unique!'
+                 }
+                 const confirmed = dialog.showMessageBoxSync(options)
+                 // const confirmed = window.confirm('Confirm Restore?')
+                 cell.restoreOldValue();
+               }
+             });
            }
         };
   });
