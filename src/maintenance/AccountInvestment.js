@@ -212,7 +212,7 @@ function columnNameToDefintion(colName, readOnly) {
   }
   else if (currencyColumns.includes(colName)) {
     const column = {title: colName,
-      field: fieldName, responsive: 0, align: 'right', minWidth: 140,
+      field: fieldName, responsive: 0, align: 'right', minWidth: 130,
       formatter: initialMoneyFormatter, headerTooltip: 'Right Click to toggle cents',
       headerContext: rightClickMoney};
 

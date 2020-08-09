@@ -46,7 +46,7 @@ const MaintenanceTable = (props) => {
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (props.moneyColumns !== undefined && props.moneyColumns.includes(colName)) {
       const column = {title: colName, align: 'right',
-        field: fieldName, responsive: 0, minWidth: 140,
+        field: fieldName, responsive: 0, minWidth: 130,
         formatter: initialMoneyPercentFormatter, headerTooltip: 'Right Click to toggle cents',
         headerSort:true, sorter:'number',
         headerContext:rightClickMoneyPercent};
