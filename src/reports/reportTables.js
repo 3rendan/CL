@@ -48,12 +48,12 @@ const MaintenanceTable = (props) => {
       const column = {title: colName, align: 'right',
         field: fieldName, responsive: 0, minWidth: 140,
         formatter: initialMoneyPercentFormatter, headerTooltip: 'Right Click to toggle cents',
-        headerSort:false, sorter:'number',
+        headerSort:true, sorter:'number',
         headerContext:rightClickMoneyPercent};
       return column;
     }
     return {title: colName, field: fieldName, responsive: 0,
-            sorter: 'string', headerSort:false, frozen: frozen};
+            sorter: 'string', headerSort:true, frozen: frozen};
   });
 
   if (error) {
