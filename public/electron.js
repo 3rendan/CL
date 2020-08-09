@@ -396,7 +396,23 @@ function loadAccountBalanceReportView() {
 
 };
 
+function loadInvestmentNAVReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/investmentNAV',
+      protocol: 'file',
+      slashes: true,
+  });
 
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
+  // Load html into window
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/investmentNAV' : fileURL);
+
+};
 
 function loadCalendarView() {
   const fileURL = url.format({
@@ -493,6 +509,12 @@ const mainMenuTemplate = [
         label: 'View Contrib. And Distrib. in Calendar',
         click() {
           loadCalendarView();
+        }
+      },
+      {
+        label: 'Investment NAV Report',
+        click() {
+          loadInvestmentNAVReportView();
         }
       },
     ]
