@@ -134,7 +134,7 @@ ipcMain.on('viewEvents', (event, args) => {
       slashes: true,
   });
 
-  newWindow.setMenu(null);
+  newWindow.setMenu(eventMenuTemplate);
 
   // Load html into window
   newWindow.loadURL(isDev ? `http://localhost:3000/#/events/${args.name}/${args.id}` : fileURL);
@@ -558,6 +558,37 @@ const mainMenuTemplate = [
   }
 ]
 
+
+// https://www.electronjs.org/docs/api/menu
+const eventMenuTemplate = [
+  { role: 'appMenu' },
+  { label: 'File',
+    submenu: [
+      {label: 'Print Window',
+       click() {
+         takeScreenshot();
+      }},
+      {role: 'close'},
+      {role: 'quit'}
+
+    ]
+  },
+  { role: 'editMenu' },
+  { role: 'viewMenu' },
+  { role: 'windowMenu' },
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'Learn More',
+        click: async () => {
+          const { shell } = require('electron')
+          await shell.openExternal('https://electronjs.org')
+        }
+      }
+    ]
+  }
+]
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
