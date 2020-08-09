@@ -14,6 +14,7 @@ global.database = {ip: null, username: null, password: null};
 
 
 let mainWindow;
+let reportWindow;
 
 ipcMain.on("setDatabase", ( event, databaseVars ) => {
   global.database = databaseVars;
@@ -62,6 +63,18 @@ function createMainWindow() {
 
   // insert menu
   Menu.setApplicationMenu(mainMenu);
+}
+
+function createReportWindow() {
+  // Create new window
+  reportWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
+    minWidth: 780,
+    width: 1500,
+    height: 800
+  });
 }
 
 function redirectToLogin() {
@@ -336,8 +349,12 @@ function loadAssetAllocationReportView() {
       slashes: true,
   });
 
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/report/assetAllocation' : fileURL);
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/assetAllocation' : fileURL);
 
 };
 
@@ -350,8 +367,12 @@ function loadSummaryReportView() {
       slashes: true,
   });
 
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summary' : fileURL);
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summary' : fileURL);
 
 };
 
@@ -364,8 +385,12 @@ function loadAccountBalanceReportView() {
       slashes: true,
   });
 
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/report/accountBalance' : fileURL);
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/accountBalance' : fileURL);
 
 };
 
@@ -380,8 +405,12 @@ function loadCalendarView() {
       slashes: true,
   });
 
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/calendar' : fileURL);
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/assetAllocation' : fileURL);
 
 };
 
