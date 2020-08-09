@@ -28,7 +28,7 @@ const TransferTable = (props) => {
   if (TransferData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Transfer"}
+  return (<MaintenanceTable name={"Transfers"}
             data={TransferData} columns={TransferColumns}/>);
 };
 

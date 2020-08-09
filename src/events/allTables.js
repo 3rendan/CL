@@ -38,7 +38,7 @@ function AddRow(props) {
   else if (props.name === 'NAV Entries') {
     ipcRenderer.send('popupNAVEvent', props);
   }
-  else if (props.name === 'Transfer') {
+  else if (props.name === 'Transfers') {
     ipcRenderer.send('popupTransfer', props);
   }
 };
@@ -51,7 +51,7 @@ function EditRow(props) {
   else if (props.name === 'NAV Entries') {
     ipcRenderer.send('popupNAVEvent', props);
   }
-  else if (props.name === 'Transfer') {
+  else if (props.name === 'Transfers') {
     ipcRenderer.send('popupTransfer', props);
   }
 };
@@ -73,7 +73,7 @@ const MaintenanceTable = (props) => {
   useEffect(() => {
     // setBrowserWindow()
     async function fetchInvestments() {
-      if (tableName === 'Transfer') {
+      if (tableName === 'Transfers') {
         setInvestmentName('Data')
       }
       else {
@@ -185,7 +185,7 @@ const MaintenanceTable = (props) => {
     BrowserWindow.getAllWindows().map(window => window.reload())
   });
 
-  const headerSort = tableName === 'Transfer';
+  const headerSort = tableName === 'Transfers';
 
   let colNames = columnNames.map((colName) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
@@ -307,7 +307,7 @@ const MaintenanceTable = (props) => {
          deleteSingleEntry(deletedData.id)
        }
      }
-     else if (tableName === 'Transfer') {
+     else if (tableName === 'Transfers') {
        deleteTransfer(deletedData.id)
      }
 
