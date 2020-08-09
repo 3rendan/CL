@@ -75,6 +75,8 @@ function createReportWindow() {
     width: 1500,
     height: 800
   });
+
+  reportWindow.on('closed', ()=> reportWindow=null);
 }
 
 function redirectToLogin() {
