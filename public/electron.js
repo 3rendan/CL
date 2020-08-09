@@ -294,6 +294,11 @@ function loadMaintenanceAssetsBenchmarksOwnersView() {
 
 };
 
+function takeScreenshot() {
+  let window = BrowserWindow.getFocusedWindow();
+  window.webContents.executeJavaScript("window.print()")
+}
+
 function loadBackupView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
@@ -400,7 +405,17 @@ const isMac = process.platform === 'darwin'
 // https://www.electronjs.org/docs/api/menu
 const mainMenuTemplate = [
   { role: 'appMenu' },
-  { role: 'fileMenu' },
+  { label: 'File',
+    submenu: [
+      {label: 'Print Window',
+       click() {
+         takeScreenshot();
+      }},
+      {role: 'close'},
+      {role: 'quit'}
+
+    ]
+  },
   { role: 'editMenu' },
   { role: 'viewMenu' },
   { label: 'Investments',
