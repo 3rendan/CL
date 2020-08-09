@@ -428,28 +428,6 @@ const mainMenuTemplate = [
       }
     ]
   },
-  { label: 'Maintenance',
-    submenu: [
-      {
-        label: 'Maintain Accounts, Owners, and Investments',
-        click() {
-          loadMaintenanceAccountInvestmentView();
-        }
-      },
-      {
-        label: 'Maintain Benchmarks and Asset Classes',
-        click() {
-          loadMaintenanceAssetsBenchmarksOwnersView();
-        }
-      },
-      {
-        label: 'Backup View',
-        click() {
-          loadBackupView();
-        }
-      }
-    ]
-  },
   { label: 'Transfers',
     submenu: [
       {
@@ -486,6 +464,28 @@ const mainMenuTemplate = [
           loadCalendarView();
         }
       },
+    ]
+  },
+  { label: 'Maintenance',
+    submenu: [
+      {
+        label: 'Maintain Accounts, Owners, and Investments',
+        click() {
+          loadMaintenanceAccountInvestmentView();
+        }
+      },
+      {
+        label: 'Maintain Benchmarks and Asset Classes',
+        click() {
+          loadMaintenanceAssetsBenchmarksOwnersView();
+        }
+      },
+      {
+        label: 'Backup View',
+        click() {
+          loadBackupView();
+        }
+      }
     ]
   },
   { role: 'windowMenu' },
