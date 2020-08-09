@@ -132,7 +132,7 @@ const AssetAllocationReport = (props) => {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
   if (asset === null) {
-    return <div> hi </div>;
+    return <div> </div>;
   }
   return (<MaintenanceTable name={"Asset NAV"} data={asset}
             columns={['Asset', 'NAV', 'NAV (%)']}
