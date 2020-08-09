@@ -67,13 +67,12 @@ const EventTable = (props) => {
       let contributions = await getContributionsInvestment(investmentID);
       contributions = contributions ? contributions : [];
 
-      const copyContr = [...contributions.map(transfer => { return {...transfer} })]
-      console.log(copyContr)
-
       contributions = contributions.map((contr) => {
         contr['type'] = 'CONTRIBUTION'
+        console.log(contr)
         if (contr.investment === investmentID) {
           contr.investment = contr.from_investment
+          contr.net_amount = -1 * contr.net_amount;
         }
         return contr;
       })

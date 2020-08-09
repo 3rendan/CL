@@ -44,6 +44,12 @@ function calcNetContribute(group, investmentID, nav) {
       return accumulator;
     }
     let amount = current.amount !== undefined ? current.amount : current.net_amount;
+
+    if (current.type === 'CONTRIBUTION') {
+      if (investmentID === current.investment) {
+        return accumulator - amount;
+      }
+    }
     return accumulator + amount;
   }, nav);
 }

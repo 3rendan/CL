@@ -205,6 +205,7 @@ function calcNAV(group, investmentID, nav) {
       if (current.from_investment === investmentID) {
         return accumulator + amount;
       }
+      return accumulator - amount;
     }
     return accumulator + amount;
   }, nav);
