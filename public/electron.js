@@ -508,15 +508,15 @@ const mainMenuTemplate = [
         }
       },
       {
-        label: 'View Contrib. And Distrib. in Calendar',
-        click() {
-          loadCalendarView();
-        }
-      },
-      {
         label: 'Investment NAV Report',
         click() {
           loadInvestmentNAVReportView();
+        }
+      },
+      {
+        label: 'View Contrib. And Distrib. in Calendar',
+        click() {
+          loadCalendarView();
         }
       },
     ]
