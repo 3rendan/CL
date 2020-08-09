@@ -265,6 +265,11 @@ const MaintenanceTable = (props) => {
           return myDateSort(a, b);
         }, headerSort:false};
     }
+    else if (fieldName === 'notes') {
+      return {title: colName, field: fieldName, responsive: 0,
+             frozen: frozen, minWidth: 300,
+              sorter: 'string', headerSort:false};
+    }
     return {title: colName, field: fieldName, responsive: 0,
            frozen: frozen,
             sorter: 'string', headerSort:false};
