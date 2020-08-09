@@ -74,7 +74,6 @@ function myMoneyFormatter(value, showCents) {
 };
 
 function initialMoneyFormatter(cell, formatterParams, onRendered){
-  cell.getElement().style.fontSize = "13.8px";
   if (cell.getValue() === undefined) {
     return '';
   }

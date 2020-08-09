@@ -7,6 +7,7 @@ import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 import 'font-awesome/css/font-awesome.css';
 import '../centerHeaders.css';
+import '../shrinkFontSize.css';
 
 import {initialMoneyPercentFormatter, rightClickMoneyPercent} from '../SpecialColumn';
 

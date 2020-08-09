@@ -20,6 +20,8 @@ import moment from 'moment';
 import {copyCol, myDateSort, myMoneyFormatter,
    initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
 
+import '../shrinkFontSize.css';
+
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
 
@@ -183,7 +185,7 @@ const MaintenanceTable = (props) => {
     BrowserWindow.getAllWindows().map(window => window.reload())
   });
 
-
+  const headerSort = tableName === 'Transfer';
 
   let colNames = columnNames.map((colName) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
@@ -195,7 +197,7 @@ const MaintenanceTable = (props) => {
         formatter: initialMoneyFormatter,
         minWidth: 140,
         headerTooltip: 'Right Click to toggle cents',
-        headerSort:false, sorter:'number',
+        headerSort:headerSort, sorter:'number',
         headerContext: rightClickMoney};
       return column;
     }
@@ -221,7 +223,7 @@ const MaintenanceTable = (props) => {
           //dir - the direction of the sort ("asc" or "desc")
           //sorterParams - sorterParams object from column definition array
           return myDateSort(a, b);
-        }, headerSort:false};
+        }, headerSort:headerSort};
     }
     else if (fieldName === 'date_due') {
       return {title: colName, field: fieldName,
@@ -263,16 +265,16 @@ const MaintenanceTable = (props) => {
           //dir - the direction of the sort ("asc" or "desc")
           //sorterParams - sorterParams object from column definition array
           return myDateSort(a, b);
-        }, headerSort:false};
+        }, headerSort:headerSort};
     }
     else if (fieldName === 'notes') {
       return {title: colName, field: fieldName, responsive: 0,
              frozen: frozen, minWidth: 300,
-              sorter: 'string', headerSort:false};
+              sorter: 'string', headerSort:headerSort};
     }
     return {title: colName, field: fieldName, responsive: 0,
            frozen: frozen,
-            sorter: 'string', headerSort:false};
+            sorter: 'string', headerSort:headerSort};
   });
 
   const trashCol = {formatter:function(cell, formatterParams, onRendered){ //plain text value

@@ -13,6 +13,7 @@ import {Investment, updateInvestment, insertInvestment, deleteInvestment,
 
 import 'font-awesome/css/font-awesome.css';
 import '../centerHeaders.css';
+import '../shrinkFontSize.css';
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 

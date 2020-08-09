@@ -8,6 +8,7 @@ import {Account, insertAccount, updateAccount, deleteAccount} from '../serverAPI
 
 import 'font-awesome/css/font-awesome.css';
 import '../centerHeaders.css';
+import '../shrinkFontSize.css';
 
 // data and info
 import "react-tabulator/lib/styles.css"; // default theme
