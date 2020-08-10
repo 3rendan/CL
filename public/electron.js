@@ -134,7 +134,8 @@ ipcMain.on('viewEvents', (event, args) => {
       slashes: true,
   });
 
-  newWindow.setMenu(eventMenuTemplate);
+  const eventMenu = Menu.buildFromTemplate(eventMenuTemplate);
+  newWindow.setMenu(eventMenu);
 
   // Load html into window
   newWindow.loadURL(isDev ? `http://localhost:3000/#/events/${args.name}/${args.id}` : fileURL);
