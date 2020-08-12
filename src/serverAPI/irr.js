@@ -1,3 +1,9 @@
+const electron = window.require('electron');
+const remote = electron.remote;
+
+const databaseHost = remote.getGlobal('database').ip;
+
+
 const getIrr = async (body) => {
   try {
     const response = await fetch(`http://${databaseHost}:5000/irr`, {

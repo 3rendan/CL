@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
+import '../mainWindow.css'
+
 import {myMoneyFormatter, eventsCol, defaultTabulatorSettings,
         myDateSort, copyCol,
         rightClickMoney, initialMoneyFormatter} from '../SpecialColumn';
@@ -516,12 +518,13 @@ const DetailInvestmentTable = (props) => {
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
           <br />
-          <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} </h1>
+          <h1 style = {{margin: 0, marginLeft: '40%', display: "inline-block"}}> {tableName} </h1>
           {addButton}
           {copyButton}
           <br />
           <br />
       </div>
+      <br />
       <React15Tabulator
         ref={ref}
         columns={columns}

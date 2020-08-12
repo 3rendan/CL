@@ -339,11 +339,13 @@ const MaintenanceTable = (props) => {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
 
+  const headerStyle = tableName === 'Transfers' ? {margin: 0, marginLeft: '40%', display: "inline-block"} : {margin: 0, display: "inline-block"}
+
   return (
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
         <br />
-        <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} </h1>
+        <h1 style = {headerStyle}> {tableName} </h1>
         {addRow}
         {copyButton}
         <br />

@@ -109,7 +109,7 @@ const NAVTable = (props) => {
 
     async function getIrrEvents(data) {
       const dates = []
-      events = data.map((event) => {
+      const events = data.map((event) => {
         const date = event.date ? event.date : event.date_due
         dates.push(date)
         if (event.type === 'TRANSFER') {
