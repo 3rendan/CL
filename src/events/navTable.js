@@ -6,6 +6,8 @@ import {getContributionsInvestment} from '../serverAPI/contributions.js'
 import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 
+import {getIrr} from '../serverAPI/irr'
+
 import {calcNAV, myDateSort} from '../SpecialColumn'
 
 import MaintenanceTable from './allTables'
@@ -105,8 +107,59 @@ const NAVTable = (props) => {
         ...transfers];
     }
 
+    async function getIrrEvents(data) {
+      const dates = []
+      events = data.map((event) => {
+        const date = event.date ? event.date : event.date_due
+        dates.push(date)
+        if (event.type === 'TRANSFER') {
+          if (event.to_investment === investmentID) {
+            return `${date}:${event.amount}`;
+          }
+          return `${date}:${event.amount}`; // in from_investment
+        }
+        if (event.type === 'COMMISH') {
+          if (investmentID === event.investment) {
+            return `${date}:0`;
+          }
+          return `${date}:${-1 * event.amount}`; // in from_investment
+        }
+        if (event.type === 'NAV') {
+          return '';
+        }
+        let amount = event.amount !== undefined ? event.amount : event.net_amount;
+        if (event.type === 'DISTRIBUTION' || event.type === 'CONTRIBUTION') {
+          // amount is negative for type distribution
+          if (event.from_investment === investmentID) {
+            return `${date}:amount`;
+          }
+          return `${date}:amount`;
+        }
+        return `${date}:amount`;
+      })
+      return [events.join(' '), dates];
+    }
+
+    async function calcIrr(navDates, eventString, eventDates) {
+      const dateOfNavDates = navDates.map(navDate => new Date(navDate.date))
+      const navOfNavDates = navDates.map(navDate => new Date(navDate.nav))
+      let minDate = new Date(Math.min(...dateOfNavDates))
+      let minEventDate = new Date(Math.min(...dates.map(date => new Date(date))))
+      const startDate = new Date(Math.min(minDate, minEventDate))
+
+      const startNAV = 0;
+
+      const dates = [startDate, ...dateOfNavDates]
+      const navs = [startNAV, ...navOfNavDates]
+
+      return await getIrr({dates: dates, navs: navs, eventString: eventString})
+
+    }
+
     async function manipulateData() {
       const myData = await fetchData();
+
+
       const groups = groupByMonth(myData);
 
       let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
@@ -119,9 +172,6 @@ const NAVTable = (props) => {
       let nav = 0;
       let netContribute = 0;
       const navDates = [];
-      const monthNav = {}
-      const monthNetContribute = {};
-      const monthPL = {};
       let last_pl = null;
       while (minDate <= finalMonth) {
         nav = calcNAV(groups[minDate], investmentID, nav);
@@ -149,7 +199,8 @@ const NAVTable = (props) => {
         minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
       }
 
-
+      const [myEventString, eventDates] = await getIrrEvents(myData);
+      const irrs = await calcIrr(navDates, myEventString, eventDates);
       setNAVEventData(navDates)
     }
 
