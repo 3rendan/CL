@@ -125,7 +125,7 @@ const MaintenanceTable = (props) => {
           return myDateSort(a.date_due, b.date_due)
         });
 
-        let net_commitment = props.commitment;
+        let remaining_commitment = props.commitment;
 
         manipulatedData.map((datum) => {
           if (datum.type === 'CONTRIBUTION') {
@@ -134,21 +134,21 @@ const MaintenanceTable = (props) => {
               main = datum.main ? parseFloat(datum.main.substring(1)) : 0;
             }
             catch (e) {}
-            net_commitment -= main;
+            remaining_commitment -= main;
 
             let fees = datum.fees;
             try {
               fees = datum.fees ? parseFloat(datum.fees.substring(1)) : 0;
             }
             catch (e) {}
-            net_commitment -= fees;
+            remaining_commitment -= fees;
 
             let tax = datum.tax;
             try {
               tax = datum.tax ? parseFloat(datum.tax.substring(1)) : 0;
             }
             catch (e) {}
-            net_commitment -= tax;
+            remaining_commitment -= tax;
           }
           else if (datum.type === 'DISTRIBUTION') {
             let recallable = datum.recallable;
@@ -156,9 +156,9 @@ const MaintenanceTable = (props) => {
               recallable = datum.recallable ? parseFloat(datum.recallable.substring(1)) : 0;
             }
             catch (e) {}
-            net_commitment -= recallable;
+            remaining_commitment -= recallable;
           }
-          datum.net_commitment = net_commitment;
+          datum.remaining_commitment = remaining_commitment;
         });
       }
 

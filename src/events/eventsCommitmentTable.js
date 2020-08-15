@@ -12,7 +12,7 @@ import MaintenanceTable from './allTables'
 
 const moneyColumns = ['Net Amount', 'Main',
 'Recallable',	'Withhold',
-'Fees', 'Tax', 'Outside Main', 'Outside Fees', 'Outside Tax', 'Net Commitment']
+'Fees', 'Tax', 'Outside Main', 'Outside Fees', 'Outside Tax', 'Remaining Commitment']
 
 const eventColumns = ['Type', 'Date Due', 'Date Sent',
     'Investment',
