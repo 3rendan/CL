@@ -127,10 +127,6 @@ const MaintenanceTable = (props) => {
 
         let net_commitment = props.commitment;
 
-        try {
-          net_commitment = parseFloat(net_commitment.substring(1));
-        }
-        catch (e) {}
         manipulatedData.map((datum) => {
           if (datum.type === 'CONTRIBUTION') {
             let main = datum.main;
