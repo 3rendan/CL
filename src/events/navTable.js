@@ -144,7 +144,7 @@ const NAVTable = (props) => {
       const dateOfNavDates = navDates.map(navDate => new Date(navDate.date))
       const navOfNavDates = navDates.map(navDate => new Date(navDate.nav))
       let minDate = new Date(Math.min(...dateOfNavDates))
-      let minEventDate = new Date(Math.min(...dates.map(date => new Date(date))))
+      let minEventDate = new Date(Math.min(...eventDates.map(date => new Date(date))))
       const startDate = new Date(Math.min(minDate, minEventDate))
 
       const startNAV = 0;
@@ -178,17 +178,32 @@ const NAVTable = (props) => {
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         const formatDate = moment(minDate).format('L')
 
+
+        const hasEndOfMonthNAV = groups[minDate] ? groups[minDate].filter(event => {
+          if (event.type === 'NAV') {
+            const date = new Date(event.date);
+            if (date.getDate() === minDate.getDate()
+                && date.getMonth() === minDate.getMonth()
+                && date.getFullYear() === minDate.getFullYear()) {
+                  return true;
+            }
+          }
+          return false;
+        }).length > 0 : false;
+
         if (last_pl === null) {
           const mtd = nav - netContribute
           navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
                           'p/l_(ltd)': nav - netContribute,
-                          'p/l_(mtd)': mtd})
+                          'p/l_(mtd)': mtd,
+                          bold: hasEndOfMonthNAV})
         }
         else {
           const mtd = (nav - netContribute - last_pl)
           navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
                           'p/l_(ltd)': nav - netContribute,
-                          'p/l_(mtd)': mtd})
+                          'p/l_(mtd)': mtd,
+                          bold: hasEndOfMonthNAV})
         }
         last_pl = (nav - netContribute).valueOf()
 
