@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {app, BrowserWindow, Menu} = electron;
+const {app, BrowserWindow, Menu, dialog} = electron;
 
 const {ipcMain} = electron;
 
@@ -55,6 +55,20 @@ function createMainWindow() {
   mainWindow.loadURL(isDev ? 'http://localhost:3000/#/connection' : fileURL);
 
   mainWindow.on('closed', ()=> mainWindow=null);
+
+  mainWindow.on('close', (e) => {
+    let options  = {
+     buttons: ["Yes","No"],
+     message: 'Confirm close app?'
+    }
+    const confirmed = dialog.showMessageBoxSync(options)
+    if (confirmed === 1) {
+      e.preventDefault();
+      return false;
+    }
+    mainWindow=null;
+    app.exit();
+  })
 
   // mainWindow.webContents.openDevTools();
 
