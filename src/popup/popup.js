@@ -356,6 +356,7 @@ const RowBland = (props) => {
   const onChange = (e) => {
     const newState = {
       ...props.state,
+      changer: props.name
     }
     newState[props.name] = e.target.value
     props.setState(newState)
@@ -458,8 +459,10 @@ const FormSheet = (props) => {
 
 
   useEffect(()=> {
-    console.log(state)
-    state['Date Sent'] = state['Date Due'];
+    if (state.changer === 'Date Due') {
+      state['Date Sent'] = state['Date Due']
+    }
+
     async function fetchData() {
       const result = await getInvestmentData();
       if (!result) {
