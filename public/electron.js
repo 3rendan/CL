@@ -143,7 +143,7 @@ ipcMain.on('viewEvents', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: `events/${args.name}/${args.id}`,
+      hash: `events/${args.id}`,
       protocol: 'file',
       slashes: true,
   });
@@ -152,7 +152,7 @@ ipcMain.on('viewEvents', (event, args) => {
   newWindow.setMenu(eventMenu);
 
   // Load html into window
-  newWindow.loadURL(isDev ? `http://localhost:3000/#/events/${args.name}/${args.id}` : fileURL);
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/events/${args.id}` : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 
@@ -178,13 +178,13 @@ ipcMain.on('viewTransfers', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: `transfers/${args.name}/${args.id}`,
+      hash: `transfers/${args.id}`,
       protocol: 'file',
       slashes: true,
   });
 
   // Load html into window
-  newWindow.loadURL(isDev ? `http://localhost:3000/#/transfers/${args.name}/${args.id}` : fileURL);
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/transfers/${args.id}` : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 

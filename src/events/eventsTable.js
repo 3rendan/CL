@@ -11,11 +11,13 @@ const frozenColumns = ['Type', 'Date Due'];
 const EventTable = (props) => {
   const [hasCommitment, setHasCommitment] = useState(null);
   const [commitment, setCommitment] = useState(null);
+  const [investmentName, setInvestmentName] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
       const result = await getInvestment(props.investmentID);
+      setInvestmentName(result.name)
       setHasCommitment(result.has_commitment)
       setCommitment(result.commitment)
     }
@@ -34,15 +36,19 @@ const EventTable = (props) => {
     return null;
   }
   else if (hasCommitment) {
-    return <EventsCommitmentTable investment={props.investment}
+    return <Fragment> <h1> Investment = {investmentName} </h1>
+                <EventsCommitmentTable investment={investmentName}
                   investmentID = {props.investmentID}
                   frozenColumns = {frozenColumns}
                   commitment = {commitment}/>
+            </Fragment>
   }
   else {
-    return <EventsSingleTable investment={props.investment}
+    return <Fragment> <h1> Investment = {investmentName} </h1>
+                <EventsSingleTable investment={investmentName}
                   investmentID = {props.investmentID}
                   frozenColumns = {frozenColumns}/>
+            </Fragment>
   }
 };
 

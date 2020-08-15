@@ -9,7 +9,6 @@ const NAVEventTable = (props) => {
   const [key, setKey] = useState(0);
   const [error, setError] = useState(null);
 
-  const investmentName = props.investment;
   const investmentID = props.investmentID;
 
   useEffect(() => {

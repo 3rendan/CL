@@ -61,7 +61,6 @@ const NAVTable = (props) => {
   const [error, setError] = useState(null);
 
 
-  const investmentName = props.investment;
   const investmentID = props.investmentID;
   const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)']
   const moneyColumns = ['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)'];

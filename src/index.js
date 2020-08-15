@@ -39,13 +39,9 @@ const Connection = lazy(() => import('./connection'))
 const EventsPage = (props) => {
   return (
     <Fragment>
-      <h1> Investment = {props.match.params.investment} </h1>
-      <EventsTable investment={props.match.params.investment}
-                    investmentID = {props.match.params.id}/>
-      <NAVEventsTable investment={props.match.params.investment}
-                      investmentID = {props.match.params.id}/>
-      <NAVTable investment={props.match.params.investment}
-                      investmentID = {props.match.params.id}/>
+      <EventsTable investmentID = {props.match.params.id}/>
+      <NAVEventsTable investmentID = {props.match.params.id}/>
+      <NAVTable investmentID = {props.match.params.id}/>
     </Fragment>
   )
 }
@@ -65,7 +61,7 @@ ReactDOM.render(
         <Route path="/calendar" component={Calendar} />
         // EVENTS AND TRANSFERS
         <Route path="/transfers" component={TransfersTable} />
-        <Route path="/events/:investment/:id"    component={EventsPage}   />
+        <Route path="/events/:id"    component={EventsPage}   />
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
           <AccountTable    />
