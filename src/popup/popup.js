@@ -557,6 +557,16 @@ const FormSheet = (props) => {
         }
       }
     }
+    if (transcationType === 'TRANSFER') {
+      if(state['From Investment'].value.id === state['To Investment'].value.id) {
+        let options  = {
+         buttons: ["Ok"],
+         message: `You cannot have the investments be the same`
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        e.preventDefault();
+      }
+    }
 
     if(positiveTransactions.includes(transcationType)) {
       if (state['Net Amount'] < 0) {
@@ -605,6 +615,7 @@ const FormSheet = (props) => {
 
   const onSubmit = (e) => {
     state['Type'] = transcationType;
+
     if (state.Id !== undefined) {
       const updatedEvent = updateEvent({
         state: state
