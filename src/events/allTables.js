@@ -269,7 +269,7 @@ const MaintenanceTable = (props) => {
     }
     else if (fieldName === 'notes') {
       return {title: colName, field: fieldName, responsive: 0,
-             frozen: frozen, minWidth: 300,
+             frozen: frozen, minWidth: 600,
               sorter: 'string', headerSort:headerSort};
     }
     return {title: colName, field: fieldName, responsive: 0,

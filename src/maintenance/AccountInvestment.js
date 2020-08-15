@@ -164,7 +164,7 @@ function columnNameToDefintion(colName, readOnly) {
                     maxLength:"300", //set the maximum character length of the textarea element to 10 characters
                 }
         }, variableHeight:true, headerSort:false,
-        minWidth: 300, width: 350, resizable:true};
+        minWidth: colName === 'Notes' ? 600 : 300, resizable:true};
     if (!readOnly) {
       column['editor'] = 'textarea';
       column['cellEdited'] = function(cell) {
