@@ -315,7 +315,7 @@ const MaintenanceTable = (props) => {
        return "<i class='fa fa-edit'></i>";
    }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
      const row = cell.getRow();
-    EditRow({dataID: row.getData().id, dataType: row.getData().type, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})
+     EditRow({dataID: row.getData().id, dataType: row.getData().type, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})
   }};
 
 

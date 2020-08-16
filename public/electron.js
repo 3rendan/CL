@@ -13,6 +13,11 @@ const url = require('url');
 global.database = {ip: null, username: null, password: null};
 
 
+// code to possibly fix Virtual Machine errors
+app.disableHardwareAcceleration();
+app.commandLine.appendSwitch("disable-software-rasterizer");
+// end code to possibly fix Virtual Machine errors
+
 let mainWindow;
 let reportWindow;
 
