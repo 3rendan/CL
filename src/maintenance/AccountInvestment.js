@@ -31,7 +31,7 @@ const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
 
 const currencyColumns = ['Commitment',	'Size (M)'];
 const dateColumns = ['End of Term', 'Close Date'];
-const dropdownColumns = ['Linked Investment', 'Primary Benchmark', 'Secondary Benchmark',
+const dropdownColumns = ['Linked Investment', 'Primary Benchmark', 'Secondary Benchmark', 'Invest Type',
                   'Asset Class', 'Sub Asset Class', 'Account', 'Owner']
 
 var accountNameToId = {}
@@ -110,6 +110,9 @@ const myValues = function(colName) {
   }
   else if (colName ==='Owner') {
     return ownerNames;
+  }
+  else if (colName === 'Invest Type') {
+    return ['cash', 'commit']
   }
   else {
     return true;
@@ -463,8 +466,6 @@ function columnNameToDefintion(colName, readOnly) {
 const DetailInvestmentTable = (props) => {
   const InvestmentData = props.data;
   const readOnly = props.readOnly;
-
-  console.log(InvestmentData)
 
   const [tableData, setTableData] = useState(props.data);
   const [hasAdded, setHasAdded] = useState(false);
