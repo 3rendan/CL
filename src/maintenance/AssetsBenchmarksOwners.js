@@ -47,7 +47,7 @@ const MaintenanceTable = (props) => {
          return;
        }
        const deletedData = cell.getData();
-       if (tableName === 'Owner') {
+       if (tableName === 'Owners') {
          deleteOwner(deletedData.id)
        }
        else if (tableName === 'Benchmark') {
@@ -56,7 +56,7 @@ const MaintenanceTable = (props) => {
        else if (tableName === 'Asset Class') {
          deleteAssetClass(deletedData.id)
        }
-       else if (tableName === 'Account') {
+       else if (tableName === 'Accounts') {
          deleteAccount(deletedData.id)
        }
 
@@ -79,7 +79,7 @@ const MaintenanceTable = (props) => {
               {
                 let insertFunc = null;
                 let data = null;
-                if (tableName === 'Owner') {
+                if (tableName === 'Owners') {
                   insertFunc = insertOwner;
                   data = new Owner(null);
                 }
@@ -91,7 +91,7 @@ const MaintenanceTable = (props) => {
                   data = new AssetClass(null);
                   insertFunc = insertAssetClass;
                 }
-                else if (tableName === 'Account') {
+                else if (tableName === 'Accounts') {
                   insertFunc = insertAccount;
                   data = new Account(null);
                 }

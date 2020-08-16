@@ -63,7 +63,7 @@ const OwnerTable = (props) => {
   if (OwnerData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Owner"} data={OwnerData}
+  return (<MaintenanceTable name={"Owners"} data={OwnerData}
               columns={OwnerColumns} colNames={colNames}/>);
 };
 

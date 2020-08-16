@@ -62,7 +62,7 @@ const AccountTable = (props) => {
   if (AccountData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Account"} data={AccountData}
+  return (<MaintenanceTable name={"Accounts"} data={AccountData}
                     colNames={colNames} columns={AccountColumns}/>);
 };
 
