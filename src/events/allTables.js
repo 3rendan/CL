@@ -311,9 +311,18 @@ const MaintenanceTable = (props) => {
      BrowserWindow.getAllWindows().map(window => window.reload())
   }};
 
+  const editCol = {formatter:function(cell, formatterParams, onRendered){ //plain text value
+       return "<i class='fa fa-edit'></i>";
+   }, minWidth: 40, width:40, headerSort:false, responsive:0, hozAlign:"center", cellClick:function(e, cell){
+     const row = cell.getRow();
+    EditRow({dataID: row.getData().id, dataType: row.getData().type, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})
+  }};
+
+
 
   const columns = [
     ...colNames,
+    editCol
   ];
 
   if (tableName !== 'NAV') {
@@ -357,9 +366,6 @@ const MaintenanceTable = (props) => {
                   downloadDataFormatter: (data) => data,
                   downloadReady: (fileContents, blob) => blob,
                   maxHeight: "400px",
-                  rowDblClick:function(e, row){
-                      EditRow({dataID: row.getData().id, dataType: row.getData().type, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})
-                  }
                 }}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
