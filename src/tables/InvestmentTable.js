@@ -33,6 +33,7 @@ const InvestmentTable = (props) => {
   const getAccountName = useCallback((list, id) => getMemoizedNames(list, id), [])
   const getAssetClassName = useCallback((list, id) => getMemoizedNames(list, id), [])
   const getBenchmarkName = useCallback((list, id) => getMemoizedNames(list, id), [])
+  const getInvestmentName = useCallback((list, id) => getMemoizedNames(list, id), [])
   const getOwnerName = useCallback((list, id) => getMemoizedNames(list, id), [])
 
   useEffect(() => {
@@ -91,6 +92,8 @@ const InvestmentTable = (props) => {
         investment.sub_asset_class = getAssetClassName(assetClass, investment.sub_asset_class)
 
         investment.owner = getOwnerName(owners, investment.owner)
+
+        investment.linked_investment = getInvestmentName(investments, investment.linked_investment)
       })
 
       setInvestmentData(investments);

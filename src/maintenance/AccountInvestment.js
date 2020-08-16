@@ -31,11 +31,13 @@ const textColumns = ['Management Fee',	'Preferred Return',	'Carried Interest',
 
 const currencyColumns = ['Commitment',	'Size (M)'];
 const dateColumns = ['End of Term', 'Close Date'];
-const dropdownColumns = ['Primary Benchmark', 'Secondary Benchmark',
+const dropdownColumns = ['Linked Investment', 'Primary Benchmark', 'Secondary Benchmark',
                   'Asset Class', 'Sub Asset Class', 'Account', 'Owner']
 
 var accountNameToId = {}
 var accountNames = []
+var investmentNameToId = {}
+var investmentNames = []
 var assetClassNameToId = {}
 var assetClassNames = []
 var benchmarkNameToId = {}
@@ -100,6 +102,9 @@ const myValues = function(colName) {
   else if (colName.includes('Benchmark')) {
     return benchmarkNames;
   }
+  else if (colName === 'Linked Investment') {
+    return investmentNames;
+  }
   else if (colName === 'Account') {
     return accountNames;
   }
@@ -135,6 +140,11 @@ function columnNameToDefintion(colName, readOnly) {
             else if (fieldName.includes('benchmark')) {
               if (newData[fieldName] in benchmarkNameToId) {
                 newData[fieldName] = benchmarkNameToId[newData[fieldName]]
+              }
+            }
+            else if (fieldName === 'listed_investment') {
+              if (newData[fieldName] in investmentNameToId) {
+                newData[fieldName] = investmentNameToId[newData[fieldName]]
               }
             }
             else if (fieldName === 'account') {
@@ -178,6 +188,11 @@ function columnNameToDefintion(colName, readOnly) {
             else if (fieldName.includes('benchmark')) {
               if (newData[fieldName] in benchmarkNameToId) {
                 newData[fieldName] = benchmarkNameToId[newData[fieldName]]
+              }
+            }
+            else if (fieldName.includes('linked')) {
+              if (newData[fieldName] in investmentNameToId) {
+                newData[fieldName] = investmentNameToId[newData[fieldName]]
               }
             }
             else if (fieldName === 'account') {
@@ -243,6 +258,11 @@ function columnNameToDefintion(colName, readOnly) {
                 newData[fieldName] = benchmarkNameToId[newData[fieldName]]
               }
             }
+            else if (fieldName.includes('linked')) {
+              if (newData[fieldName] in investmentNameToId) {
+                newData[fieldName] = investmentNameToId[newData[fieldName]]
+              }
+            }
             else if (fieldName === 'account') {
               if (newData[fieldName] in accountNameToId) {
                 newData[fieldName] = accountNameToId[newData[fieldName]]
@@ -289,6 +309,11 @@ function columnNameToDefintion(colName, readOnly) {
                 newData[fieldName] = benchmarkNameToId[newData[fieldName]]
               }
             }
+            else if (fieldName.includes('linked')) {
+              if (newData[fieldName] in investmentNameToId) {
+                newData[fieldName] = investmentNameToId[newData[fieldName]]
+              }
+            }
             else if (fieldName === 'account') {
               if (newData[fieldName] in accountNameToId) {
                 newData[fieldName] = accountNameToId[newData[fieldName]]
@@ -324,6 +349,11 @@ function columnNameToDefintion(colName, readOnly) {
             else if (fieldName.includes('benchmark')) {
               if (newData[fieldName] in benchmarkNameToId) {
                 newData[fieldName] = benchmarkNameToId[newData[fieldName]]
+              }
+            }
+            else if (fieldName.includes('linked')) {
+              if (newData[fieldName] in investmentNameToId) {
+                newData[fieldName] = investmentNameToId[newData[fieldName]]
               }
             }
             else if (fieldName === 'account') {
@@ -390,6 +420,11 @@ function columnNameToDefintion(colName, readOnly) {
               newData[fieldName] = assetClassNameToId[newData[fieldName]]
             }
           }
+          else if (fieldName.includes('linked')) {
+            if (newData[fieldName] in investmentNameToId) {
+              newData[fieldName] = investmentNameToId[newData[fieldName]]
+            }
+          }
           else if (fieldName.includes('benchmark')) {
             if (newData[fieldName] in benchmarkNameToId) {
               newData[fieldName] = benchmarkNameToId[newData[fieldName]]
@@ -429,12 +464,20 @@ const DetailInvestmentTable = (props) => {
   const InvestmentData = props.data;
   const readOnly = props.readOnly;
 
+  console.log(InvestmentData)
+
   const [tableData, setTableData] = useState(props.data);
   const [hasAdded, setHasAdded] = useState(false);
 
   const tableName = props.name;
   const columnNames = props.columns;
   const ref = useRef();
+
+  investmentNameToId = {};
+  investmentNames = props.data.map(i => {
+    investmentNameToId[i.name] = i.id
+    return i.name;
+  })
 
   accountNameToId = {}
   accountNames = props.AccountData.map(i => {
