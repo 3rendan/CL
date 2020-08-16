@@ -25,6 +25,7 @@ class Investment {
       this.close_date = null;
       this.sponsor_investment = "";
       this.notes = "";
+      this.linked_investment = "";
     }
     else {
       this.id = data.id;
@@ -46,6 +47,7 @@ class Investment {
       this.close_date = data.close_date;
       this.sponsor_investment = data.sponsor_investment;
       this.notes = data.notes;
+      this.linked_investment = data.linked_investment;
     }
   }
 
@@ -68,7 +70,8 @@ class Investment {
             carried_interest: this.carried_interest,
             close_date: this.close_date,
             sponsor_investment: this.sponsor_investment,
-            notes: this.notes
+            notes: this.notes,
+            linked_investment: this.linked_investment
           }
   }
 }
@@ -91,6 +94,9 @@ const updateInvestment = async (investment) => {
       const jsonData = await response.json();
       if (jsonData.includes('duplicate')) {
         return 'duplicate key';
+      }
+      if (jsonData.includes('foreign key')) {
+        return 'foreign key';
       }
       return true;
     } catch (err) {
@@ -168,7 +174,8 @@ const getInvestment = async id => {
 
 
 const InvestmentColumns = [
-  'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',	'Owner',
+  'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',
+  'Linked Investment', 'Owner',
   'Commitment (Y/N)', 'Primary Benchmark',	'Secondary Benchmark',
   'Commitment',	'Size (M)',	'End of Term',	'Management Fee',
   'Preferred Return',	'Carried Interest',

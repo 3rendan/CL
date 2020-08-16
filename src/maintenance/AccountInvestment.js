@@ -207,6 +207,17 @@ function columnNameToDefintion(colName, readOnly) {
               // const confirmed = window.confirm('Confirm Restore?')
               cell.restoreOldValue();
             }
+            if (a === 'foreign key') {
+              const electron = window.require('electron');
+              const dialog = electron.remote.dialog
+              let options  = {
+               buttons: ["Ok"],
+               message: 'Linked Investment needs to reference an existing investment'
+              }
+              const confirmed = dialog.showMessageBoxSync(options)
+              // const confirmed = window.confirm('Confirm Restore?')
+              cell.restoreOldValue();
+            }
           });
       };
     }
@@ -338,6 +349,17 @@ function columnNameToDefintion(colName, readOnly) {
               let options  = {
                buttons: ["Ok"],
                message: 'Names and Long Names are unique!'
+              }
+              const confirmed = dialog.showMessageBoxSync(options)
+              // const confirmed = window.confirm('Confirm Restore?')
+              cell.restoreOldValue();
+            }
+            if (a === 'foreign key') {
+              const electron = window.require('electron');
+              const dialog = electron.remote.dialog
+              let options  = {
+               buttons: ["Ok"],
+               message: 'Linked Investment needs to reference an existing investment'
               }
               const confirmed = dialog.showMessageBoxSync(options)
               // const confirmed = window.confirm('Confirm Restore?')
