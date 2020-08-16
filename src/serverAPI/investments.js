@@ -13,7 +13,6 @@ class Investment {
       this.sub_asset_class = null;
       this.account = null;
       this.owner = null;
-      this.has_commitment = false;
       this.primary_benchmark = null;
       this.secondary_benchmark = null;
       this.commitment = 0;
@@ -26,6 +25,7 @@ class Investment {
       this.sponsor_investment = "";
       this.notes = "";
       this.linked_investment = "";
+      this.invest_type = "";
     }
     else {
       this.id = data.id;
@@ -35,7 +35,6 @@ class Investment {
       this.sub_asset_class = data.sub_asset_class;
       this.account = data.account;
       this.owner = data.owner;
-      this.has_commitment = data.has_commitment;
       this.primary_benchmark = data.primary_benchmark;
       this.secondary_benchmark = data.secondary_benchmark;
       this.commitment = data.commitment;
@@ -48,6 +47,7 @@ class Investment {
       this.sponsor_investment = data.sponsor_investment;
       this.notes = data.notes;
       this.linked_investment = data.linked_investment;
+      this.invest_type = data.invest_type;
     }
   }
 
@@ -59,7 +59,6 @@ class Investment {
             sub_asset_class: this.sub_asset_class,
             account: this.account,
             owner: this.owner,
-            has_commitment: this.has_commitment,
             primary_benchmark: this.primary_benchmark,
             secondary_benchmark: this.secondary_benchmark,
             commitment: this.commitment,
@@ -71,7 +70,8 @@ class Investment {
             close_date: this.close_date,
             sponsor_investment: this.sponsor_investment,
             notes: this.notes,
-            linked_investment: this.linked_investment
+            linked_investment: this.linked_investment,
+            invest_type: this.invest_type,
           }
   }
 }
@@ -176,16 +176,13 @@ const getInvestment = async id => {
 const InvestmentColumns = [
   'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',
   'Linked Investment', 'Owner',
-  'Commitment (Y/N)', 'Primary Benchmark',	'Secondary Benchmark',
+  'Invest Type', 'Primary Benchmark',	'Secondary Benchmark',
   'Commitment',	'Size (M)',	'End of Term',	'Management Fee',
   'Preferred Return',	'Carried Interest',
   'Close Date',	'Sponsor Investment',	'Notes']
 
 const colToInvestmentFields = (columnName) => {
-  if (columnName === 'Commitment (Y/N)') {
-    return 'has_commitment';
-  }
-  else if (columnName === 'Size (M)') {
+  if (columnName === 'Size (M)') {
     return 'size';
   }
   return columnName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
