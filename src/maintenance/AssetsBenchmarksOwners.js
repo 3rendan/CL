@@ -50,10 +50,10 @@ const MaintenanceTable = (props) => {
        if (tableName === 'Owners') {
          deleteOwner(deletedData.id)
        }
-       else if (tableName === 'Benchmark') {
+       else if (tableName === 'Benchmarks') {
          deleteBenchmark(deletedData.id)
        }
-       else if (tableName === 'Asset Class') {
+       else if (tableName === 'Asset Classes') {
          deleteAssetClass(deletedData.id)
        }
        else if (tableName === 'Accounts') {
@@ -83,11 +83,11 @@ const MaintenanceTable = (props) => {
                   insertFunc = insertOwner;
                   data = new Owner(null);
                 }
-                else if (tableName === 'Benchmark') {
+                else if (tableName === 'Benchmarks') {
                   data = new Benchmark(null);
                   insertFunc = insertBenchmark;
                 }
-                else if (tableName === 'Asset Class') {
+                else if (tableName === 'Asset Classes') {
                   data = new AssetClass(null);
                   insertFunc = insertAssetClass;
                 }

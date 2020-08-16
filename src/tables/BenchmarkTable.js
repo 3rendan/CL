@@ -63,7 +63,7 @@ const BenchmarkTable = (props) => {
   if (BenchmarkData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Benchmark"} data={BenchmarkData}
+  return (<MaintenanceTable name={"Benchmarks"} data={BenchmarkData}
                      columns={BenchmarkColumns} colNames={colNames} />);
 };
 

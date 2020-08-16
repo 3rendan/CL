@@ -130,7 +130,7 @@ const AssetClassTable = (props) => {
   if (AssetClassData === null) {
     return null;
   }
-  return (<MaintenanceTable name={"Asset Class"} data={AssetClassData}
+  return (<MaintenanceTable name={"Asset Classes"} data={AssetClassData}
                        colNames={colNames} columns={AssetClassColumns}/>);
 };
 
