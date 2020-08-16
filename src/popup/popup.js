@@ -507,19 +507,19 @@ const FormSheet = (props) => {
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount',
         'Main $', 'Fees $', 'Tax $',
         'Outside Main $', 'Outside Fees $', 'Outside Tax $',
-         'Investment', 'Notes'];
+        'Notes', 'Investment'];
         break;
       case 'DISTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Investment', 'Notes'];
+        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Notes', 'Investment'];
         break;
       case 'TRANSFER':
         mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];
         break;
       case 'COMMISH':
-        mainColumns = ['Date', 'Amount', 'Investment', 'Notes']
+        mainColumns = ['Date', 'Amount', 'Notes', 'Investment']
         break;
       default: // single entry transaction details
-        mainColumns = ['Date', 'Investment', 'Amount', 'Notes'];
+        mainColumns = ['Date', 'Amount', 'Notes', 'Investment'];
     }
 
     const mainLengths = mainColumns.map(a => a.length );
@@ -537,6 +537,18 @@ const FormSheet = (props) => {
          return <RowCurrencyNet key={column + transcationType}
                                 name={column} size={maxSize}
                                 state={state} setState={setState}/>;
+       }
+       else if (column === 'Investment') {
+         return ( <Fragment>
+           <br />
+           <br />
+           <br />
+            <RowInvestment name={column} key={column + transcationType} size={maxSize}
+                                  state={state} setState={setState}
+                                  investmentID={investmentID}
+                                  transcationType={transcationType}/>
+                  </Fragment>
+                                )
        }
        else if (column.includes('Investment')) {
          return <RowInvestment name={column} key={column + transcationType} size={maxSize}
