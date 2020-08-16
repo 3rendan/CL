@@ -56,6 +56,35 @@ function EditRow(props) {
   }
 };
 
+function typeSort(a, b) {
+  const convertTypeToOrderPreference = (type) => {
+    switch (type) {
+      case 'TRANSFER':
+        return 0;
+      case 'CONTRIBUTION':
+        return 1;
+      case 'DISTRIBUTION':
+        return 2;
+      case 'INFLOW':
+        return 3;
+      case 'OUTFLOW':
+        return 4;
+      case 'CREDIT':
+        return 5;
+      case 'EXPENSE':
+        return 6;
+      case 'DIV':
+        return 7;
+      case 'COMMISH':
+        return 8;
+      default:
+        return 9;
+    }
+  }
+
+  return convertTypeToOrderPreference(a) - convertTypeToOrderPreference(b);
+}
+
 const MaintenanceTable = (props) => {
   const columnNames = props.columns;
   const tableName = props.name;
@@ -292,6 +321,11 @@ const MaintenanceTable = (props) => {
              frozen: frozen, minWidth: 600,
               sorter: 'string', headerSort:headerSort};
     }
+    else if (fieldName === 'type') {
+      return {title: colName, field: fieldName, responsive: 0,
+             frozen: frozen,
+              sorter: typeSort, headerSort:headerSort};
+    }
     return {title: colName, field: fieldName, responsive: 0,
            frozen: frozen,
             sorter: 'string', headerSort:headerSort};
@@ -385,7 +419,8 @@ const MaintenanceTable = (props) => {
         columns={columns}
         data={data}
         options={{layout: "fitData",
-                  initialSort: [{column: "date_due", dir:'asc'},
+                  initialSort: [{column: 'type', dir:'asc'},
+                                {column: "date_due", dir:'asc'},
                                 {column: "date", dir:'asc'}],
                   downloadDataFormatter: (data) => data,
                   downloadReady: (fileContents, blob) => blob,
