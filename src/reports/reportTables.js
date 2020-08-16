@@ -73,7 +73,6 @@ const MaintenanceTable = (props) => {
         columns={columns}
         data={data}
         options={{layout: "fitData",
-                  scrollToColumnPosition: "right",
                   dataTree: true,
                   maxHeight: parseInt(remote.getCurrentWindow().getSize()[1] * 0.9) + 'px',
                   initialSort: [{column: "date_due", dir:'asc'},

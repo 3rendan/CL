@@ -16,7 +16,9 @@ const moneyColumns = ['Net Amount', 'Main',
 
 const eventColumns = ['Type', 'Date Due', 'Date Sent',
     'Investment',
-    ...moneyColumns,
+    'Net Amount',
+    'Remaining Commitment',
+    ...moneyColumns.slice(1, moneyColumns.length - 1),
     'Notes']
 
 const EventTable = (props) => {
