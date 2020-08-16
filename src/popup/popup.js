@@ -270,8 +270,10 @@ const RowInvestment = (props) => {
     props.setState(state => {
       const newState = {...state}
       newState[props.name] =  inputText
+      console.log(newState)
       return newState;
     });
+
     setValue(inputText)
   }
 
@@ -283,9 +285,14 @@ const RowInvestment = (props) => {
     }
 
     async function fetchData() {
+      let thisInvestmentLinkedInvestmentId = undefined;
       InvestmentData = await getInvestments();
       investmentOptions = InvestmentData.map((data) => {
-        const label = data.long_name
+        const label = data.long_name;
+        if (data.id === props.investmentID && data.linked_investment !== undefined) {
+          // if there is a linked investment set it equal to this one
+          thisInvestmentLinkedInvestmentId = data.linked_investment;
+        }
         if (data.id === defaultInvestment) {
           setValue({label: label, value: data})
           props.setState(state => {
@@ -297,18 +304,33 @@ const RowInvestment = (props) => {
         }
         return {label: label, value: data};
       })
+
+      let linkedInvestment = null;
+      if (thisInvestmentLinkedInvestmentId !== undefined) {
+        InvestmentData.map((data) => {
+          const label = data.long_name
+          if (data.id === thisInvestmentLinkedInvestmentId) {
+            linkedInvestment ={label: label, value: data}
+          }
+        })
+      }
       if (loadOptions === loadCommitOptions) {
         setDefaultOptions(investmentOptions.filter(i => i.value.has_commitment));
       }
       if (loadOptions === loadNonCommitOptions) {
         const nonCommit = investmentOptions.filter(i => !i.value.has_commitment)
         setDefaultOptions(nonCommit);
-        setValue(nonCommit[0])
+        let defaultInvestment = nonCommit[0]
+        if (thisInvestmentLinkedInvestmentId !== undefined) {
+          defaultInvestment = linkedInvestment
+        }
+        setValue(defaultInvestment)
         props.setState(state => {
           const newState = {...state}
-          newState[props.name] = nonCommit[0]
+          newState[props.name] = defaultInvestment
           return newState;
         });
+
       }
       if (loadOptions === loadAllOptions) {
         setDefaultOptions(investmentOptions);
