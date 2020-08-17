@@ -216,6 +216,40 @@ function calcNAV(group, investmentID, nav) {
   }, nav);
 }
 
+// NAV calculation
+function calcPrelimNAV(group, investmentID, nav) {
+  if (group === undefined) {
+    return nav;
+  }
+  group.sort(myDateSort);
+  return group.reduce((accumulator, current) => {
+    if (current.type === 'TRANSFER') {
+      if (current.to_investment === investmentID) {
+        return accumulator + current.amount;
+      }
+      return accumulator - current.amount; // in from_investment
+    }
+    if (current.type === 'COMMISH') {
+      if (investmentID === current.investment) {
+        return accumulator;
+      }
+      return accumulator - current.amount; // in from_investment
+    }
+    if (current.type === 'NAV') {
+      return accumulator;
+    }
+    let amount = current.amount !== undefined ? current.amount : current.net_amount;
+    if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
+      // amount is negative for type distribution
+      if (current.from_investment === investmentID) {
+        return accumulator + amount;
+      }
+      return accumulator - amount;
+    }
+    return accumulator + amount;
+  }, nav);
+}
+
 // // a column that when clicked launches the events page
 const eventsCol = {
   formatter:function(cell, formatterParams, onRendered){ //plain text value
@@ -239,5 +273,5 @@ const defaultTabulatorSettings = {
 };
 
 export {copyCol, myMoneyFormatter, initialMoneyFormatter, initialMoneyPercentFormatter,
-  rightClickMoneyPercent, rightClickMoney,
+  rightClickMoneyPercent, rightClickMoney, calcPrelimNAV,
   eventsCol, defaultTabulatorSettings, calcNAV, myDateSort};

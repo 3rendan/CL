@@ -8,7 +8,7 @@ import {getTransfers} from '../serverAPI/transfers.js'
 
 import {getIrr} from '../serverAPI/irr'
 
-import {calcNAV, myDateSort} from '../SpecialColumn'
+import {calcNAV, calcPrelimNAV, myDateSort} from '../SpecialColumn'
 
 import MaintenanceTable from './allTables'
 
@@ -39,18 +39,19 @@ function calcNetContribute(group, investmentID, nav) {
       if (current.to_investment === investmentID) {
         return accumulator + current.amount;
       }
-      return accumulator - current.amount;
+      return accumulator - current.amount; // in from_investment
     }
-    // NAV and COMMISH have no effect
-    if (current.type === 'COMMISH' || current.type === 'NAV') {
+    if (current.type === 'NAV' || current.type === 'COMMISH'
+        || current.type === 'GAIN' || current.type === 'DIV') {
       return accumulator;
     }
     let amount = current.amount !== undefined ? current.amount : current.net_amount;
-
-    if (current.type === 'CONTRIBUTION') {
-      if (investmentID === current.investment) {
-        return accumulator - amount;
+    if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
+      // amount is negative for type distribution
+      if (current.from_investment === investmentID) {
+        return accumulator + amount;
       }
+      return accumulator - amount;
     }
     return accumulator + amount;
   }, nav);
@@ -62,8 +63,8 @@ const NAVTable = (props) => {
 
 
   const investmentID = props.investmentID;
-  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)']
-  const moneyColumns = ['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)'];
+  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain']
+  const moneyColumns = ['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'Unexplained Gain'];
 
   useEffect(() => {
     async function fetchData() {
@@ -168,12 +169,15 @@ const NAVTable = (props) => {
       let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
       finalMonth = new Date(Math.max(currEndMonth, finalMonth));
 
+      let prev_nav = 0;
       let nav = 0;
+      let prelim_nav = 0;
       let netContribute = 0;
       const navDates = [];
       let last_pl = null;
       while (minDate <= finalMonth) {
-        nav = calcNAV(groups[minDate], investmentID, nav);
+        nav = calcNAV(groups[minDate], investmentID, prev_nav);
+        prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         const formatDate = moment(minDate).format('L')
 
@@ -193,15 +197,19 @@ const NAVTable = (props) => {
         if (last_pl === null) {
           const mtd = nav - netContribute
           navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
+                          nav_prelim: prelim_nav, unexplained_gain: nav - prelim_nav,
                           'p/l_(ltd)': nav - netContribute,
                           'p/l_(mtd)': mtd,
                           bold: hasEndOfMonthNAV})
         }
         else {
           const mtd = (nav - netContribute - last_pl)
+          const mtd_perc = (mtd/prev_nav * 100).toFixed(2) + '%'
           navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
+                          nav_prelim: prelim_nav, unexplained_gain: nav - prelim_nav,
                           'p/l_(ltd)': nav - netContribute,
                           'p/l_(mtd)': mtd,
+                          'p/l(%)_(mtd)': mtd_perc,
                           bold: hasEndOfMonthNAV})
         }
         last_pl = (nav - netContribute).valueOf()
@@ -211,6 +219,7 @@ const NAVTable = (props) => {
 
         // get next end of month
         minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
+        prev_nav = nav;
       }
 
       const [myEventString, eventDates] = await getIrrEvents(myData);
