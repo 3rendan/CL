@@ -379,12 +379,12 @@ const MaintenanceTable = (props) => {
 
 
   const columns = [
-    ...colNames,
-    editCol
+    ...colNames
   ];
 
   if (tableName !== 'NAV') {
     columns.push(trashCol)
+    columns.push(editCol)
   }
 
   let addRow = tableName === 'NAV' ? null :
