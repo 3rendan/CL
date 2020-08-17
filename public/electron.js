@@ -243,6 +243,12 @@ ipcMain.on('popupEvent', (event, args) => {
 });
 
 ipcMain.on('popupNAVEvent', (event, args) => {
+  let destURL = `popup/NAVevent/${args.investmentID}`;
+  if (args.dataID !== undefined) {
+    destURL = `popup/NAVevent/edit/${args.investmentID}/${args.dataID}`;
+  }
+
+
   // Create new window
   let newWindow = new BrowserWindow({
     webPreferences: {
@@ -256,13 +262,13 @@ ipcMain.on('popupNAVEvent', (event, args) => {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: `popup/NAVevent/${args.investmentID}`,
+      hash: destURL,
       protocol: 'file',
       slashes: true,
   });
 
   // Load html into window
-  newWindow.loadURL(isDev ? `http://localhost:3000/#/popup/NAVevent/${args.investmentID}` : fileURL);
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/${destURL}` : fileURL);
 
   newWindow.on('closed', ()=> newWindow=null);
 

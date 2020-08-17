@@ -7,7 +7,6 @@ const FilledFormSheet = lazy(() => import("./popupFilled.js"))
 
 const Event = (props) => {
   if (props.match.params.data !== undefined) {
-    console.log('here')
     return (
       <FilledFormSheet
       dropdownOptions={['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'COMMISH', 'DISTRIBUTION', 'CONTRIBUTION']}

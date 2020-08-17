@@ -5,7 +5,7 @@ import {getContributionsId} from '../serverAPI/contributions.js'
 import {getDistributionsId} from '../serverAPI/distributions.js'
 import {getCommissionsId} from '../serverAPI/commissions.js'
 import {getTransfersId} from '../serverAPI/transfers.js'
-import {getSingleEntry} from '../serverAPI/singleEntry.js'
+import {getSingleEntry, getNAVEvents} from '../serverAPI/singleEntry.js'
 
 import {getInvestments} from '../serverAPI/investments.js'
 
@@ -37,12 +37,16 @@ const FilledFormSheet = (props) => {
   // this is only for edited data
   const dataType = props.dataType
   const dataID = props.dataID
-
   const [state, setState] = useState({})
+  const [error, setError] = useState(null);
+
 
   let options = [];
   if (dataType === 'TRANSFER') {
       options = ['TRANSFER']
+  }
+  else if(dataType === 'NAV') {
+    options = ['NAV']
   }
   else {
     options = ['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'COMMISH', 'DISTRIBUTION', 'CONTRIBUTION']
@@ -69,7 +73,7 @@ const FilledFormSheet = (props) => {
             if (month < 10) {
               month = '0' + month;
             }
-            let day = (date.getDate() + 1);
+            let day = date.getDate();
             if (day < 10) {
               day = '0' + day;
             }
@@ -86,15 +90,17 @@ const FilledFormSheet = (props) => {
           }
           nameToValue[capitalName] = result[key]
         })
+        console.log(nameToValue)
         setState(nameToValue);
       }
-      getData();
+      getData().catch(e => setError(e))
     }
   }, [])
 
-
+  if (error) {
+    return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
+  }
   if (Object.keys(state).length !== 0) {
-    console.log(state)
     return <FormSheet getInvestmentData={getInvestments} key={'filled'}
                       initial={state}
      transcationType={props.dataType} dropdownOptions={options} />

@@ -9,7 +9,7 @@ const EventsCommitmentTable = lazy(() => import("./eventsCommitmentTable"));
 const frozenColumns = ['Type', 'Date Due'];
 
 const EventTable = (props) => {
-  const [hasCommitment, setHasCommitment] = useState(null);
+  const [investType, setInvestType] = useState(null);
   const [commitment, setCommitment] = useState(null);
   const [investmentName, setInvestmentName] = useState(null);
   const [error, setError] = useState(null);
@@ -18,7 +18,7 @@ const EventTable = (props) => {
     async function fetchData() {
       const result = await getInvestment(props.investmentID);
       setInvestmentName(result.name)
-      setHasCommitment(result.has_commitment)
+      setInvestType(result.invest_type)
       setCommitment(result.commitment)
     }
 
@@ -32,10 +32,10 @@ const EventTable = (props) => {
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
-  if (hasCommitment === null) {
+  if (investmentName === null) {
     return null;
   }
-  else if (hasCommitment) {
+  else if (investType === 'commit') {
     return <Fragment> <h1> Investment = {investmentName} </h1>
                 <EventsCommitmentTable investment={investmentName}
                   investmentID = {props.investmentID}

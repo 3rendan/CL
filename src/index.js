@@ -79,6 +79,7 @@ ReactDOM.render(
         // POPUPs
         <Route path="/popup/event/commitment/edit/:id/:data/:type" component={EventCommitmentPopup}  />
         <Route path="/popup/event/edit/:id/:data/:type" component={EventPopup} />
+        <Route path="/popup/NAVevent/edit/:id/:data" component={NavEventPopup} />
         <Route path="/popup/event/commitment/:id" component={EventCommitmentPopup}  />
         <Route path="/popup/event/:id" component={EventPopup} />
         <Route path="/popup/NAVevent/:id" component={NavEventPopup} />
