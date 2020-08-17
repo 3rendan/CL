@@ -18,7 +18,7 @@ import {getInvestments, getInvestment} from '../serverAPI/investments'
 
 import moment from 'moment';
 import {copyCol, myDateSort, myMoneyFormatter,
-   initialMoneyFormatter, rightClickMoney} from '../SpecialColumn';
+   initialMoneyPercentFormatter, rightClickMoneyPercent} from '../SpecialColumn';
 
 import '../shrinkFontSize.css';
 
@@ -75,10 +75,12 @@ function typeSort(a, b) {
         return 6;
       case 'DIV':
         return 7;
-      case 'COMMISH':
+      case 'GAIN':
         return 8;
-      default:
+      case 'COMMISH':
         return 9;
+      default:
+        return 10;
     }
   }
 
@@ -243,11 +245,11 @@ const MaintenanceTable = (props) => {
       const column = {title: colName,
         field: fieldName, responsive: 0,
         align: 'right',
-        formatter: initialMoneyFormatter,
+        formatter: initialMoneyPercentFormatter,
         minWidth: 130,
         headerTooltip: 'Right Click to toggle cents',
         headerSort:headerSort, sorter:'number',
-        headerContext: rightClickMoney};
+        headerContext: rightClickMoneyPercent};
       return column;
     }
     else if (fieldName === 'date_sent') {

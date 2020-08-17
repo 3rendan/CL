@@ -32,7 +32,6 @@ const EventTable = (props) => {
       let singleEntrys = await getSingleEntrys(investmentID);
       singleEntrys = singleEntrys ? singleEntrys : [];
       const copySingle = [...singleEntrys.map(transfer => { return {...transfer} })]
-      console.log(copySingle)
       singleEntrys = singleEntrys.map((entry) => {
         if (entry.investment === investmentID) {
           entry.investment = entry.from_investment
@@ -54,7 +53,6 @@ const EventTable = (props) => {
       distributions = distributions ? distributions : [];
 
       const copyDist = [...distributions.map(transfer => { return {...transfer} })]
-      console.log(copyDist)
 
       distributions = distributions.map((dist) => {
         dist['type'] = 'DISTRIBUTION'

@@ -126,7 +126,7 @@ function rightClickMoneyPercent(e, column){
   var cells = column.getCells();
   cells.forEach((cell, _) => {
     if (cell.getValue() !== undefined) {
-      if (!cell.getValue().includes('%')) {
+      if (!cell.getValue().toString().includes('%')) {
         cell.getElement().innerText = myMoneyFormatter(cell.getValue(), showCents);
       }
     }

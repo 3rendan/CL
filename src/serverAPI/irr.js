@@ -7,7 +7,7 @@ const databaseHost = remote.getGlobal('database').ip;
 const getIrr = async (body) => {
   try {
     const response = await fetch(`http://${databaseHost}:5000/irr`, {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
