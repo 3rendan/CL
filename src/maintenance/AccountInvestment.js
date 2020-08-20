@@ -412,6 +412,10 @@ function columnNameToDefintion(colName, readOnly) {
   }
   const column = {title: colName, field: fieldName, responsive: 0};
 
+  if (colName === 'Linked Investment' || colName === 'Investment Type') {
+    column['sorter'] = 'string';
+  }
+
   if (!readOnly) {
     column['editor'] = 'autocomplete';
     column['cellEdited'] = function(cell) {
