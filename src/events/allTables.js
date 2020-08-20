@@ -131,10 +131,14 @@ const MaintenanceTable = (props) => {
       // rename data
       let manipulatedData = props.data.map((datum) => {
         if (datum.from_investment !== undefined) {
-          datum.from_investment = investments[datum.from_investment].name;
+          if (!isNaN(datum.from_investment)) {
+            datum.from_investment = investments[datum.from_investment].name;
+          }
         }
         if (datum.to_investment !== undefined) {
-          datum.to_investment = investments[datum.to_investment].name;
+          if (!isNaN(datum.to_investment)) {
+            datum.to_investment = investments[datum.to_investment].name;
+          }
         }
         if (datum['to/from_account'] === undefined) {
           if (datum.to_investment !== undefined && datum.to_investment !== thisInvestment.name && datum.to_investment !== investmentID) {

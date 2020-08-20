@@ -10,8 +10,8 @@ class AssetClass {
       this.name = "";
       this.long_name = "";
       this.super_asset_class = "";
-      this.primary_benchmark = "";
-      this.secondary_benchmark = "";
+      this.primary_benchmark = null;
+      this.secondary_benchmark = null;
     }
     else {
       this.id = data.id;

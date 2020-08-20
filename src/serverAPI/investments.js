@@ -24,7 +24,7 @@ class Investment {
       this.close_date = null;
       this.sponsor_investment = "";
       this.notes = "";
-      this.linked_investment = "";
+      this.linked_investment = null;
       this.invest_type = "";
     }
     else {
