@@ -516,7 +516,7 @@ const FormSheet = (props) => {
         mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];
         break;
       case 'COMMISH':
-        mainColumns = ['Date', 'Amount', 'Notes', 'Investment']
+        mainColumns = ['Date', 'Amount', 'From Investment', 'Notes', 'Investment']
         break;
       default: // single entry transaction details
         mainColumns = ['Date', 'Amount', 'Notes', 'Investment'];
