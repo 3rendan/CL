@@ -412,7 +412,7 @@ function columnNameToDefintion(colName, readOnly) {
   }
   const column = {title: colName, field: fieldName, responsive: 0};
 
-  if (colName === 'Linked Investment' || colName === 'Investment Type') {
+  if (colName === 'Linked Investment' || colName === 'Invest Type') {
     column['sorter'] = 'string';
   }
 
