@@ -2,7 +2,7 @@ import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import {getAllTransfers, Transfer, TransferColumns} from '../serverAPI/transfers.js'
 
-import MaintenanceTable from './allTables'
+import MaintenanceTable from './transferTableDefinition'
 
 const TransferTable = (props) => {
   const [TransferData, setTransferData] = useState(null);
