@@ -132,7 +132,7 @@ const Calendar = () => {
   const [distributions, setDistributions] = useState([]);
   const [contributions, setContributions] = useState([]);
 
-  const getMemoizedInvestmentName = useCallback(async (id) => getInvestmentName(id))
+  const getMemoizedInvestmentName = useCallback(async (id) => await getInvestmentName(id))
 
   async function fetchDefaultDistributions() {
     const defaultEvents = await getDistributions(state.startDate, state.endDate)
@@ -322,6 +322,7 @@ const CalendarListElement = (props) => {
       }, 0) : 0;
 
       let name = "";
+      console.log(contributionNames)
       if (contributionNames.length === 1) {
         name = `Contribution ($${totalContribution}) Due to ${contributionNames[0]}`;
       }
