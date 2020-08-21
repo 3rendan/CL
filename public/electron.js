@@ -446,7 +446,7 @@ function loadCalendarView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: 'calendar',
+      hash: 'report/calendar',
       protocol: 'file',
       slashes: true,
   });
@@ -456,7 +456,7 @@ function loadCalendarView() {
   }
 
   // Load html into window
-  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/assetAllocation' : fileURL);
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/calendar' : fileURL);
 
 };
 

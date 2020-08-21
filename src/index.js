@@ -58,7 +58,7 @@ ReactDOM.render(
         <Route path="/investments">
           <InvestmentTable readOnly={true} />
         </Route>
-        <Route path="/calendar" component={Calendar} />
+        <Route path="/report/calendar" component={Calendar} />
         // EVENTS AND TRANSFERS
         <Route path="/transfers" component={TransfersTable} />
         <Route path="/events/:id"    component={EventsPage}   />
