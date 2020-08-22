@@ -120,7 +120,7 @@ const AssetAllocationReport = (props) => {
                 'nav_(%)': (assets[asset]/totalNAV * 100).toFixed(2) + '%'
         }
       })
-      assetData.push({asset: 'Total NAV', nav: totalNAV})
+      assetData.push({asset: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%'})
       setAsset(assetData);
     }
 

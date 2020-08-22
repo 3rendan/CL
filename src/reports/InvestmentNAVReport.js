@@ -76,7 +76,7 @@ const InvestmentNAVReport = (props) => {
         return {investment: investment.investment, nav: investment.nav,
                 'nav_(%)': (investment.nav/totalNAV * 100).toFixed(2) + '%'}
       })
-      investmentData.push({investment: 'Total NAV', nav: totalNAV})
+      investmentData.push({investment: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%'})
       setData(investmentData);
     }
     manipulateData().catch(e => setError(e))

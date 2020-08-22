@@ -91,7 +91,7 @@ const AccountBalanceReport = (props) => {
         return {account: account, nav: accounts[account],
                 'nav_(%)': (accounts[account]/totalNAV * 100).toFixed(2) + '%'}
       })
-      accountData.push({account: 'Total NAV', nav: totalNAV})
+      accountData.push({account: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%'})
       setData(accountData);
     }
     manipulateData().catch(e => setError(e))
