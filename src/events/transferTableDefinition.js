@@ -264,7 +264,7 @@ const MaintenanceTable = (props) => {
                                 {column: "date", dir:'asc'}],
                   downloadDataFormatter: (data) => data,
                   downloadReady: (fileContents, blob) => blob,
-                  maxHeight: "400px",
+                  maxHeight: "720px",
                 }}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
