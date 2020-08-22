@@ -4,6 +4,7 @@ import {getSingleEntrys, getNAVEvents} from '../serverAPI/singleEntry.js'
 import {getDistributionsInvestment} from '../serverAPI/distributions.js'
 import {getContributionsInvestment} from '../serverAPI/contributions.js'
 import {getCommissionsInvestment} from '../serverAPI/commissions.js'
+import {getInvestment} from '../serverAPI/investments.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 
 import {getIrr} from '../serverAPI/irr'
@@ -29,15 +30,55 @@ function groupByMonth(array) {
   return result;
 }
 
+function calcRemainingCommitment(data, remaining_commitment) {
+  if (remaining_commitment === undefined) {
+    return undefined;
+  }
+
+  data.map((datum) => {
+    if (datum.type === 'CONTRIBUTION') {
+      let main = datum.main;
+      try {
+        main = datum.main ? parseFloat(datum.main.substring(1)) : 0;
+      }
+      catch (e) {}
+      remaining_commitment -= main;
+
+      let fees = datum.fees;
+      try {
+        fees = datum.fees ? parseFloat(datum.fees.substring(1)) : 0;
+      }
+      catch (e) {}
+      remaining_commitment -= fees;
+
+      let tax = datum.tax;
+      try {
+        tax = datum.tax ? parseFloat(datum.tax.substring(1)) : 0;
+      }
+      catch (e) {}
+      remaining_commitment -= tax;
+    }
+    else if (datum.type === 'DISTRIBUTION') {
+      let recallable = datum.recallable;
+      try {
+        recallable = datum.recallable ? parseFloat(datum.recallable.substring(1)) : 0;
+      }
+      catch (e) {}
+      remaining_commitment -= recallable;
+    }
+  });
+  return remaining_commitment;
+}
 
 const NAVTable = (props) => {
   const [NAVEventData, setNAVEventData] = useState(null);
   const [error, setError] = useState(null);
-
+  const [NAVColumns, setNAVColumns] = useState(['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR']);
+  const [moneyColumns, setMoneyColumns] = useState(['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR']);
 
   const investmentID = props.investmentID;
-  const NAVColumns = ['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR']
-  const moneyColumns = ['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR'];
+
+
 
   useEffect(() => {
     async function fetchData() {
@@ -138,6 +179,11 @@ const NAVTable = (props) => {
     async function manipulateData() {
       const myData = await fetchData();
 
+      const investment = await getInvestment(investmentID);
+      if (investment.invest_type === 'commit') {
+        setNAVColumns(['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR', 'Remaining Commitment'])
+        setMoneyColumns(['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR', 'Remaining Commitment'])
+      }
 
       const groups = groupByMonth(myData);
 
@@ -153,11 +199,13 @@ const NAVTable = (props) => {
       let prelim_nav = 0;
       let netContribute = 0;
       const navDates = [];
+      let remaining_commitment = investment.invest_type === 'commit' ? investment.commitment : undefined;
       let last_pl = null;
       while (minDate <= finalMonth) {
         nav = calcNAV(groups[minDate], investmentID, prev_nav);
         prelim_nav = calcNAV(groups[minDate], investmentID, prev_nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
+        remaining_commitment = calcRemainingCommitment(groups[minDate], remaining_commitment);
         const formatDate = moment(minDate).format('L')
 
 
@@ -178,7 +226,7 @@ const NAVTable = (props) => {
           navDates.push({date: formatDate, nav: nav, net_contribution: netContribute,
                           nav_prelim: prelim_nav, unexplained_gain: nav - prelim_nav,
                           'p/l_(ltd)': nav - netContribute,
-                          'p/l_(mtd)': mtd,
+                          'p/l_(mtd)': mtd, remaining_commitment: remaining_commitment,
                           bold: hasEndOfMonthNAV})
         }
         else {
@@ -189,6 +237,7 @@ const NAVTable = (props) => {
                           'p/l_(ltd)': nav - netContribute,
                           'p/l_(mtd)': mtd,
                           'p/l(%)_(mtd)': mtd_perc,
+                          remaining_commitment: remaining_commitment,
                           bold: hasEndOfMonthNAV})
         }
         last_pl = (nav - netContribute).valueOf()
