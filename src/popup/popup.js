@@ -603,6 +603,15 @@ const FormSheet = (props) => {
         const confirmed = dialog.showMessageBoxSync(options)
         e.preventDefault();
       }
+
+      if (state['Net Amount'] < 0) {
+        let options  = {
+         buttons: ["Ok"],
+         message: 'Transfer amount must be positive!'
+        }
+        const confirmed = dialog.showMessageBoxSync(options)
+        e.preventDefault()
+      }
     }
 
     if(positiveTransactions.includes(transcationType)) {
