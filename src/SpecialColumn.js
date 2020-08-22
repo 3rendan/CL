@@ -74,7 +74,7 @@ function myMoneyFormatter(value, showCents) {
 };
 
 function initialMoneyFormatter(cell, formatterParams, onRendered){
-  if (cell.getValue() === undefined) {
+  if (cell.getValue() === undefined || cell.getValue() === '') {
     return '';
   }
   if (cell.getData().bold === true) {

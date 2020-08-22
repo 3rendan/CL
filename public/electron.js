@@ -473,6 +473,19 @@ function loadInvestmentView() {
   mainWindow.loadURL(isDev ? 'http://localhost:3000/#/investments' : fileURL);
 };
 
+function loadQuickInsertNAVView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'quickNAV',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/quickNAV' : fileURL);
+};
+
 
 const isMac = process.platform === 'darwin'
 
@@ -499,6 +512,12 @@ const mainMenuTemplate = [
         label: 'Investment View',
         click() {
           loadInvestmentView();
+        }
+      },
+      {
+        label: 'Insert NAV View',
+        click() {
+          loadQuickInsertNAVView();
         }
       }
     ]

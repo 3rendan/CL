@@ -29,10 +29,12 @@ const Calendar = lazy(() => import('./calendar/calendar'));
 const InvestmentNAVReport = lazy(() => import('./reports/InvestmentNAVReport'));
 const Backup = lazy(() => import('./backup'))
 
-const EventPopup = lazy(() => import("./popup/event.js"))
-const EventCommitmentPopup = lazy(() => import("./popup/eventCommitment.js"))
-const NavEventPopup = lazy(() => import("./popup/navEvent.js"))
-const TransferPopup = lazy(() => import("./popup/transfer.js"))
+const EventPopup = lazy(() => import("./popup/event"))
+const EventCommitmentPopup = lazy(() => import("./popup/eventCommitment"))
+const NavEventPopup = lazy(() => import("./popup/navEvent"))
+const TransferPopup = lazy(() => import("./popup/transfer"))
+
+const QuickInsertNAV = lazy(() => import("./quickInsertNAV"))
 
 const Connection = lazy(() => import('./connection'))
 
@@ -62,6 +64,7 @@ ReactDOM.render(
         // EVENTS AND TRANSFERS
         <Route path="/transfers" component={TransfersTable} />
         <Route path="/events/:id"    component={EventsPage}   />
+        <Route path="/quickNAV" component={QuickInsertNAV} />
         // MAINTENANCE
         <Route path="/maintenance/accountInvestment">
           <AccountTable    />
