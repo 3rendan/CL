@@ -217,6 +217,7 @@ function calcNAV(group, investmentID, nav) {
 }
 
 // NAV calculation
+// difference is in what to do with NAV!!
 function calcPrelimNAV(group, investmentID, nav) {
   if (group === undefined) {
     return nav;
@@ -250,6 +251,35 @@ function calcPrelimNAV(group, investmentID, nav) {
   }, nav);
 }
 
+function calcNetContribute(group, investmentID, nav) {
+  if (group === undefined) {
+    return nav;
+  }
+  group.sort(myDateSort);
+  return group.reduce((accumulator, current) => {
+    if (current.type === 'TRANSFER') {
+      if (current.to_investment === investmentID) {
+        return accumulator + current.amount;
+      }
+      return accumulator - current.amount; // in from_investment
+    }
+    if (current.type === 'NAV' || current.type === 'COMMISH'
+        || current.type === 'GAIN' || current.type === 'DIV') {
+      return accumulator;
+    }
+    let amount = current.amount !== undefined ? current.amount : current.net_amount;
+    if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
+      // amount is negative for type distribution
+      if (current.from_investment === investmentID) {
+        return accumulator + amount;
+      }
+      return accumulator - amount;
+    }
+    return accumulator + amount;
+  }, nav);
+}
+
+
 // // a column that when clicked launches the events page
 const eventsCol = {
   formatter:function(cell, formatterParams, onRendered){ //plain text value
@@ -273,5 +303,5 @@ const defaultTabulatorSettings = {
 };
 
 export {copyCol, myMoneyFormatter, initialMoneyFormatter, initialMoneyPercentFormatter,
-  rightClickMoneyPercent, rightClickMoney, calcPrelimNAV,
+  rightClickMoneyPercent, rightClickMoney, calcPrelimNAV, calcNetContribute,
   eventsCol, defaultTabulatorSettings, calcNAV, myDateSort};

@@ -8,7 +8,7 @@ import {getTransfers} from '../serverAPI/transfers.js'
 
 import {getIrr} from '../serverAPI/irr'
 
-import {calcNAV, calcPrelimNAV, myDateSort} from '../SpecialColumn'
+import {calcNAV, calcNetContribute, myDateSort} from '../SpecialColumn'
 
 import MaintenanceTable from './allTables'
 
@@ -29,33 +29,6 @@ function groupByMonth(array) {
   return result;
 }
 
-function calcNetContribute(group, investmentID, nav) {
-  if (group === undefined) {
-    return nav;
-  }
-  group.sort(myDateSort);
-  return group.reduce((accumulator, current) => {
-    if (current.type === 'TRANSFER') {
-      if (current.to_investment === investmentID) {
-        return accumulator + current.amount;
-      }
-      return accumulator - current.amount; // in from_investment
-    }
-    if (current.type === 'NAV' || current.type === 'COMMISH'
-        || current.type === 'GAIN' || current.type === 'DIV') {
-      return accumulator;
-    }
-    let amount = current.amount !== undefined ? current.amount : current.net_amount;
-    if (current.type === 'DISTRIBUTION' || current.type === 'CONTRIBUTION') {
-      // amount is negative for type distribution
-      if (current.from_investment === investmentID) {
-        return accumulator + amount;
-      }
-      return accumulator - amount;
-    }
-    return accumulator + amount;
-  }, nav);
-}
 
 const NAVTable = (props) => {
   const [NAVEventData, setNAVEventData] = useState(null);
@@ -183,7 +156,7 @@ const NAVTable = (props) => {
       let last_pl = null;
       while (minDate <= finalMonth) {
         nav = calcNAV(groups[minDate], investmentID, prev_nav);
-        prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav);
+        prelim_nav = calcNAV(groups[minDate], investmentID, prev_nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         const formatDate = moment(minDate).format('L')
 
