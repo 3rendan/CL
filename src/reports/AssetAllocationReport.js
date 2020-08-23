@@ -19,7 +19,12 @@ import MaintenanceTable from './reportTables'
 const AssetAllocationReport = (props) => {
   const [asset, setAsset] = useState(null);
   const [subAsset, setSubAsset] = useState(null);
+  const [date, setDate] = useState(moment(new Date()).format('yyyy-MM-DD'));
   const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    setDate(e.target.value)
+  }
 
   useEffect(() => {
     async function fetchData(investmentID) {
@@ -78,7 +83,8 @@ const AssetAllocationReport = (props) => {
 
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
-        const nav = calcNAV(data, investment.id, 0);
+        const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= new Date(date));
+        const nav = calcNAV(dataBeforeDate, investment.id, 0);
 
         const assetClass = assetClassIdToName[investment.asset_class];
         const subAssetClass = assetClassIdToName[investment.sub_asset_class];
@@ -107,11 +113,8 @@ const AssetAllocationReport = (props) => {
       }));
 
       const allAssets = Object.keys(assets);
-      console.log(assets)
       let totalNAV = allAssets.reduce((a,b) => a+assets[b], 0);
       const assetData = allAssets.map((asset) => {
-        console.log(asset)
-        console.log(subAssets[asset])
         subAssets[asset].map(subAsset => {
           subAsset['nav_(%)'] = (subAsset.nav/totalNAV * 100).toFixed(2) + '%'
           return subAsset
@@ -126,7 +129,7 @@ const AssetAllocationReport = (props) => {
 
     manipulateData().catch(e => setError(e))
 
-  }, []);
+  }, [date]);
 
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
@@ -134,10 +137,21 @@ const AssetAllocationReport = (props) => {
   if (asset === null) {
     return <div> </div>;
   }
-  return (<MaintenanceTable name={"Asset NAV"} data={asset}
+  return (
+    <Fragment>
+      <br />
+      <h1 className="text">
+      Date:
+      </h1>
+      <input type="date" onChange={handleChange.bind(this)} defaultValue={date} />
+      <br />
+      <br />
+      <MaintenanceTable name={"Asset NAV"} data={asset}
             columns={['Asset', 'NAV', 'NAV (%)']}
             moneyColumns={['NAV', 'NAV (%)']}
-            noButton={true}/>);
+            noButton={true}/>
+    </Fragment>
+  );
 }
 
 export default AssetAllocationReport;

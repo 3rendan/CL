@@ -18,7 +18,12 @@ import MaintenanceTable from './reportTables'
 
 const AccountBalanceReport = (props) => {
   const [data, setData] = useState(null);
+  const [date, setDate] = useState(moment(new Date()).format('yyyy-MM-DD'));
   const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    setDate(e.target.value)
+  }
 
   useEffect(() => {
     async function fetchData(investmentID) {
@@ -76,8 +81,13 @@ const AccountBalanceReport = (props) => {
       const accounts = {}
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
-        const nav = calcNAV(data, investment.id, 0);
+        const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= new Date(date));
+        const nav = calcNAV(dataBeforeDate, investment.id, 0);
+        console.log(investment.id)
+        console.log(investment)
+        console.log(accountIdToName)
         const account = accountIdToName[investment.account];
+        console.log(account)
         if (account in accounts) {
           accounts[account] += nav;
         }
@@ -96,7 +106,7 @@ const AccountBalanceReport = (props) => {
     }
     manipulateData().catch(e => setError(e))
 
-  }, []);
+  }, [date]);
 
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
@@ -104,10 +114,21 @@ const AccountBalanceReport = (props) => {
   if (data === null) {
     return <div> </div>;
   }
-  return (<MaintenanceTable name={"Account NAV"} data={data}
+  return (
+    <Fragment>
+      <br />
+      <h1 className="text">
+      Date:
+      </h1>
+      <input type="date" onChange={handleChange.bind(this)} defaultValue={date} />
+      <br />
+      <br />
+      <MaintenanceTable name={"Account NAV"} data={data}
             columns={['Account', 'NAV', 'NAV (%)']}
             moneyColumns={['NAV', 'NAV (%)']}
-            noButton={true}/>);
+            noButton={true}/>
+    </Fragment>
+  );
 }
 
 export default AccountBalanceReport;
