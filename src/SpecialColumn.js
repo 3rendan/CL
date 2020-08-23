@@ -79,7 +79,7 @@ function initialMoneyFormatter(cell, formatterParams, onRendered){
   }
   if (cell.getData().bold === true) {
     if(cell.getField() === 'nav') {
-      cell.getElement().style = "font-weight: bold; text-align: right;";
+      cell.getElement().style.fontWeight = 'bold';
     }
   }
   const a = myMoneyFormatter(cell.getValue(), false);
