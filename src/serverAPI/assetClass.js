@@ -53,6 +53,9 @@ const updateAssetClass = async (assetClass) => {
       if (jsonData.includes('duplicate')) {
         return 'duplicate key';
       }
+      if (jsonData.includes('foreign')) {
+        return 'foreign key';
+      }
       return true;
     } catch (err) {
       console.error(err.message);
@@ -84,6 +87,13 @@ const deleteAssetClass = async id => {
       method: "DELETE"
     });
 
+    const jsonData = await deleteAssetClass.json();
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
+    }
+    if (jsonData.includes('foreign')) {
+      return 'foreign key';
+    }
     return true;
   } catch (err) {
     console.error(err.message);

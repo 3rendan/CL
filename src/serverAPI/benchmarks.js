@@ -28,26 +28,29 @@ Benchmark.prototype.toString = function() {
 }
 
 const updateBenchmark = async (benchmark) => {
-    try {
-      const body = benchmark.body();
-      const response = await fetch(
-        `http://${databaseHost}:5000/benchmarks/${benchmark.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
-      const jsonData = await response.json();
-      if (jsonData.includes('duplicate')) {
-        return 'duplicate key';
+  try {
+    const body = benchmark.body();
+    const response = await fetch(
+      `http://${databaseHost}:5000/benchmarks/${benchmark.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
       }
-      return true;
-    } catch (err) {
-      console.error(err.message);
-      return false;
+    );
+    const jsonData = await response.json();
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
     }
-  };
+    if (jsonData.includes('foreign')) {
+      return 'foreign key';
+    }
+    return true;
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
 const insertBenchmark = async (benchmark) => {
   try {
@@ -67,9 +70,17 @@ const insertBenchmark = async (benchmark) => {
 
 const deleteBenchmark = async id => {
   try {
-    const _ = await fetch(`http://${databaseHost}:5000/benchmarks/${id}`, {
+    const response = await fetch(`http://${databaseHost}:5000/benchmarks/${id}`, {
       method: "DELETE"
     });
+
+    const jsonData = await response.json();
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
+    }
+    if (jsonData.includes('foreign')) {
+      return 'foreign key';
+    }
 
     return true;
   } catch (err) {

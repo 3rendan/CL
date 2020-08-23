@@ -44,11 +44,12 @@ const updateAccount = async (account) => {
         body: JSON.stringify(body)
       }
     );
-    console.log(response)
     const jsonData = await response.json();
-    console.log(jsonData)
     if (jsonData.includes('duplicate')) {
       return 'duplicate key';
+    }
+    if (jsonData.includes('foreign')) {
+      return 'foreign key';
     }
     return true;
   } catch (err) {
@@ -78,6 +79,14 @@ const deleteAccount = async id => {
     const deleteAccount = await fetch(`http://${databaseHost}:5000/accounts/${id}`, {
       method: "DELETE"
     });
+
+    const jsonData = await deleteAccount.json();
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
+    }
+    if (jsonData.includes('foreign')) {
+      return 'foreign key';
+    }
 
     return true;
   } catch (err) {

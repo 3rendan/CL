@@ -27,26 +27,29 @@ Owner.prototype.toString = function() {
 }
 
 const updateOwner = async (owner) => {
-    try {
-      const body = owner.body();
-      const response = await fetch(
-        `http://${databaseHost}:5000/owners/${owner.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
-      const jsonData = await response.json();
-      if (jsonData.includes('duplicate')) {
-        return 'duplicate key';
+  try {
+    const body = owner.body();
+    const response = await fetch(
+      `http://${databaseHost}:5000/owners/${owner.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
       }
-      return true;
-    } catch (err) {
-      console.error(err.message);
-      return false;
+    );
+    const jsonData = await response.json();
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
     }
-  };
+    if (jsonData.includes('foreign')) {
+      return 'foreign key';
+    }
+    return true;
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
 const insertOwner = async (owner) => {
   try {
@@ -70,7 +73,13 @@ const deleteOwner = async id => {
     const deleteOwner = await fetch(`http://${databaseHost}:5000/owners/${id}`, {
       method: "DELETE"
     });
-
+    const jsonData = await deleteOwner.json();
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
+    }
+    if (jsonData.includes('foreign')) {
+      return 'foreign key';
+    }
     return true;
   } catch (err) {
     console.error(err.message);

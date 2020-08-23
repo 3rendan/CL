@@ -107,22 +107,22 @@ const getCommissionsId = async (id) => {
 }
 
 const updateCommission = async (commission) => {
-    try {
-      const body = commission.body();
-      const response = await fetch(
-        `http://${databaseHost}:5000/commissions/${commission.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
-      return true;
-    } catch (err) {
-      console.error(err.message);
-      return false;
-    }
-  };
+  try {
+    const body = commission.body();
+    const response = await fetch(
+      `http://${databaseHost}:5000/commissions/${commission.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+    return true;
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
 const insertCommission = async (commission) => {
   try {

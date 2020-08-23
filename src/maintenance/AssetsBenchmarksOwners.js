@@ -41,26 +41,82 @@ const MaintenanceTable = (props) => {
         buttons: ["Yes","No"],
         message: 'Confirm Delete?'
        }
-       const confirmed = dialog.showMessageBoxSync(options)
+       const confirmed = dialog.showMessageBoxSync(options);
        // const confirmed = window.confirm('Confirm Delete?')
        if (confirmed === 1) {
          return;
        }
+
        const deletedData = cell.getData();
        if (tableName === 'Owners') {
-         deleteOwner(deletedData.id)
+         deleteOwner(deletedData.id).then(a => {
+           if (a === 'foreign key') {
+             const electron = window.require('electron');
+             const dialog = electron.remote.dialog
+             let options  = {
+              buttons: ["Ok"],
+              message: 'Cannot delete, something depends on this!'
+             }
+             const confirmed = dialog.showMessageBoxSync(options)
+             // const confirmed = window.confirm('Confirm Restore?')
+           }
+           else {
+             cell.getRow().delete();
+           }
+         });
        }
        else if (tableName === 'Benchmarks') {
-         deleteBenchmark(deletedData.id)
+         deleteBenchmark(deletedData.id).then(a => {
+           if (a === 'foreign key') {
+             const electron = window.require('electron');
+             const dialog = electron.remote.dialog
+             let options  = {
+              buttons: ["Ok"],
+              message: 'Cannot delete, something depends on this!'
+             }
+             const confirmed = dialog.showMessageBoxSync(options)
+             // const confirmed = window.confirm('Confirm Restore?')
+           }
+           else {
+             cell.getRow().delete();
+           }
+         });
        }
        else if (tableName === 'Asset Classes') {
-         deleteAssetClass(deletedData.id)
+         deleteAssetClass(deletedData.id).then(a => {
+           if (a === 'foreign key') {
+             const electron = window.require('electron');
+             const dialog = electron.remote.dialog
+             let options  = {
+              buttons: ["Ok"],
+              message: 'Cannot delete, something depends on this!'
+             }
+             const confirmed = dialog.showMessageBoxSync(options)
+             // const confirmed = window.confirm('Confirm Restore?')
+           }
+           else {
+             cell.getRow().delete();
+           }
+         });
        }
        else if (tableName === 'Accounts') {
-         deleteAccount(deletedData.id)
+         deleteAccount(deletedData.id).then(a => {
+           if (a === 'foreign key') {
+             const electron = window.require('electron');
+             const dialog = electron.remote.dialog
+             let options  = {
+              buttons: ["Ok"],
+              message: 'Cannot delete, something depends on this!'
+             }
+             const confirmed = dialog.showMessageBoxSync(options)
+             // const confirmed = window.confirm('Confirm Restore?')
+           }
+           else {
+             cell.getRow().delete();
+           }
+         });
        }
 
-       cell.getRow().delete();
     }}
   ];
 
