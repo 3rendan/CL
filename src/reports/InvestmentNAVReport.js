@@ -58,7 +58,12 @@ function calcRemainingCommitment(data, investment) {
 
 const InvestmentNAVReport = (props) => {
   const [data, setData] = useState(null);
+  const [date, setDate] = useState(moment(new Date()).format('yyyy-MM-DD'));
   const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    setDate(e.target.value)
+  }
 
   useEffect(() => {
     async function fetchData(investmentID) {
@@ -104,25 +109,30 @@ const InvestmentNAVReport = (props) => {
     async function manipulateData() {
       const investments = await getInvestments();
 
+      let total_remaining_commitment = 0;
       const investmentNAVS = await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
-        const nav = calcNAV(data, investment.id, 0);
-        const remaining_commitment = calcRemainingCommitment(data, investment);
+
+        const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= new Date(date));
+        const nav = calcNAV(dataBeforeDate, investment.id, 0);
+        const remaining_commitment = calcRemainingCommitment(dataBeforeDate, investment);
+        total_remaining_commitment += remaining_commitment ? remaining_commitment : 0;
         return {investment: investment.name, nav: nav, remaining_commitment: remaining_commitment}
       }));
 
       const totalNAV = investmentNAVS.reduce((a,b) => a + b.nav, 0);
-
       const investmentData = investmentNAVS.map((investment) => {
         return {investment: investment.investment, nav: investment.nav, remaining_commitment: investment.remaining_commitment,
                 'nav_(%)': (investment.nav/totalNAV * 100).toFixed(2) + '%'}
       })
-      investmentData.push({investment: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%'})
+
+      investmentData.push({investment: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%',
+                            remaining_commitment: total_remaining_commitment})
       setData(investmentData);
     }
     manipulateData().catch(e => setError(e))
 
-  }, []);
+  }, [date]);
 
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
@@ -130,10 +140,22 @@ const InvestmentNAVReport = (props) => {
   if (data === null) {
     return <div> </div>;
   }
-  return (<MaintenanceTable name={"Investment NAV"} data={data}
+
+  return (
+    <Fragment>
+      <br />
+      <h1 className="text">
+      Date:
+      </h1>
+      <input type="date" onChange={handleChange.bind(this)} defaultValue={date} />
+      <br />
+      <br />
+      <MaintenanceTable name={"Investment NAV"} data={data}
             columns={['Investment', 'NAV', 'NAV (%)', 'Remaining Commitment']}
             moneyColumns={['NAV', 'NAV (%)', 'Remaining Commitment']}
-            noButton={true}/>);
+            noButton={true}/>
+    </Fragment>
+    );
 }
 
 export default InvestmentNAVReport;

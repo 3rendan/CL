@@ -36,7 +36,7 @@ const MaintenanceTable = (props) => {
     // ref.current.table.scrollToColumn(props.scrollTo, "middle", false).then(function() {
     //   console.log('here')
     // })
-  }, [])
+  }, [props.data])
 
 
 
