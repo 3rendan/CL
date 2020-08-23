@@ -17,8 +17,40 @@ class Commission {
       this.id = data.id;
       this.date = data.Date;
       this.amount = data.Amount;
-      this.investment = data['Investment'].value.id;
-      this.from_investment = data['From Investment'].value.id;
+
+      console.log(data)
+      console.log(data['Investment'])
+      console.log(data['Investment'].value.id)
+
+      if (data['Investment']) {
+        try {
+          this.investment = data['Investment'].value.id
+        }
+        catch (e) {
+          this.investment = data['Investment']
+        }
+      }
+      else {
+        this.investment = data['Investment ID']
+      }
+
+      if (data['From Investment']) {
+        try {
+          this.from_investment = data['From Investment'].value.id
+        }
+        catch (e) {
+          this.from_investment = data['From Investment']
+        }
+      }
+      else {
+        this.from_investment = data['From Investment ID']
+      }
+
+      console.log(this.investment)
+      console.log(this.from_investment)
+      alert('stop')
+
+
       this.notes = data.Notes;
     }
   }
@@ -78,7 +110,7 @@ const updateCommission = async (commission) => {
     try {
       const body = commission.body();
       const response = await fetch(
-        `http://${databaseHost}:5000/commission/${commission.id}`,
+        `http://${databaseHost}:5000/commissions/${commission.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
