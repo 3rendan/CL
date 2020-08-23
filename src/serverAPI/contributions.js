@@ -37,8 +37,30 @@ class Contribution {
       this.net_amount = parseFloat(this.main) + parseFloat(this.fees) +
                 parseFloat(this.tax) +  parseFloat(this.outside_main) +
                 parseFloat(this.outside_fees) + parseFloat(this.outside_tax);
-      this.investment = data['Investment'].value.id;
-      this.from_investment = data['From Investment'] ? data['From Investment'].value.id : data['From Investment ID'];
+                
+      if (data['Investment']) {
+        try {
+          this.investment = data['Investment'].value.id
+        }
+        catch (e) {
+          this.investment = data['Investment']
+        }
+      }
+      else {
+        this.investment = data['Investment ID']
+      }
+
+      if (data['From Investment']) {
+        try {
+          this.from_investment = data['From Investment'].value.id
+        }
+        catch (e) {
+          this.from_investment = data['From Investment']
+        }
+      }
+      else {
+        this.from_investment = data['From Investment ID']
+      }
       this.notes = data.Notes;
     }
   }

@@ -27,8 +27,31 @@ class Distribution {
       this.recallable = data['Recallable $'] ? data['Recallable $'] : 0;
       this.main = data['Main $'] ? data['Main $'] : 0;
       this.net_amount = parseFloat(this.recallable) + parseFloat(this.main);
-      this.investment = data['Investment'].value.id;
-      this.from_investment = data['From Investment'] ? data['From Investment'].value.id : data['From Investment ID'];
+
+      if (data['Investment']) {
+        try {
+          this.investment = data['Investment'].value.id
+        }
+        catch (e) {
+          this.investment = data['Investment']
+        }
+      }
+      else {
+        this.investment = data['Investment ID']
+      }
+
+      if (data['From Investment']) {
+        try {
+          this.from_investment = data['From Investment'].value.id
+        }
+        catch (e) {
+          this.from_investment = data['From Investment']
+        }
+      }
+      else {
+        this.from_investment = data['From Investment ID']
+      }
+
       this.notes = data.Notes;
     }
   }
