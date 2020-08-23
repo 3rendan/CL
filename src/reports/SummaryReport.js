@@ -77,7 +77,6 @@ const SummaryReport = (props) => {
         ...transfers];
     }
 
-
     async function getNetExpenses(groups) {
       const expenses = {}
       Object.keys(groups).map(month => {
@@ -136,7 +135,8 @@ const SummaryReport = (props) => {
 
       const investmentData = await Promise.all(
         investments.map(async (investment) => {
-          const data   = await fetchData(investment.id);
+          const data     = await fetchData(investment.id);
+          const navData  = await getNAVEvents(investment.id);
           const groups = groupByMonth(data);
 
           let netExpenses = await getNetExpenses(groups);
@@ -188,6 +188,12 @@ const SummaryReport = (props) => {
             const formatDate = moment(minDate).format('L')
             const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
             investmentRow[fieldName] = nav;
+
+            investmentRow[fieldName +'Bold'] = 'normal';
+            if (navData.filter(i => moment(new Date(i.date)).format('L') === formatDate).length > 0) {
+              investmentRow[fieldName +'Bold'] = 'bold';
+            }
+
             if (!allDates.includes(formatDate)) {
               allDates.push(formatDate)
             }
@@ -258,7 +264,7 @@ const SummaryReport = (props) => {
           gains12ByDate[currDate] = dateRange.reduce(function (acc, date) {
             return acc + gainsByDate[date];
           }, 0);
-          
+
           const percent = dateRange.reduce(function (acc, date) {
             return acc * (1 + gainPercentByDate[date]/100);
           }, 1) - 1;

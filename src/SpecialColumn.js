@@ -77,6 +77,9 @@ function initialMoneyFormatter(cell, formatterParams, onRendered){
   if (cell.getValue() === undefined || cell.getValue() === '') {
     return '';
   }
+  if (cell.getData()[cell.getField() + 'Bold'] === 'bold') {
+    cell.getElement().style.fontWeight = 'bold';
+  }
   if (cell.getData().bold === true) {
     if(cell.getField() === 'nav') {
       cell.getElement().style.fontWeight = 'bold';
