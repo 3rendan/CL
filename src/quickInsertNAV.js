@@ -27,70 +27,30 @@ const remote = electron.remote;
 const dialog = remote.dialog;
 
 function updateRow(cell) {
-    async function updateEntry(investment) {
-      const navEvent = await getNAVEvents(investment);
-      navEvent.filter(event => moment(event.date).format('L') === cell.getField())
+  async function updateEntry(investment) {
+    const navEvent = await getNAVEvents(investment);
+    navEvent.filter(event => moment(event.date).format('L') === cell.getField())
 
-      const singleEntryData = {Date: cell.getField(), Notes: "", Amount: cell.getValue(), Type: 'NAV'};
-      singleEntryData.Investment = {value: {id: investment}}
+    const singleEntryData = {Date: cell.getField(), Notes: "", Amount: cell.getValue(), Type: 'NAV'};
+    singleEntryData.Investment = {value: {id: investment}}
 
-      const singleEntry = new SingleEntry(singleEntryData)
-      if (navEvent.length === 0) {
-        insertSingleEntry(singleEntry)
-      }
-      else {
-        singleEntry['id'] = navEvent[0].id
-        updateSingleEntry(singleEntry)
-      }
+    const singleEntry = new SingleEntry(singleEntryData)
+    if (navEvent.length === 0) {
+      insertSingleEntry(singleEntry)
     }
-
-    if (cell.getValue() === '') {
-      return;
+    else {
+      singleEntry['id'] = navEvent[0].id
+      updateSingleEntry(singleEntry)
     }
-    updateEntry(cell.getData()['id'])
-
-}
-
-
-function calcRemainingCommitment(data, remaining_commitment) {
-  if (remaining_commitment === undefined) {
-    return undefined;
   }
 
-  data.map((datum) => {
-    if (datum.type === 'CONTRIBUTION') {
-      let main = datum.main;
-      try {
-        main = datum.main ? parseFloat(datum.main.substring(1)) : 0;
-      }
-      catch (e) {}
-      remaining_commitment -= main;
+  if (cell.getValue() === '') {
+    return;
+  }
+  updateEntry(cell.getData()['id'])
 
-      let fees = datum.fees;
-      try {
-        fees = datum.fees ? parseFloat(datum.fees.substring(1)) : 0;
-      }
-      catch (e) {}
-      remaining_commitment -= fees;
-
-      let tax = datum.tax;
-      try {
-        tax = datum.tax ? parseFloat(datum.tax.substring(1)) : 0;
-      }
-      catch (e) {}
-      remaining_commitment -= tax;
-    }
-    else if (datum.type === 'DISTRIBUTION') {
-      let recallable = datum.recallable;
-      try {
-        recallable = datum.recallable ? parseFloat(datum.recallable.substring(1)) : 0;
-      }
-      catch (e) {}
-      remaining_commitment -= recallable;
-    }
-  });
-  return remaining_commitment;
 }
+
 
 // table class
 const DetailInvestmentTable = (props) => {
@@ -147,18 +107,6 @@ const DetailInvestmentTable = (props) => {
         ...transfers];
     }
 
-    async function getCommitmentData(investmentID, commitment) {
-      let allEvents = await fetchEventData(investmentID);
-      if (investmentID === '3') {
-        console.log(allEvents)
-      }
-
-      allEvents = allEvents.filter(i => new Date(i.date) <= new Date(date) || new Date(i.date_due) <= new Date(date));
-
-
-
-      return calcRemainingCommitment(allEvents, commitment);
-    }
 
     async function getData() {
       const investments = await getInvestments();
@@ -177,14 +125,8 @@ const DetailInvestmentTable = (props) => {
       }
       const formattedDate = moment(date).format('L');
 
-      const investmentIdToNetCommitments = {};
-      await Promise.all(investments.map(async (investment) => {
-        let commitment = investment.invest_type === 'commit' ? investment.commitment : undefined;
-        investmentIdToNetCommitments[investment.id] = await getCommitmentData(investment.id, commitment);
-      }));
 
-      const updateTableData = [];
-      investments.map(investment => {
+      const updateTableData = investments.map(investment => {
         const navsForDate = investmentIdToNAVEvents[investment.id];
 
         const navList = navsForDate.filter(i => moment(new Date(i.date)).format('L') === formattedDate);
@@ -194,10 +136,10 @@ const DetailInvestmentTable = (props) => {
         }
 
 
-        const tableRow = {id: investment.id, investment: investment.name, commitment: investmentIdToNetCommitments[investment.id]};
+        const tableRow = {id: investment.id, investment: investment.name};
         tableRow[formattedDate] = nav
 
-        updateTableData.push(tableRow)
+        return tableRow;
       })
       console.log(updateTableData)
       setTableData(updateTableData);
@@ -212,9 +154,7 @@ const DetailInvestmentTable = (props) => {
         {title: formattedDate + ' NAV', field: formattedDate, responsive: 0,
           formatter: initialMoneyFormatter, editor: "number",
           cellEdited:updateRow
-        },
-        {title: formattedDate + ' Remaining Commitment',
-          field: 'commitment', formatter: initialMoneyFormatter, responsive: 0}
+        }
       ]);
     }
 
