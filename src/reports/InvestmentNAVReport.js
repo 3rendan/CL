@@ -20,6 +20,9 @@ function calcRemainingCommitment(data, investment) {
     return undefined;
   }
   let remaining_commitment = investment.commitment;
+  if (data === undefined) {
+    return remaining_commitment;
+  }
 
   data.map((datum) => {
     if (datum.type === 'CONTRIBUTION') {
