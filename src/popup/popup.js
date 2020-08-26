@@ -254,6 +254,7 @@ const RowInvestment = (props) => {
   const defaultInvestment = props.state[props.name] ? props.state[props.name] : props.investmentID;
 
   const [value, setValue] = useState(null);
+  let defaultInvestmentIdToValue = null;
 
   let loadOptions = loadAllOptions;
   if (props.transcationType === 'CONTRIBUTION' ||
@@ -269,8 +270,7 @@ const RowInvestment = (props) => {
   const onChange = (inputText) => {
     props.setState(state => {
       const newState = {...state}
-      newState[props.name] =  inputText
-      console.log(newState)
+      newState[props.name] = inputText
       return newState;
     });
 
@@ -280,10 +280,6 @@ const RowInvestment = (props) => {
   const size = props.size * 10 + "px";
 
   useEffect(() => {
-    if (typeof(defaultInvestment) !== 'string') {
-      setValue(defaultInvestment)
-    }
-
     async function fetchData() {
       let thisInvestmentLinkedInvestmentId = undefined;
       InvestmentData = await getInvestments();
@@ -294,6 +290,7 @@ const RowInvestment = (props) => {
           thisInvestmentLinkedInvestmentId = data.linked_investment;
         }
         if (data.id === defaultInvestment) {
+          defaultInvestmentIdToValue = {label: label, value: data};
           setValue({label: label, value: data})
           props.setState(state => {
             const newState = {...state}
@@ -320,16 +317,26 @@ const RowInvestment = (props) => {
       if (loadOptions === loadNonCommitOptions) {
         const nonCommit = investmentOptions.filter(i => !i.value.has_commitment)
         setDefaultOptions(nonCommit);
-        let defaultInvestment = nonCommit[0]
-        if (thisInvestmentLinkedInvestmentId !== undefined) {
-          defaultInvestment = linkedInvestment
+        if (defaultInvestment.value === undefined) {
+          if (!isNaN(defaultInvestment)) {
+            setValue(defaultInvestmentIdToValue);
+            return;
+          }
+          let displayInvestment = nonCommit[0]
+          if (thisInvestmentLinkedInvestmentId !== undefined) {
+            displayInvestment = linkedInvestment
+          }
+          props.setState(state => {
+            const newState = {...state}
+            newState[props.name] = displayInvestment
+            return newState;
+          });
+          setValue(displayInvestment)
         }
-        setValue(defaultInvestment)
-        props.setState(state => {
-          const newState = {...state}
-          newState[props.name] = defaultInvestment
-          return newState;
-        });
+        else {
+          setValue(defaultInvestment)
+        }
+
 
       }
       if (loadOptions === loadAllOptions) {
@@ -471,6 +478,8 @@ const FormSheet = (props) => {
 
   const investmentID = props.investmentID;
 
+  // console.log(props)
+
   const [state, setState] = useState(props.initial ? props.initial : {'Net Amount': 0, 'From Investment ID': investmentID});
 
   const [error, setError] = useState(null);
@@ -481,6 +490,7 @@ const FormSheet = (props) => {
 
 
   useEffect(()=> {
+    console.log(state)
     if (state.changer === 'Date Due') {
       state['Date Sent'] = state['Date Due']
     }
