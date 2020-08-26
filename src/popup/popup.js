@@ -479,15 +479,19 @@ const FormSheet = (props) => {
 
   const isSelected = props.transactionType !== undefined;
   const [hasSelected, setSelected] = useState(isSelected);
-  const [transactionType, settransactionType] = useState(props.transactionType);
+  const [transactionType, setTransactionType] = useState(props.transactionType);
   const [rows, setRows] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
   const investmentID = props.investmentID;
 
   // console.log(props)
+  console.log(props.initial)
+  console.log(transactionType)
 
   const [state, setState] = useState(props.initial ? props.initial : {'Net Amount': 0, 'From Investment ID': investmentID});
+
+  console.log(state)
 
   const [error, setError] = useState(null);
   if (props.initial !== undefined && Object.keys(state).length === 0
@@ -497,7 +501,6 @@ const FormSheet = (props) => {
 
 
   useEffect(()=> {
-    console.log(state)
     if (state.changer === 'Date Due') {
       state['Date Sent'] = state['Date Due']
     }
@@ -723,7 +726,7 @@ const FormSheet = (props) => {
        <MyDropdown dropdownOptions={dropdownOptions}
                    setSelected={setSelected}
                    transactionType={transactionType}
-                   settransactionType={settransactionType}/>
+                   setTransactionType={setTransactionType}/>
        <br />
        <form style={{visibility: hasSelected ? 'visible' : 'hidden'}}
               onSubmit={onSubmit}>
@@ -741,7 +744,7 @@ const FormSheet = (props) => {
 const MyDropdown = (props) => {
   const setSelected = props.setSelected;
   const defaultTitleText = props.transactionType ? props.transactionType : 'Choose...' ;
-  const settransactionType = props.settransactionType;
+  const setTransactionType = props.setTransactionType;
 
   const [titleText, setTitleText] = useState(defaultTitleText);
   const myTitle = <div> {titleText} <span style={{borderLeft: "8px solid transparent",
@@ -750,7 +753,7 @@ const MyDropdown = (props) => {
   const selectOption = (e) => {
     setSelected(true);
     setTitleText(e.target.innerText);
-    settransactionType(e.target.innerText);
+    setTransactionType(e.target.innerText);
   }
 
   const itemStyle = {fontSize: "15pt", display: 'inherit', textAlign: 'center'};

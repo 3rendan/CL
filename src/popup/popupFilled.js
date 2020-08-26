@@ -103,7 +103,7 @@ const FilledFormSheet = (props) => {
   if (Object.keys(state).length !== 0) {
     return <FormSheet getInvestmentData={getInvestments} key={'filled'}
                       initial={state}
-     transcationType={props.dataType} dropdownOptions={options} />
+     transactionType={props.dataType} dropdownOptions={options} />
   }
   return null;
 }
