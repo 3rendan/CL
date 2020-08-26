@@ -31,6 +31,9 @@ function groupByMonth(array) {
 }
 
 function calcRemainingCommitment(data, remaining_commitment) {
+  if (data === undefined) {
+    return remaining_commitment;
+  }
   if (remaining_commitment === undefined) {
     return undefined;
   }
