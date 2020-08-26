@@ -311,21 +311,40 @@ const RowInvestment = (props) => {
           }
         })
       }
+      console.log(linkedInvestment)
       if (loadOptions === loadCommitOptions) {
+        console.log('commit options')
         setDefaultOptions(investmentOptions.filter(i => i.value.has_commitment));
+        if (thisInvestmentLinkedInvestmentId !== undefined) {
+          props.setState(state => {
+            const newState = {...state}
+            newState[props.name] = linkedInvestment
+            return newState;
+          });
+          setValue(linkedInvestment)
+          return
+        }
       }
       if (loadOptions === loadNonCommitOptions) {
+        console.log('non commit options')
         const nonCommit = investmentOptions.filter(i => !i.value.has_commitment)
         setDefaultOptions(nonCommit);
         if (defaultInvestment.value === undefined) {
+          if (thisInvestmentLinkedInvestmentId !== undefined) {
+            props.setState(state => {
+              const newState = {...state}
+              newState[props.name] = linkedInvestment
+              return newState;
+            });
+            setValue(linkedInvestment)
+            return
+          }
+
           if (!isNaN(defaultInvestment)) {
             setValue(defaultInvestmentIdToValue);
             return;
           }
           let displayInvestment = nonCommit[0]
-          if (thisInvestmentLinkedInvestmentId !== undefined) {
-            displayInvestment = linkedInvestment
-          }
           props.setState(state => {
             const newState = {...state}
             newState[props.name] = displayInvestment
