@@ -190,7 +190,7 @@ const RowCurrency = (props) => {
 
   function onBlur(e){
     var value = e.target.value;
-    // if (positiveTransactions.includes(props.transcationType) && e.target.value < 0) {
+    // if (positiveTransactions.includes(props.transactionType) && e.target.value < 0) {
     //   let options  = {
     //    buttons: ["Ok"],
     //    message: 'Amount must be positive!'
@@ -200,7 +200,7 @@ const RowCurrency = (props) => {
     //   e.target.value = 0;
     //   value = 0;
     // }
-    // if (negativeTransactions.includes(props.transcationType) && e.target.value > 0) {
+    // if (negativeTransactions.includes(props.transactionType) && e.target.value > 0) {
     //   let options  = {
     //    buttons: ["Ok"],
     //    message: 'Amount must be negative!'
@@ -257,8 +257,8 @@ const RowInvestment = (props) => {
   let defaultInvestmentIdToValue = null;
 
   let loadOptions = loadAllOptions;
-  if (props.transcationType === 'CONTRIBUTION' ||
-      props.transcationType === 'DISTRIBUTION') {
+  if (props.transactionType === 'CONTRIBUTION' ||
+      props.transactionType === 'DISTRIBUTION') {
     if (props.name === 'From Investment') {
       loadOptions = loadCommitOptions;
     }
@@ -347,9 +347,16 @@ const RowInvestment = (props) => {
     fetchData();
   }, [])
 
+  let displayName = props.name;
+  if (props.transactionType === 'CONTRIBUTION' || props.transactionType === 'DISTRIBUTION') {
+    if (props.name === 'Investment') {
+      displayName = 'Contra Investment'
+    }
+  }
+
   return (
     <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
-        <span style={{width: size}} className="input-group-addon" id={props.name}>{props.name}</span>
+        <span style={{width: size}} className="input-group-addon" id={props.name}>{displayName}</span>
         <AsyncSelect
           cacheOptions
           styles={{
@@ -470,9 +477,9 @@ const FormSheet = (props) => {
   const [InvestmentName, setInvestmentName] = useState(null);
   const getInvestmentData = props.getInvestmentData;
 
-  const isSelected = props.transcationType !== undefined;
+  const isSelected = props.transactionType !== undefined;
   const [hasSelected, setSelected] = useState(isSelected);
-  const [transcationType, setTranscationType] = useState(props.transcationType);
+  const [transactionType, settransactionType] = useState(props.transactionType);
   const [rows, setRows] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
@@ -512,7 +519,7 @@ const FormSheet = (props) => {
     )
 
     let mainColumns = null;
-    switch (transcationType) {
+    switch (transactionType) {
       case 'CONTRIBUTION':
         mainColumns = ['Date Due', 'Date Sent', 'Net Amount',
         'Main $', 'Fees $', 'Tax $',
@@ -539,12 +546,12 @@ const FormSheet = (props) => {
     const newRows = mainColumns.map((column) => {
        if (column === 'Amount' || column.includes('$')) {
          return <RowCurrency
-                                key={column + transcationType} name={column} size={maxSize}
+                                key={column + transactionType} name={column} size={maxSize}
                                 state={state} setState={setState}
-                                transcationType={transcationType}/>;
+                                transactionType={transactionType}/>;
        }
        else if (column === 'Net Amount') {
-         return <RowCurrencyNet key={column + transcationType}
+         return <RowCurrencyNet key={column + transactionType}
                                 name={column} size={maxSize}
                                 state={state} setState={setState}/>;
        }
@@ -553,30 +560,30 @@ const FormSheet = (props) => {
            <br />
            <br />
            <br />
-            <RowInvestment name={column} key={column + transcationType} size={maxSize}
+            <RowInvestment name={column} key={column + transactionType} size={maxSize}
                                   state={state} setState={setState}
                                   investmentID={investmentID}
-                                  transcationType={transcationType}/>
+                                  transactionType={transactionType}/>
                   </Fragment>
                                 )
        }
        else if (column.includes('Investment')) {
-         return <RowInvestment name={column} key={column + transcationType} size={maxSize}
+         return <RowInvestment name={column} key={column + transactionType} size={maxSize}
                                   state={state} setState={setState}
                                   investmentID={investmentID}
-                                  transcationType={transcationType}/>
+                                  transactionType={transactionType}/>
        }
        else {
-         return <RowBland key={column + transcationType} name={column} size={maxSize}
+         return <RowBland key={column + transactionType} name={column} size={maxSize}
                           state={state} setState={setState}/>;
        }
     });
     setRows(newRows);
 
-  }, [transcationType, state]);
+  }, [transactionType, state]);
 
   const onClick = (e) => {
-    if (transcationType === 'DISTRIBUTION') {
+    if (transactionType === 'DISTRIBUTION') {
       if (state['Net Amount'] > 0) {
         let options  = {
          buttons: ["Yes","No"],
@@ -590,7 +597,7 @@ const FormSheet = (props) => {
         }
       }
     }
-    if (transcationType === 'CONTRIBUTION') {
+    if (transactionType === 'CONTRIBUTION') {
       if (state['Net Amount'] < 0) {
         let options  = {
          buttons: ["Yes","No"],
@@ -604,7 +611,7 @@ const FormSheet = (props) => {
         }
       }
     }
-    if (transcationType === 'TRANSFER') {
+    if (transactionType === 'TRANSFER') {
       if(state['From Investment'].value.id === state['To Investment'].value.id) {
         let options  = {
          buttons: ["Ok"],
@@ -624,7 +631,7 @@ const FormSheet = (props) => {
       }
     }
 
-    if(positiveTransactions.includes(transcationType)) {
+    if(positiveTransactions.includes(transactionType)) {
       if (state['Net Amount'] < 0) {
         let options  = {
          buttons: ["Ok"],
@@ -634,7 +641,7 @@ const FormSheet = (props) => {
         e.preventDefault()
       }
     }
-    if(negativeTransactions.includes(transcationType)) {
+    if(negativeTransactions.includes(transactionType)) {
       if (state['Net Amount'] > 0) {
         let options  = {
          buttons: ["Ok"],
@@ -658,7 +665,7 @@ const FormSheet = (props) => {
         // }
       }
     });
-    // state['Type'] = transcationType;
+    // state['Type'] = transactionType;
     // const updatedEvent = updateEvent({
     //   state: state
     // });
@@ -670,14 +677,14 @@ const FormSheet = (props) => {
   }
 
   const onSubmit = (e) => {
-    state['Type'] = transcationType;
+    state['Type'] = transactionType;
 
     if (state.Id !== undefined) {
       const updatedEvent = updateEvent({
         state: state
       });
 
-      updatedEvent['type'] = transcationType;
+      updatedEvent['type'] = transactionType;
       ipcRenderer.sendTo(senderWindowId, replyChannel, {})
       return;
 
@@ -688,7 +695,7 @@ const FormSheet = (props) => {
     console.log(newEvent)
 
 
-    newEvent['type'] = transcationType;
+    newEvent['type'] = transactionType;
     ipcRenderer.sendTo(senderWindowId, replyChannel, {})
   };
 
@@ -698,7 +705,7 @@ const FormSheet = (props) => {
   }
 
   let contributionWarning = null;
-  if (transcationType === 'DISTRIBUTION') {
+  if (transactionType === 'DISTRIBUTION') {
     contributionWarning = <h3> Distribution net amount must be negative  </h3>
   }
 
@@ -715,8 +722,8 @@ const FormSheet = (props) => {
      <div>
        <MyDropdown dropdownOptions={dropdownOptions}
                    setSelected={setSelected}
-                   transcationType={transcationType}
-                   setTranscationType={setTranscationType}/>
+                   transactionType={transactionType}
+                   settransactionType={settransactionType}/>
        <br />
        <form style={{visibility: hasSelected ? 'visible' : 'hidden'}}
               onSubmit={onSubmit}>
@@ -733,8 +740,8 @@ const FormSheet = (props) => {
 
 const MyDropdown = (props) => {
   const setSelected = props.setSelected;
-  const defaultTitleText = props.transcationType ? props.transcationType : 'Choose...' ;
-  const setTranscationType = props.setTranscationType;
+  const defaultTitleText = props.transactionType ? props.transactionType : 'Choose...' ;
+  const settransactionType = props.settransactionType;
 
   const [titleText, setTitleText] = useState(defaultTitleText);
   const myTitle = <div> {titleText} <span style={{borderLeft: "8px solid transparent",
@@ -743,7 +750,7 @@ const MyDropdown = (props) => {
   const selectOption = (e) => {
     setSelected(true);
     setTitleText(e.target.innerText);
-    setTranscationType(e.target.innerText);
+    settransactionType(e.target.innerText);
   }
 
   const itemStyle = {fontSize: "15pt", display: 'inherit', textAlign: 'center'};
