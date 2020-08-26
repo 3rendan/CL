@@ -341,6 +341,11 @@ const RowInvestment = (props) => {
       }
       if (loadOptions === loadAllOptions) {
         setDefaultOptions(investmentOptions);
+        if (!isNaN(defaultInvestment)) {
+          setValue(defaultInvestmentIdToValue);
+          return;
+        }
+        setValue(defaultInvestment)
       }
 
     }
