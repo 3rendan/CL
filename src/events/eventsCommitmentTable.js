@@ -112,6 +112,7 @@ const EventTable = (props) => {
             commitment={props.commitment}
             frozenColumns={props.frozenColumns}
             investmentID={investmentID}
+            linkedInvestmentID={props.linkedInvestmentID}
             moneyColumns = {moneyColumns}/>);
 };
 

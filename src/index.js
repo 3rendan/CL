@@ -83,8 +83,8 @@ ReactDOM.render(
         <Route path="/popup/event/commitment/edit/:id/:data/:type" component={EventCommitmentPopup}  />
         <Route path="/popup/event/edit/:id/:data/:type" component={EventPopup} />
         <Route path="/popup/NAVevent/edit/:id/:data" component={NavEventPopup} />
-        <Route path="/popup/event/commitment/:id" component={EventCommitmentPopup}  />
-        <Route path="/popup/event/:id" component={EventPopup} />
+        <Route path="/popup/event/commitment/:id/:linkedID" component={EventCommitmentPopup}  />
+        <Route path="/popup/event/:id/:linkedID" component={EventPopup} />
         <Route path="/popup/NAVevent/:id" component={NavEventPopup} />
         <Route path="/popup/transfer" component={TransferPopup}  />
         <Route path="/backup" component={Backup} />

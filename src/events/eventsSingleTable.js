@@ -105,6 +105,7 @@ const EventTable = (props) => {
   return (<MaintenanceTable name={"Events"} data={EventData}
             columns={eventColumns} hasCommitment={false}
             investmentID={investmentID}
+            linkedInvestmentID={props.linkedInvestmentID}
             moneyColumns={moneyColumns}
             key={key}/>);
 };

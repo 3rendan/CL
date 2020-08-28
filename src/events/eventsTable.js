@@ -12,6 +12,7 @@ const EventTable = (props) => {
   const [investType, setInvestType] = useState(null);
   const [commitment, setCommitment] = useState(null);
   const [investmentName, setInvestmentName] = useState(null);
+  const [linkedInvestmentID, setLinkedInvestmentID] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const EventTable = (props) => {
       setInvestmentName(result.name)
       setInvestType(result.invest_type)
       setCommitment(result.commitment)
+      setLinkedInvestmentID(result.linked_investment)
     }
 
     fetchData().catch(e =>
@@ -39,6 +41,7 @@ const EventTable = (props) => {
     return <Fragment> <h1> Investment = {investmentName} </h1>
                 <EventsCommitmentTable investment={investmentName}
                   investmentID = {props.investmentID}
+                  linkedInvestmentID = {linkedInvestmentID}
                   frozenColumns = {frozenColumns}
                   commitment = {commitment}/>
             </Fragment>
@@ -47,6 +50,7 @@ const EventTable = (props) => {
     return <Fragment> <h1> Investment = {investmentName} </h1>
                 <EventsSingleTable investment={investmentName}
                   investmentID = {props.investmentID}
+                  linkedInvestmentID = {linkedInvestmentID}
                   frozenColumns = {frozenColumns}/>
             </Fragment>
   }

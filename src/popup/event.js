@@ -19,6 +19,7 @@ const Event = (props) => {
     <FormSheet getInvestmentData={getInvestments}
     dropdownOptions={['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'COMMISH']}
     investmentID={props.match.params.id}
+    linkedInvestment={props.match.params.linkedID}
     dataID={props.match.params.data}
     dataType={props.match.params.type} />
   )

@@ -392,10 +392,11 @@ const MaintenanceTable = (props) => {
     columns.push(editCol)
     columns.push(trashCol)
   }
+  console.log(props.data)
 
   let addRow = tableName === 'NAV' ? null :
   (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
-    <button type="button" onClick={() => { AddRow({data: props.data, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
+    <button type="button" onClick={() => { AddRow({linkedInvestment: props.linkedInvestmentID, hasCommitment:props.hasCommitment, investmentID: investmentID, name: tableName})}}
           className="btn btn-success btn-lg">Add Row</button>
   </div>);
   const marginRight = tableName === 'NAV' ? '130px' : '0px';
