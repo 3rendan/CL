@@ -92,7 +92,7 @@ function createReportWindow() {
     },
     minWidth: 780,
     width: 1500,
-    height: 800
+    height: 1000
   });
 
   reportWindow.on('closed', ()=> reportWindow=null);
@@ -202,9 +202,9 @@ ipcMain.on('viewTransfers', (event, args) => {
 
 ipcMain.on('popupEvent', (event, args) => {
   console.log(args.dataID)
-  let destURL = `popup/event/${args.investmentID}`;
+  let destURL = `popup/event/${args.investmentID}/${args.linkedInvestment}`;
   if (args.hasCommitment) {
-    destURL = `popup/event/commitment/${args.investmentID}`
+    destURL = `popup/event/commitment/${args.investmentID}/${args.linkedInvestment}`
   }
   if (args.dataID !== undefined && args.hasCommitment) {
     destURL = `popup/event/commitment/edit/${args.investmentID}/${args.dataID}/${args.dataType}`;
@@ -364,6 +364,11 @@ function loadTransferView() {
       protocol: 'file',
       slashes: true,
   });
+
+  const [width, height] = mainWindow.getSize();
+  if (height < 900) {
+    mainWindow.setSize(width, 900);
+  }
 
   // Load html into window
   mainWindow.loadURL(isDev ? 'http://localhost:3000/#/transfers' : fileURL);
