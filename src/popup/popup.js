@@ -501,9 +501,16 @@ const FormSheet = (props) => {
   const [InvestmentName, setInvestmentName] = useState(null);
   const getInvestmentData = props.getInvestmentData;
 
-  const isSelected = props.transactionType !== undefined;
+  const isSelected = props.transactionType !== undefined || props.dropdownOptions.length === 1;
   const [hasSelected, setSelected] = useState(isSelected);
-  const [transactionType, setTransactionType] = useState(props.transactionType);
+  
+  let defaultTransactionType = props.transactionType;
+  if (defaultTransactionType === undefined) {
+    if (props.dropdownOptions.length === 1) {
+      defaultTransactionType = props.dropdownOptions[0];
+    }
+  }
+  const [transactionType, setTransactionType] = useState(defaultTransactionType);
   const [rows, setRows] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
