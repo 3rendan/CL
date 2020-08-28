@@ -74,7 +74,7 @@ const MaintenanceTable = (props) => {
         data={data}
         options={{layout: "fitData",
                   dataTree: true,
-                  maxHeight: parseInt(remote.getCurrentWindow().getSize()[1] * 0.9) + 'px',
+                  maxHeight: parseInt(remote.getCurrentWindow().getSize()[1] * 0.8) + 'px',
                   initialSort: [{column: "date_due", dir:'asc'},
                                 {column: "name", dir:'asc'}],
                   rowFormatter:function(row){
