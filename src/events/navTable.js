@@ -9,7 +9,7 @@ import {getTransfers} from '../serverAPI/transfers.js'
 
 import {getIrr} from '../serverAPI/irr'
 
-import {calcNAV, calcNetContribute, myDateSort} from '../SpecialColumn'
+import {calcNAV, calcPrelimNAV, calcNetContribute, myDateSort} from '../SpecialColumn'
 
 import MaintenanceTable from './allTables'
 
@@ -206,7 +206,7 @@ const NAVTable = (props) => {
       let last_pl = null;
       while (minDate <= finalMonth) {
         nav = calcNAV(groups[minDate], investmentID, prev_nav);
-        prelim_nav = calcNAV(groups[minDate], investmentID, prev_nav);
+        prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         remaining_commitment = calcRemainingCommitment(groups[minDate], remaining_commitment);
         const formatDate = moment(minDate).format('L')
