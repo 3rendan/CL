@@ -15,7 +15,7 @@ const moneyColumns = ['Net Amount', 'Main',
 'Fees', 'Tax', 'Outside Main', 'Outside Fees', 'Outside Tax', 'Remaining Commitment']
 
 const eventColumns = ['Type', 'Date Due', 'Date Sent',
-    'To/From Account',
+    'Contra Account',
     'Net Amount',
     'Remaining Commitment',
     ...moneyColumns.slice(1, moneyColumns.length - 1),

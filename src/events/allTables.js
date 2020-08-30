@@ -140,34 +140,34 @@ const MaintenanceTable = (props) => {
             datum.to_investment = investments[datum.to_investment].name;
           }
         }
-        if (datum['to/from_account'] === undefined) {
+        if (datum['contra_account'] === undefined) {
           if (datum.to_investment !== undefined && datum.to_investment !== thisInvestment.name && datum.to_investment !== investmentID) {
             if (isNaN(datum.to_investment)) { // not a valid number therefore name
-              datum['to/from_account'] = datum.to_investment
+              datum['contra_account'] = datum.to_investment
             }
             else {
-              datum['to/from_account'] = investments[datum.to_investment].name;
+              datum['contra_account'] = investments[datum.to_investment].name;
             }
           }
           else if (datum.from_investment !== undefined && datum.from_investment !== thisInvestment.name && datum.from_investment !== investmentID) {
             if (isNaN(datum.from_investment)) { // not a valid number therefore name
-              datum['to/from_account'] = datum.from_investment
+              datum['contra_account'] = datum.from_investment
             }
             else {
-              datum['to/from_account'] = investments[datum.from_investment].name;
+              datum['contra_account'] = investments[datum.from_investment].name;
             }
           }
           else if (datum.investment !== undefined && datum.investment !== thisInvestment.name && datum.investment !== investmentID) {
             if (isNaN(datum.investment)) { // not a valid number therefore name
-              datum['to/from_account'] = datum.investment
+              datum['contra_account'] = datum.investment
             }
             else {
-              datum['to/from_account'] = investments[datum.investment].name;
+              datum['contra_account'] = investments[datum.investment].name;
             }
           }
         }
-        else { // if (datum['to/from_account'] !== undefined) {
-          datum['to/from_account'] = investments[datum['to/from_account']].name;
+        else { // if (datum['contra_account'] !== undefined) {
+          datum['contra_account'] = investments[datum['contra_account']].name;
         }
         if (datum.date !== undefined) {
           datum.date_due = datum.date;
