@@ -14,7 +14,7 @@ const moneyColumns = ['Net Amount', 'Main',
 'Recallable',	'Withhold',
 'Fees', 'Tax', 'Outside Main', 'Outside Fees', 'Outside Tax', 'Remaining Commitment']
 
-const eventColumns = ['Type', 'Date Due', 'Date Sent',
+const eventColumns = ['Type', 'Date Due', 'Contra Date',
     'Contra Account',
     'Net Amount',
     'Remaining Commitment',

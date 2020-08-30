@@ -22,7 +22,7 @@ class Distribution {
     else {
       this.id = data.id;
       this.date_due = data['Date Due'] ? data['Date Due'] : 0;
-      this.date_sent = data['Date Sent'] ? data['Date Sent'] : 0;
+      this.date_sent = data['Contra Date'] ? data['Contra Date'] : 0;
       this.withhold = data['Withhold $'] ? data['Withhold $'] : 0;
       this.recallable = data['Recallable $'] ? data['Recallable $'] : 0;
       this.main = data['Main $'] ? data['Main $'] : 0;

@@ -533,7 +533,7 @@ const FormSheet = (props) => {
 
   useEffect(()=> {
     if (state.changer === 'Date Due') {
-      state['Date Sent'] = state['Date Due']
+      state['Contra Date'] = state['Date Due']
     }
 
     async function fetchData() {
@@ -555,13 +555,13 @@ const FormSheet = (props) => {
     let mainColumns = null;
     switch (transactionType) {
       case 'CONTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount',
+        mainColumns = ['Date Due', 'Contra Date', 'Net Amount',
         'Main $', 'Fees $', 'Tax $',
         'Outside Main $', 'Outside Fees $', 'Outside Tax $',
         'Notes', 'Investment'];
         break;
       case 'DISTRIBUTION':
-        mainColumns = ['Date Due', 'Date Sent', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Notes', 'Investment'];
+        mainColumns = ['Date Due', 'Contra Date', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Notes', 'Investment'];
         break;
       case 'TRANSFER':
         mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];

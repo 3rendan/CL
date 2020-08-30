@@ -13,7 +13,7 @@ import MaintenanceTable from './allTables'
 
 const moneyColumns = ['Net Amount']
 
-const eventColumns = ['Type', 'Date Due', 'Date Sent',
+const eventColumns = ['Type', 'Date Due', 'Contra Date',
     'Contra Account',
     ...moneyColumns,
     'Notes']

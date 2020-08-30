@@ -220,7 +220,7 @@ const MaintenanceTable = (props) => {
           datum.remaining_commitment = remaining_commitment;
         });
       }
-
+      console.log(manipulatedData)
       setData(manipulatedData)
     }
     fetchInvestments().catch(e =>
@@ -256,7 +256,8 @@ const MaintenanceTable = (props) => {
         headerContext: rightClickMoneyPercent};
       return column;
     }
-    else if (fieldName === 'date_sent') {
+    else if (fieldName === 'contra_date') {
+      fieldName = 'date_sent';
       return {title: colName, field: fieldName,
         formatter:function(cell, formatterParams, onRendered){
           if (cell.getValue() === cell.getData()['date_due']) {

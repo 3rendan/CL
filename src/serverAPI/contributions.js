@@ -25,7 +25,7 @@ class Contribution {
     else {
       this.id = data.id;
       this.date_due = data['Date Due'];
-      this.date_sent = data['Date Sent'];
+      this.date_sent = data['Contra Date'];
 
       this.main = data['Main $'] ? data['Main $'] : 0;
       this.fees = data['Fees $'] ? data['Fees $'] : 0;
