@@ -42,7 +42,7 @@ const EventTable = (props) => {
   }
   else if (investType === 'commit') {
     let currWindow = BrowserWindow.getFocusedWindow();
-    currWindow.setTitle("Invest Tracker + (" + investmentName + ")")
+    currWindow.setTitle("Invest Tracker (" + investmentName + ")")
     return <Fragment> <h1> Investment = {investmentName} </h1>
                 <EventsCommitmentTable investment={investmentName}
                   investmentID = {props.investmentID}
@@ -53,7 +53,7 @@ const EventTable = (props) => {
   }
   else {
     let currWindow = BrowserWindow.getFocusedWindow();
-    currWindow.setTitle("Invest Tracker + (" + investmentName + ")")
+    currWindow.setTitle("Invest Tracker (" + investmentName + ")")
     return <Fragment> <h1> Investment = {investmentName} </h1>
                 <EventsSingleTable investment={investmentName}
                   investmentID = {props.investmentID}
