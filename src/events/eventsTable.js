@@ -8,6 +8,9 @@ const EventsCommitmentTable = lazy(() => import("./eventsCommitmentTable"));
 
 const frozenColumns = ['Type', 'Date Due'];
 
+const electron = window.require('electron');
+const BrowserWindow = electron.remote.BrowserWindow;
+
 const EventTable = (props) => {
   const [investType, setInvestType] = useState(null);
   const [commitment, setCommitment] = useState(null);
@@ -38,6 +41,8 @@ const EventTable = (props) => {
     return null;
   }
   else if (investType === 'commit') {
+    let currWindow = BrowserWindow.getFocusedWindow();
+    currWindow.setTitle("Invest Tracker + (" + investmentName + ")")
     return <Fragment> <h1> Investment = {investmentName} </h1>
                 <EventsCommitmentTable investment={investmentName}
                   investmentID = {props.investmentID}
@@ -47,6 +52,8 @@ const EventTable = (props) => {
             </Fragment>
   }
   else {
+    let currWindow = BrowserWindow.getFocusedWindow();
+    currWindow.setTitle("Invest Tracker + (" + investmentName + ")")
     return <Fragment> <h1> Investment = {investmentName} </h1>
                 <EventsSingleTable investment={investmentName}
                   investmentID = {props.investmentID}
