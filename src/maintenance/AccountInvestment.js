@@ -338,6 +338,9 @@ function columnNameToDefintion(colName, readOnly) {
     return column;
   }
   else if (!dropdownColumns.includes(colName)) {
+    if (colName === 'Seq No' && readOnly) {
+      return undefined;
+    }
     const column = {title: colName, field: fieldName, responsive: 0};
     if (!readOnly) {
       column['editor'] = true;
@@ -512,7 +515,7 @@ const DetailInvestmentTable = (props) => {
 
   let columns = columnNames.map((colName) => {
     return columnNameToDefintion(colName, readOnly);
-  });
+  }).filter(i => i !== undefined);
 
 
   const addButton = readOnly ? null : (
@@ -581,6 +584,10 @@ const DetailInvestmentTable = (props) => {
     columns = [...columns, trashCol]
   }
 
+  tableData.sort((a,b) => {
+    return a.seq_no - b.seq_no;
+  })
+
 
 
   //add table holder element to DOM
@@ -599,8 +606,7 @@ const DetailInvestmentTable = (props) => {
         ref={ref}
         columns={columns}
         data={tableData}
-        options={{...defaultTabulatorSettings,
-        initialSort: [{column: "date_due", dir:'asc'}]}
+        options={{...defaultTabulatorSettings}
         }
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"

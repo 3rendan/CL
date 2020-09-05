@@ -26,6 +26,7 @@ class Investment {
       this.notes = "";
       this.linked_investment = null;
       this.invest_type = "";
+      this.seq_no = 1000.0;
     }
     else {
       this.id = data.id;
@@ -48,6 +49,7 @@ class Investment {
       this.notes = data.notes;
       this.linked_investment = data.linked_investment;
       this.invest_type = data.invest_type;
+      this.seq_no = data.seq_no;
     }
   }
 
@@ -72,6 +74,7 @@ class Investment {
             notes: this.notes,
             linked_investment: this.linked_investment,
             invest_type: this.invest_type,
+            seq_no: this.seq_no
           }
   }
 }
@@ -174,7 +177,7 @@ const getInvestment = async id => {
 
 
 const InvestmentColumns = [
-  'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',
+  'Seq No', 'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',
   'Linked Investment', 'Owner',
   'Invest Type', 'Primary Benchmark',	'Secondary Benchmark',
   'Commitment',	'Size (M)',	'End of Term',	'Management Fee',
