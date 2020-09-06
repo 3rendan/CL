@@ -119,6 +119,65 @@ const myValues = function(colName) {
   }
 };
 
+function cellEdit(cell) {
+  const newData = {...cell.getData()};
+  Object.keys(newData).map(fieldName => {
+    if (fieldName.includes('asset_class')) {
+      if (newData[fieldName] in assetClassNameToId) {
+        newData[fieldName] = assetClassNameToId[newData[fieldName]]
+      }
+    }
+    else if (fieldName.includes('benchmark')) {
+      if (newData[fieldName] in benchmarkNameToId) {
+        newData[fieldName] = benchmarkNameToId[newData[fieldName]]
+      }
+    }
+    else if (fieldName === 'listed_investment') {
+      if (newData[fieldName] in investmentNameToId) {
+        newData[fieldName] = investmentNameToId[newData[fieldName]]
+      }
+    }
+    else if (fieldName === 'account') {
+      if (newData[fieldName] in accountNameToId) {
+        newData[fieldName] = accountNameToId[newData[fieldName]]
+      }
+    }
+    else if (fieldName === 'owner') {
+      if (newData[fieldName] in ownerNameToId) {
+        newData[fieldName] = ownerNameToId[newData[fieldName]]
+      }
+    }
+    if (newData[fieldName] === '') {
+      newData[fieldName] = null;
+    }
+  })
+  const newInvestment = new Investment(newData);
+  updateInvestment(newInvestment).then(a => {
+    if (a === 'duplicate key') {
+      const electron = window.require('electron');
+      const dialog = electron.remote.dialog
+      let options  = {
+       buttons: ["Ok"],
+       message: 'Names and Long Names are unique!'
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      // const confirmed = window.confirm('Confirm Restore?')
+      cell.restoreOldValue();
+    }
+    if (a === 'foreign key') {
+      const electron = window.require('electron');
+      const dialog = electron.remote.dialog
+      let options  = {
+       buttons: ["Ok"],
+       message: 'Linked Investment needs to reference an existing investment'
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      // const confirmed = window.confirm('Confirm Restore?')
+      cell.restoreOldValue();
+    }
+  });
+}
+
 function columnNameToDefintion(colName, readOnly) {
   const fieldName = colToInvestmentFields(colName);
   if (colName === 'Commitment (Y/N)') {
@@ -132,41 +191,7 @@ function columnNameToDefintion(colName, readOnly) {
     };
     if (!readOnly) {
       column['editor'] = 'tickCross';
-      column['cellEdited'] = function(cell) {
-          const newData = cell.getData();
-          Object.keys(newData).map(fieldName => {
-            if (fieldName.includes('asset_class')) {
-              if (newData[fieldName] in assetClassNameToId) {
-                newData[fieldName] = assetClassNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('benchmark')) {
-              if (newData[fieldName] in benchmarkNameToId) {
-                newData[fieldName] = benchmarkNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName === 'listed_investment') {
-              if (newData[fieldName] in investmentNameToId) {
-                newData[fieldName] = investmentNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName === 'account') {
-              if (newData[fieldName] in accountNameToId) {
-                newData[fieldName] = accountNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName ==='owner') {
-              if (newData[fieldName] in ownerNameToId) {
-                newData[fieldName] = ownerNameToId[newData[fieldName]]
-              }
-            }
-            if (newData[fieldName] === '') {
-              newData[fieldName] = null;
-            }
-          })
-          const newInvestment = new Investment(newData);
-          updateInvestment(newInvestment);
-      };
+      column['cellEdited'] = cellEdit;
     }
     return column;
   }
@@ -180,64 +205,7 @@ function columnNameToDefintion(colName, readOnly) {
         minWidth: colName === 'Notes' ? 600 : 300, resizable:true};
     if (!readOnly) {
       column['editor'] = 'textarea';
-      column['cellEdited'] = function(cell) {
-          const newData = cell.getData();
-          Object.keys(newData).map(fieldName => {
-            if (fieldName.includes('asset_class')) {
-              if (newData[fieldName] in assetClassNameToId) {
-                newData[fieldName] = assetClassNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('benchmark')) {
-              if (newData[fieldName] in benchmarkNameToId) {
-                newData[fieldName] = benchmarkNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('linked')) {
-              if (newData[fieldName] in investmentNameToId) {
-                newData[fieldName] = investmentNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName === 'account') {
-              if (newData[fieldName] in accountNameToId) {
-                newData[fieldName] = accountNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName ==='owner') {
-              if (newData[fieldName] in ownerNameToId) {
-                newData[fieldName] = ownerNameToId[newData[fieldName]]
-              }
-            }
-            if (newData[fieldName] === '') {
-              newData[fieldName] = null;
-            }
-          })
-          const newInvestment = new Investment(newData);
-          updateInvestment(newInvestment).then(a => {
-            if (a === 'duplicate key') {
-              const electron = window.require('electron');
-              const dialog = electron.remote.dialog
-              let options  = {
-               buttons: ["Ok"],
-               message: 'Names and Long Names are unique!'
-              }
-              const confirmed = dialog.showMessageBoxSync(options)
-              // const confirmed = window.confirm('Confirm Restore?')
-              cell.restoreOldValue();
-            }
-            if (a === 'foreign key') {
-              const electron = window.require('electron');
-              const dialog = electron.remote.dialog
-              let options  = {
-               buttons: ["Ok"],
-               message: 'Linked Investment needs to reference an existing investment'
-              }
-              const confirmed = dialog.showMessageBoxSync(options)
-              // const confirmed = window.confirm('Confirm Restore?')
-              cell.restoreOldValue();
-            }
-          });
-      };
+      column['cellEdited'] = cellEdit;
     }
     return column;
   }
@@ -248,41 +216,7 @@ function columnNameToDefintion(colName, readOnly) {
       headerContext: rightClickMoney};
 
     if (!readOnly) {
-      column['cellEdited'] = function(cell) {
-          const newData = cell.getData();
-          Object.keys(newData).map(fieldName => {
-            if (fieldName.includes('asset_class')) {
-              if (newData[fieldName] in assetClassNameToId) {
-                newData[fieldName] = assetClassNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('benchmark')) {
-              if (newData[fieldName] in benchmarkNameToId) {
-                newData[fieldName] = benchmarkNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('linked')) {
-              if (newData[fieldName] in investmentNameToId) {
-                newData[fieldName] = investmentNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName === 'account') {
-              if (newData[fieldName] in accountNameToId) {
-                newData[fieldName] = accountNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName ==='owner') {
-              if (newData[fieldName] in ownerNameToId) {
-                newData[fieldName] = ownerNameToId[newData[fieldName]]
-              }
-            }
-            if (newData[fieldName] === '') {
-              newData[fieldName] = null;
-            }
-          })
-          const newInvestment = new Investment(newData);
-          updateInvestment(newInvestment);
-      };
+      column['cellEdited'] = cellEdit;
       column['editor'] = "number";
     }
     return column;
@@ -299,41 +233,7 @@ function columnNameToDefintion(colName, readOnly) {
     }
     if (!readOnly) {
       column['editor'] = dateEditor;
-      column['cellEdited'] = function(cell) {
-          const newData = cell.getData();
-          Object.keys(newData).map(fieldName => {
-            if (fieldName.includes('asset_class')) {
-              if (newData[fieldName] in assetClassNameToId) {
-                newData[fieldName] = assetClassNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('benchmark')) {
-              if (newData[fieldName] in benchmarkNameToId) {
-                newData[fieldName] = benchmarkNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('linked')) {
-              if (newData[fieldName] in investmentNameToId) {
-                newData[fieldName] = investmentNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName === 'account') {
-              if (newData[fieldName] in accountNameToId) {
-                newData[fieldName] = accountNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName ==='owner') {
-              if (newData[fieldName] in ownerNameToId) {
-                newData[fieldName] = ownerNameToId[newData[fieldName]]
-              }
-            }
-            if (newData[fieldName] === '') {
-              newData[fieldName] = null;
-            }
-          })
-          const newInvestment = new Investment(newData);
-          updateInvestment(newInvestment);
-      };
+      column['cellEdited'] = cellEdit;
     }
     return column;
   }
@@ -344,65 +244,7 @@ function columnNameToDefintion(colName, readOnly) {
     const column = {title: colName, field: fieldName, responsive: 0};
     if (!readOnly) {
       column['editor'] = true;
-      column['cellEdited'] = function(cell) {
-          const newData = cell.getData();
-          Object.keys(newData).map(fieldName => {
-            if (fieldName.includes('asset_class')) {
-              if (newData[fieldName] in assetClassNameToId) {
-                newData[fieldName] = assetClassNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('benchmark')) {
-              if (newData[fieldName] in benchmarkNameToId) {
-                newData[fieldName] = benchmarkNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName.includes('linked')) {
-              if (newData[fieldName] in investmentNameToId) {
-                newData[fieldName] = investmentNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName === 'account') {
-              if (newData[fieldName] in accountNameToId) {
-                newData[fieldName] = accountNameToId[newData[fieldName]]
-              }
-            }
-            else if (fieldName ==='owner') {
-              if (newData[fieldName] in ownerNameToId) {
-                newData[fieldName] = ownerNameToId[newData[fieldName]]
-              }
-            }
-            if (newData[fieldName] === '') {
-              newData[fieldName] = null;
-            }
-          })
-
-          const newInvestment = new Investment(newData);
-          updateInvestment(newInvestment).then(a => {
-            if (a === 'duplicate key') {
-              const electron = window.require('electron');
-              const dialog = electron.remote.dialog
-              let options  = {
-               buttons: ["Ok"],
-               message: 'Names and Long Names are unique!'
-              }
-              const confirmed = dialog.showMessageBoxSync(options)
-              // const confirmed = window.confirm('Confirm Restore?')
-              cell.restoreOldValue();
-            }
-            if (a === 'foreign key') {
-              const electron = window.require('electron');
-              const dialog = electron.remote.dialog
-              let options  = {
-               buttons: ["Ok"],
-               message: 'Linked Investment needs to reference an existing investment'
-              }
-              const confirmed = dialog.showMessageBoxSync(options)
-              // const confirmed = window.confirm('Confirm Restore?')
-              cell.restoreOldValue();
-            }
-          });
-      };
+      column['cellEdited'] = cellEdit;
       column['editorParams'] = {
         showListOnEmpty:true,
         freetext: true,
@@ -421,43 +263,7 @@ function columnNameToDefintion(colName, readOnly) {
 
   if (!readOnly) {
     column['editor'] = 'autocomplete';
-    column['cellEdited'] = function(cell) {
-        const newData = cell.getData();
-
-        Object.keys(newData).map(fieldName => {
-          if (fieldName.includes('asset_class')) {
-            if (newData[fieldName] in assetClassNameToId) {
-              newData[fieldName] = assetClassNameToId[newData[fieldName]]
-            }
-          }
-          else if (fieldName.includes('linked')) {
-            if (newData[fieldName] in investmentNameToId) {
-              newData[fieldName] = investmentNameToId[newData[fieldName]]
-            }
-          }
-          else if (fieldName.includes('benchmark')) {
-            if (newData[fieldName] in benchmarkNameToId) {
-              newData[fieldName] = benchmarkNameToId[newData[fieldName]]
-            }
-          }
-          else if (fieldName === 'account') {
-            if (newData[fieldName] in accountNameToId) {
-              newData[fieldName] = accountNameToId[newData[fieldName]]
-            }
-          }
-          else if (fieldName ==='owner') {
-            if (newData[fieldName] in ownerNameToId) {
-              newData[fieldName] = ownerNameToId[newData[fieldName]]
-            }
-          }
-          if (newData[fieldName] === '') {
-            newData[fieldName] = null;
-          }
-        })
-
-        const newInvestment = new Investment(newData);
-        updateInvestment(newInvestment);
-    };
+    column['cellEdited'] = cellEdit;
     column['editorParams'] = {
       showListOnEmpty:true,
       freetext: false,
@@ -588,7 +394,7 @@ const DetailInvestmentTable = (props) => {
     return a.seq_no - b.seq_no;
   })
 
-
+  console.log(tableData)
 
   //add table holder element to DOM
   return (
