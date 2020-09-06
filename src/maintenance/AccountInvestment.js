@@ -132,7 +132,7 @@ function cellEdit(cell) {
         newData[fieldName] = benchmarkNameToId[newData[fieldName]]
       }
     }
-    else if (fieldName === 'listed_investment') {
+    else if (fieldName === 'linked_investment') {
       if (newData[fieldName] in investmentNameToId) {
         newData[fieldName] = investmentNameToId[newData[fieldName]]
       }
