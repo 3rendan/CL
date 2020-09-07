@@ -397,13 +397,18 @@ function loadTransferView() {
       slashes: true,
   });
 
-  const [width, height] = mainWindow.getSize();
-  if (height < 900) {
-    mainWindow.setSize(width, 900);
-  }
+  // Create new window
+  let newWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
+    minWidth: 780,
+    width: 1500,
+    height: 900
+  });
 
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/transfers' : fileURL);
+  newWindow.loadURL(isDev ? 'http://localhost:3000/#/transfers' : fileURL);
 
 };
 

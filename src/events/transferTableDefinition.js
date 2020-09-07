@@ -6,7 +6,6 @@ import "react-tabulator/lib/styles.css"; // default theme
 import "react-tabulator/css/tabulator.min.css"; // use Theme(s)
 
 import 'font-awesome/css/font-awesome.css';
-import '../centerHeaders.css';
 
 import {deleteTransfer} from '../serverAPI/transfers';
 
