@@ -177,9 +177,9 @@ const getInvestment = async id => {
 
 
 const InvestmentColumns = [
-  'Seq No', 'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',
+  'Name',	'Long Name',	'Asset Class',	'Sub Asset Class',	'Account',
   'Linked Investment', 'Owner',
-  'Invest Type', 'Primary Benchmark',	'Secondary Benchmark',
+  'Invest Type', 'Seq No', 'Primary Benchmark',	'Secondary Benchmark',
   'Commitment',	'Size (M)',	'End of Term',	'Management Fee',
   'Preferred Return',	'Carried Interest',
   'Close Date',	'Sponsor Investment',	'Notes']

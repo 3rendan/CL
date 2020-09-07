@@ -253,6 +253,9 @@ function columnNameToDefintion(colName, readOnly) {
         values:true
       }
     }
+    if (colName === 'Seq No') {
+      column['minWidth'] = "30px"
+    }
     return column;
   }
   const column = {title: colName, field: fieldName, responsive: 0};
@@ -412,8 +415,7 @@ const DetailInvestmentTable = (props) => {
         ref={ref}
         columns={columns}
         data={tableData}
-        options={{...defaultTabulatorSettings}
-        }
+        options={{...defaultTabulatorSettings}}
         data-custom-attr="test-custom-attribute"
         className="custom-css-class"
       />
