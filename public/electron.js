@@ -309,6 +309,38 @@ ipcMain.on('popupTransfer', (event, args) => {
 
 });
 
+ipcMain.on('popupEditTransfer', (event, args) => {
+  let destURL = `popup/transfer/edit/${args.dataID}`;
+
+  // Create new window
+  let newWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
+    minWidth: 780,
+    width: 1500,
+    height: 800
+  });
+
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: destURL,
+      protocol: 'file',
+      slashes: true,
+  });
+
+  // Load html into window
+  newWindow.loadURL(isDev ? `http://localhost:3000/#/${destURL}` : fileURL);
+
+  newWindow.on('closed', ()=> newWindow=null);
+  // newWindow.webContents.openDevTools();
+  newWindow.webContents.on('did-finish-load', () => {
+    newWindow.webContents.send('popupTransferMessage', args);
+  });
+
+});
+
 function loadMaintenanceAccountInvestmentView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,

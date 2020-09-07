@@ -33,7 +33,7 @@ function AddRow(props) {
 
 function EditRow(props) {
   props['id'] = BrowserWindow.getFocusedWindow().id;
-  ipcRenderer.send('popupTransfer', props);
+  ipcRenderer.send('popupEditTransfer', props);
 };
 
 const MaintenanceTable = (props) => {

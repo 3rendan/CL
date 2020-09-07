@@ -86,6 +86,7 @@ ReactDOM.render(
         <Route path="/popup/event/commitment/:id/:linkedID" component={EventCommitmentPopup}  />
         <Route path="/popup/event/:id/:linkedID" component={EventPopup} />
         <Route path="/popup/NAVevent/:id" component={NavEventPopup} />
+        <Route path="/popup/transfer/edit/:dataID" component={TransferPopup}  />
         <Route path="/popup/transfer" component={TransferPopup}  />
         <Route path="/backup" component={Backup} />
         <Route path="/report/accountBalance"  component={AccountBalanceReport} />
