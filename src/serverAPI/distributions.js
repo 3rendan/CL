@@ -26,7 +26,8 @@ class Distribution {
       this.withhold = data['Withhold $'] ? data['Withhold $'] : 0;
       this.recallable = data['Recallable $'] ? data['Recallable $'] : 0;
       this.main = data['Main $'] ? data['Main $'] : 0;
-      this.net_amount = parseFloat(this.recallable) + parseFloat(this.main);
+      this.net_amount = parseFloat(this.recallable) + parseFloat(this.main) +
+                        parseFloat(this.withhold);
 
       if (data['Investment']) {
         try {
