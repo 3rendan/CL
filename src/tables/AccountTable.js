@@ -13,7 +13,8 @@ const AccountTable = (props) => {
 
   const colNames = AccountColumns.map((colName) => {
     const fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
-    return {title: colName, field: fieldName, responsive: 0, minWidth: colName === 'Notes' ? 600 : 0,
+    return {title: colName, field: fieldName, responsive: 0,
+          minWidth: colName === 'Notes' ? 600 : colName === 'Institution' ? 225 : colName === 'Name' ? 175 : 0,
            editor:"input", cellEdited:function(cell) {
              const newData = cell.getData();
              const newAccount = new Account(newData)
