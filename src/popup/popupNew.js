@@ -14,20 +14,6 @@ const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
 const negativeTransactions = ['OUTFLOW', 'EXPENSE']
 
 
-
-var InvestmentData = [];
-var investmentOptions = [];
-
-async function fetchData() {
-  InvestmentData = await getInvestments();
-  investmentOptions = InvestmentData.map((data) => {
-    const label = data.long_name
-    return {label: label, value: data};
-  })
-}
-fetchData();
-
-
 // const electron       = window.require('electron');
 const ipcRenderer    = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
@@ -55,33 +41,20 @@ ipcRenderer.on('popupTransferMessage', (event, message) => {
 })
 
 
-const FormSheet = (props) => {
+const NewPopup = (props) => {
   // for all data
   const [InvestmentData, setInvestmentData] = useState(null);
   const [InvestmentName, setInvestmentName] = useState(null);
-  const getInvestmentData = props.getInvestmentData;
 
-  const isSelected = props.transactionType !== undefined;
-  const [hasSelected, setSelected] = useState(isSelected);
-  const [transactionType, setTransactionType] = useState(props.transactionType);
+  const [hasSelected, setSelected] = useState(false);
+  const [transactionType, setTransactionType] = useState(null);
   const [rows, setRows] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
   const investmentID = props.investmentID;
 
-  // console.log(props)
-  console.log(props.initial)
-  console.log(transactionType)
-
   const [state, setState] = useState({'Net Amount': 0, 'From Investment ID': investmentID});
-
-  console.log(state)
-
   const [error, setError] = useState(null);
-  if (props.initial !== undefined && Object.keys(state).length === 0
-      && Object.keys(props.initial).length !== 0) {
-    setState(props.initial)
-  }
 
 
   useEffect(()=> {
@@ -89,8 +62,15 @@ const FormSheet = (props) => {
       state['Contra Date'] = state['Date Due']
     }
 
+    if (transactionType !== 'CONTRIBUTION' ||
+        transactionType !== 'DISTRIBUTION' ||
+        transactionType !== 'TRANSFER') {
+
+      state['Investment'] = investmentID;
+    }
+
     async function fetchData() {
-      const result = await getInvestmentData();
+      const result = await getInvestments();
       let linkedInvestment = undefined;
       if (!result) {
         throw 'Server Disconnected: Investment data null'
@@ -243,44 +223,15 @@ const FormSheet = (props) => {
     Object.keys(state).map(column => {
       if (column.includes('Amount') || column.includes('$')) {
         state[column] = parseFloat(state[column]);
-        // const a = parseFloat(state[column]);
-        // console.log(state)
-        // alert('hello: ' + a)
-        // const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
-        // if (!confirmed) {
-        //   e.preventDefault();
-        //   // return false;
-        // }
       }
     });
-    // state['Type'] = transactionType;
-    // const updatedEvent = updateEvent({
-    //   state: state
-    // });
-    // console.log(state)
-    // console.log(updatedEvent)
-    // console.log(updatedEvent)
-    // return false;
-    // onSubmit(e);
   }
 
   const onSubmit = (e) => {
     state['Type'] = transactionType;
-
-    if (state.Id !== undefined) {
-      const updatedEvent = updateEvent({
-        state: state
-      });
-
-      updatedEvent['type'] = transactionType;
-      ipcRenderer.sendTo(senderWindowId, replyChannel, {})
-      return;
-
-    }
     const newEvent = createEvent({
       state: state
     });
-    console.log(newEvent)
 
 
     newEvent['type'] = transactionType;
@@ -298,7 +249,7 @@ const FormSheet = (props) => {
   }
 
   let displayInvestmentName;
-  if(InvestmentName) {
+  if (InvestmentName) {
     displayInvestmentName = <h2> Investment = {InvestmentName} </h2>
   }
 
@@ -328,4 +279,4 @@ const FormSheet = (props) => {
 
 
 
-export default FormSheet;
+export default NewPopup;

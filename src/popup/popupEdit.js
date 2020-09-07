@@ -56,7 +56,7 @@ ipcRenderer.on('popupTransferMessage', (event, message) => {
 })
 
 
-const FormSheet = (props) => {
+const EditPopup = (props) => {
   // for all data
   const [InvestmentData, setInvestmentData] = useState(null);
   const [InvestmentName, setInvestmentName] = useState(null);
@@ -70,19 +70,13 @@ const FormSheet = (props) => {
 
   const investmentID = props.investmentID;
 
-  // console.log(props)
-  console.log(props.initial)
-  console.log(transactionType)
-
   const [state, setState] = useState(props.initial);
 
-  console.log(state)
+  if (props.initial['Date Sent'] !== undefined) {
+    state['Contra Date'] = props.initial['Date Sent'];
+  }
 
   const [error, setError] = useState(null);
-  if (props.initial !== undefined && Object.keys(state).length === 0
-      && Object.keys(props.initial).length !== 0) {
-    setState(props.initial)
-  }
 
 
   useEffect(()=> {
@@ -200,7 +194,7 @@ const FormSheet = (props) => {
       }
     }
     if (transactionType === 'TRANSFER') {
-      if(state['From Investment'].value.id === state['To Investment'].value.id) {
+      if (state['From Investment'].value.id === state['To Investment'].value.id) {
         let options  = {
          buttons: ["Ok"],
          message: `You cannot have the investments be the same`
@@ -219,7 +213,7 @@ const FormSheet = (props) => {
       }
     }
 
-    if(positiveTransactions.includes(transactionType)) {
+    if (positiveTransactions.includes(transactionType)) {
       if (state['Net Amount'] < 0) {
         let options  = {
          buttons: ["Ok"],
@@ -229,7 +223,7 @@ const FormSheet = (props) => {
         e.preventDefault()
       }
     }
-    if(negativeTransactions.includes(transactionType)) {
+    if (negativeTransactions.includes(transactionType)) {
       if (state['Net Amount'] > 0) {
         let options  = {
          buttons: ["Ok"],
@@ -243,48 +237,20 @@ const FormSheet = (props) => {
     Object.keys(state).map(column => {
       if (column.includes('Amount') || column.includes('$')) {
         state[column] = parseFloat(state[column]);
-        // const a = parseFloat(state[column]);
-        // console.log(state)
-        // alert('hello: ' + a)
-        // const confirmed = window.confirm('CONTRIBUTION Net Amount is Negative. Are you sure?')
-        // if (!confirmed) {
-        //   e.preventDefault();
-        //   // return false;
-        // }
       }
     });
-    // state['Type'] = transactionType;
-    // const updatedEvent = updateEvent({
-    //   state: state
-    // });
-    // console.log(state)
-    // console.log(updatedEvent)
-    // console.log(updatedEvent)
-    // return false;
-    // onSubmit(e);
   }
 
   const onSubmit = (e) => {
     state['Type'] = transactionType;
 
-    if (state.Id !== undefined) {
-      const updatedEvent = updateEvent({
-        state: state
-      });
-
-      updatedEvent['type'] = transactionType;
-      ipcRenderer.sendTo(senderWindowId, replyChannel, {})
-      return;
-
-    }
-    const newEvent = createEvent({
+    const updatedEvent = updateEvent({
       state: state
     });
-    console.log(newEvent)
 
-
-    newEvent['type'] = transactionType;
+    updatedEvent['type'] = transactionType;
     ipcRenderer.sendTo(senderWindowId, replyChannel, {})
+
   };
 
   const exit = (e) => {
@@ -298,7 +264,7 @@ const FormSheet = (props) => {
   }
 
   let displayInvestmentName;
-  if(InvestmentName) {
+  if (InvestmentName) {
     displayInvestmentName = <h2> Investment = {InvestmentName} </h2>
   }
 
@@ -328,4 +294,4 @@ const FormSheet = (props) => {
 
 
 
-export default FormSheet;
+export default EditPopup;

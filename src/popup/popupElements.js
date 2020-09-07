@@ -5,6 +5,18 @@ import AsyncSelect from 'react-select/async';
 import Dropdown from 'react-bootstrap/Dropdown';
 import {getInvestments} from '../serverAPI/investments.js'
 
+var InvestmentData = [];
+var investmentOptions = [];
+
+async function fetchData() {
+  InvestmentData = await getInvestments();
+  investmentOptions = InvestmentData.map((data) => {
+    const label = data.long_name
+    return {label: label, value: data};
+  })
+}
+fetchData();
+
 const electron = window.require('electron');
 const dialog = electron.remote.dialog
 

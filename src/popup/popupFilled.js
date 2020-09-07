@@ -11,7 +11,7 @@ import {getInvestments} from '../serverAPI/investments.js'
 
 import moment from 'moment'
 
-import FormSheet from './popup'
+import EditPopup from './popupEdit'
 
 function capitalize_Words(str) {
  return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
@@ -101,7 +101,7 @@ const FilledFormSheet = (props) => {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
   if (Object.keys(state).length !== 0) {
-    return <FormSheet getInvestmentData={getInvestments} key={'filled'}
+    return <EditPopup getInvestmentData={getInvestments} key={'filled'}
                       initial={state}
      transactionType={props.dataType} dropdownOptions={options} />
   }

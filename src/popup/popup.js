@@ -251,7 +251,18 @@ const RowCurrency = (props) => {
 
 const RowInvestment = (props) => {
   const [defaultOptions, setDefaultOptions] = useState(investmentOptions);
-  const defaultInvestment = props.state[props.name] ? props.state[props.name] : props.investmentID;
+  let defaultInvestment = props.state[props.name];
+  if (defaultInvestment === undefined) {
+    if (props.transactionType === 'CONTRIBUTION' ||
+        props.transactionType === 'DISTRIBUTION') {
+
+        defaultInvestment = props.state.initial;
+    }
+    else {
+      defaultInvestment = props.investmentID;
+    }
+  }
+
 
   const [value, setValue] = useState(null);
   let defaultInvestmentIdToValue = null;
@@ -496,14 +507,16 @@ const RowBland = (props) => {
 
 
 const FormSheet = (props) => {
+  console.log(props)
   // for all data
   const [InvestmentData, setInvestmentData] = useState(null);
   const [InvestmentName, setInvestmentName] = useState(null);
   const getInvestmentData = props.getInvestmentData;
 
-  const isSelected = props.transactionType !== undefined || props.dropdownOptions.length === 1;
+  const isSelected = props.transactionType !== undefined ||
+        props.dropdownOptions.length === 1;
   const [hasSelected, setSelected] = useState(isSelected);
-  
+
   let defaultTransactionType = props.transactionType;
   if (defaultTransactionType === undefined) {
     if (props.dropdownOptions.length === 1) {
@@ -520,8 +533,13 @@ const FormSheet = (props) => {
   console.log(props.initial)
   console.log(transactionType)
 
-  const [state, setState] = useState(props.initial ? props.initial : {'Net Amount': 0, 'From Investment ID': investmentID, 'Investment': props.linkedInvestment});
+  const [state, setState] = useState(props.initial ? props.initial :
+    {'Net Amount': 0, 'From Investment ID': investmentID,
+     'Investment': props.linkedInvestment});
 
+  if (props.initial['Date Sent'] !== undefined) {
+    state['Contra Date'] = props.initial['Date Sent'];
+  }
   console.log(state)
 
   const [error, setError] = useState(null);
@@ -535,6 +553,13 @@ const FormSheet = (props) => {
     if (state.changer === 'Date Due') {
       state['Contra Date'] = state['Date Due']
     }
+
+    // if (transactionType !== 'CONTRIBUTION' ||
+    //     transactionType !== 'DISTRIBUTION' ||
+    //     transactionType !== 'TRANSFER') {
+    //
+    //   state['Investment'] = investmentID;
+    // }
 
     async function fetchData() {
       const result = await getInvestmentData();
@@ -646,7 +671,7 @@ const FormSheet = (props) => {
       }
     }
     if (transactionType === 'TRANSFER') {
-      if(state['From Investment'].value.id === state['To Investment'].value.id) {
+      if (state['From Investment'].value.id === state['To Investment'].value.id) {
         let options  = {
          buttons: ["Ok"],
          message: `You cannot have the investments be the same`

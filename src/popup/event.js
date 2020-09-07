@@ -2,7 +2,7 @@ import React, { lazy } from 'react';
 import ReactDOM from 'react-dom';
 
 import {getInvestments} from '../serverAPI/investments.js'
-const FormSheet = lazy(() => import('./popup'));
+const NewPopup = lazy(() => import('./popupNew'));
 const FilledFormSheet = lazy(() => import("./popupFilled.js"))
 
 const Event = (props) => {
@@ -16,7 +16,7 @@ const Event = (props) => {
     )
   }
   return (
-    <FormSheet getInvestmentData={getInvestments}
+    <NewPopup getInvestmentData={getInvestments}
     dropdownOptions={['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'COMMISH']}
     investmentID={props.match.params.id}
     linkedInvestment={props.match.params.linkedID}
