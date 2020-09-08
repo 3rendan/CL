@@ -181,7 +181,11 @@ const MaintenanceTable = (props) => {
       // calculate net commitment after each transaction
       if (props.hasCommitment) {
         manipulatedData = manipulatedData.sort(function(a, b) {
-          return myDateSort(a.date_due, b.date_due)
+          const dateSort = myDateSort(a.date_due, b.date_due);
+          if (dateSort === 0) {
+            return typeSort(a.type, b.type);
+          }
+          return dateSort;
         });
 
         let remaining_commitment = props.commitment;
