@@ -91,23 +91,6 @@ var senderWindow    = null;
 var senderWindowId  = null;
 var replyChannel    = null;
 
-ipcRenderer.on('popupMessage', (event, message) => {
-  replyChannel = 'replyEvent';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
-
-ipcRenderer.on('popupNAVMessage', (event, message) => {
-  replyChannel = 'replyNAVEvent';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
-
-ipcRenderer.on('popupTransferMessage', (event, message) => {
-  replyChannel = 'replyTransfer';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
 
 const RowCurrencyNet = (props) => {
   let currency = 'USD';

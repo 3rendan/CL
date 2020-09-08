@@ -33,44 +33,23 @@ fetchData();
 const ipcRenderer    = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
 
-var senderWindow    = null;
-var senderWindowId  = null;
-var replyChannel    = null;
-
-ipcRenderer.on('popupMessage', (event, message) => {
-  replyChannel = 'replyEvent';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
-
-ipcRenderer.on('popupNAVMessage', (event, message) => {
-  replyChannel = 'replyNAVEvent';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
-
-ipcRenderer.on('popupTransferMessage', (event, message) => {
-  replyChannel = 'replyTransfer';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
-
 
 const EditPopup = (props) => {
   // for all data
+  console.log(props.initial)
   const [InvestmentData, setInvestmentData] = useState(null);
   const [InvestmentName, setInvestmentName] = useState(null);
-  const getInvestmentData = props.getInvestmentData;
 
-  const isSelected = props.transactionType !== undefined;
+  const isSelected = true;
   const [hasSelected, setSelected] = useState(isSelected);
-  const [transactionType, setTransactionType] = useState(props.transactionType);
+  const [transactionType, setTransactionType] = useState(props.initial.transactionType);
   const [rows, setRows] = useState(null);
-  const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
+  const [dropdownOptions, setDropdownOptions] = useState(props.initial.dropdownOptions)
 
-  const investmentID = props.investmentID;
+  const investmentID = props.initial.investmentID;
+  console.log(props.data)
+  const [state, setState] = useState(props.data);
 
-  const [state, setState] = useState(props.initial);
 
   if (props.initial['Date Sent'] !== undefined) {
     state['Contra Date'] = props.initial['Date Sent'];
@@ -80,12 +59,8 @@ const EditPopup = (props) => {
 
 
   useEffect(()=> {
-    if (state.changer === 'Date Due') {
-      state['Contra Date'] = state['Date Due']
-    }
-
     async function fetchData() {
-      const result = await getInvestmentData();
+      const result = await getInvestments();
       if (!result) {
         throw 'Server Disconnected: Investment data null'
       }
@@ -99,6 +74,10 @@ const EditPopup = (props) => {
     fetchData().catch(e =>
       setError(e)
     )
+
+    if (state.changer === 'Date Due') {
+      state['Contra Date'] = state['Date Due']
+    }
 
     let mainColumns = null;
     switch (transactionType) {
@@ -123,7 +102,6 @@ const EditPopup = (props) => {
 
     const mainLengths = mainColumns.map(a => a.length );
     const maxSize = mainLengths.reduce((a, b) =>  Math.max(a, b));
-
 
     const newRows = mainColumns.map((column) => {
        if (column === 'Amount' || column.includes('$')) {
@@ -249,7 +227,7 @@ const EditPopup = (props) => {
     });
 
     updatedEvent['type'] = transactionType;
-    ipcRenderer.sendTo(senderWindowId, replyChannel, {})
+    browserWindow.getAllWindows().map(window => window.reload())
 
   };
 
@@ -274,7 +252,7 @@ const EditPopup = (props) => {
   }
   return (
      <div>
-       <MyDropdown dropdownOptions={dropdownOptions}
+       <MyDropdown dropdownOptions={props.initial.dropdownOptions}
                    setSelected={setSelected}
                    transactionType={transactionType}
                    setTransactionType={setTransactionType}/>

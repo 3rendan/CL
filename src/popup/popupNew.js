@@ -13,32 +13,7 @@ const remote = electron.remote;
 const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
 const negativeTransactions = ['OUTFLOW', 'EXPENSE']
 
-
-// const electron       = window.require('electron');
-const ipcRenderer    = electron.ipcRenderer;
 const browserWindow  = electron.remote.BrowserWindow;
-
-var senderWindow    = null;
-var senderWindowId  = null;
-var replyChannel    = null;
-
-ipcRenderer.on('popupMessage', (event, message) => {
-  replyChannel = 'replyEvent';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
-
-ipcRenderer.on('popupNAVMessage', (event, message) => {
-  replyChannel = 'replyNAVEvent';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
-
-ipcRenderer.on('popupTransferMessage', (event, message) => {
-  replyChannel = 'replyTransfer';
-  senderWindow = browserWindow.fromId(message.id);
-  senderWindowId = senderWindow.webContents.id;
-})
 
 
 const NewPopup = (props) => {
@@ -235,7 +210,7 @@ const NewPopup = (props) => {
 
 
     newEvent['type'] = transactionType;
-    ipcRenderer.sendTo(senderWindowId, replyChannel, {})
+    browserWindow.getAllWindows().map(window => window.reload())
   };
 
   const exit = (e) => {

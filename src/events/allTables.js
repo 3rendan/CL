@@ -228,18 +228,6 @@ const MaintenanceTable = (props) => {
     )
   }, [])
 
-  ipcRenderer.on('replyEvent', (event, message) => {
-    BrowserWindow.getAllWindows().map(window => window.reload())
-  });
-
-  ipcRenderer.on('replyNAVEvent', (event, message) => {
-    BrowserWindow.getAllWindows().map(window => window.reload())
-  });
-
-  ipcRenderer.on('replyTransfer', (event, message) => {
-    BrowserWindow.getAllWindows().map(window => window.reload())
-  });
-
   const headerSort = tableName === 'Transfers';
 
   let colNames = columnNames.map((colName) => {

@@ -266,7 +266,7 @@ const RowInvestment = (props) => {
           }
         })
       }
-      console.log(linkedInvestment)
+
       if (loadOptions === loadCommitOptions) {
         console.log('commit options')
         setDefaultOptions(investmentOptions.filter(i => i.value.has_commitment));
@@ -281,7 +281,6 @@ const RowInvestment = (props) => {
         }
       }
       if (loadOptions === loadNonCommitOptions) {
-        console.log('non commit options')
         const nonCommit = investmentOptions.filter(i => !i.value.has_commitment)
         setDefaultOptions(nonCommit);
         if (defaultInvestment.value === undefined) {
@@ -353,6 +352,8 @@ const RowInvestment = (props) => {
 };
 
 const RowBland = (props) => {
+  console.log('here!')
+  console.log(props)
   let placeholder = props.name;
 
 
@@ -373,7 +374,18 @@ const RowBland = (props) => {
       ...props.state,
       changer: props.name
     }
-    newState[props.name] = e.target.value
+    const copyE = {...e};
+    newState[props.name] = copyE.target.value;
+    console.log(copyE.target.value)
+    if (props.name === 'Contra Date') {
+      console.log('HERE!!!')
+      console.log(newState)
+      newState['Contra Date'] = copyE.target.value;
+      console.log(newState)
+      newState['Date Sent'] = copyE.target.value;
+      console.log(newState)
+    }
+    console.log(newState)
     props.setState(newState)
   }
 
