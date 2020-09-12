@@ -17,12 +17,18 @@ const browserWindow  = electron.remote.BrowserWindow;
 
 
 const NewPopup = (props) => {
+  // initial data
+  const onlyOneOption = props.dropdownOptions.length === 1;
+  let initialTransactionType = null;
+  if (onlyOneOption) {
+    initialTransactionType = props.dropdownOptions[0];
+  }
   // for all data
   const [InvestmentData, setInvestmentData] = useState(null);
   const [InvestmentName, setInvestmentName] = useState(null);
 
-  const [hasSelected, setSelected] = useState(false);
-  const [transactionType, setTransactionType] = useState(null);
+  const [hasSelected, setSelected] = useState(onlyOneOption);
+  const [transactionType, setTransactionType] = useState(initialTransactionType);
   const [rows, setRows] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
