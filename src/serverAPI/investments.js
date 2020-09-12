@@ -84,29 +84,29 @@ Investment.prototype.toString = function() {
 }
 
 const updateInvestment = async (investment) => {
-    try {
-      const body = investment.body();
-      const response = await fetch(
-        `http://${databaseHost}:5000/investments/${investment.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
-      const jsonData = await response.json();
-      if (jsonData.includes('duplicate')) {
-        return 'duplicate key';
+  try {
+    const body = investment.body();
+    const response = await fetch(
+      `http://${databaseHost}:5000/investments/${investment.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
       }
-      if (jsonData.includes('foreign key')) {
-        return 'foreign key';
-      }
-      return true;
-    } catch (err) {
-      console.error(err.message);
-      return false;
+    );
+    const jsonData = await response.json();
+    if (jsonData.includes('duplicate')) {
+      return 'duplicate key';
     }
-  };
+    if (jsonData.includes('foreign key')) {
+      return 'foreign key';
+    }
+    return true;
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
 const insertInvestment = async (investment) => {
   try {
