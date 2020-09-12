@@ -17,9 +17,12 @@ class SingleEntry {
       this.id = data.id;
       this.amount = data.Amount;
       this.date = data.Date;
-      console.log(data.Investment)
-      console.log(data.Investment.value)
-      this.investment = data.Investment.value.id;
+      if (data.Investment.value === undefined) {
+        this.investment = data.Investment;
+      }
+      else {
+        this.investment = data.Investment.value.id;
+      }      
       this.notes = data.Notes;
       this.type = data.Type;
     }
