@@ -2,8 +2,8 @@ import React, { lazy } from 'react';
 import ReactDOM from 'react-dom';
 
 import {getInvestments} from '../serverAPI/investments.js'
-const NewPoppup = lazy(() => import('./popup'));
-const EditPopup = lazy(() => import("./popupFilled.js"))
+const NewPoppup = lazy(() => import('./popupNew'));
+const EditPopup = lazy(() => import("./popupEdit.js"))
 
 const NAVEvent = (props) => {
   console.log(props)
