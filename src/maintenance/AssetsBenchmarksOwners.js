@@ -128,49 +128,49 @@ const MaintenanceTable = (props) => {
   return (
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
-          <br />
-          <h1 style = {{ margin: 0, marginLeft: '40%', display: "inline-block"}}> {tableName} </h1>
-          <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-            <button type="button" onClick={() =>
-              {
-                let insertFunc = null;
-                let data = null;
-                if (tableName === 'Owners') {
-                  insertFunc = insertOwner;
-                  data = new Owner(null);
-                }
-                else if (tableName === 'Benchmarks') {
-                  data = new Benchmark(null);
-                  insertFunc = insertBenchmark;
-                }
-                else if (tableName === 'Asset Classes') {
-                  data = new AssetClass(null);
-                  insertFunc = insertAssetClass;
-                }
-                else if (tableName === 'Accounts') {
-                  insertFunc = insertAccount;
-                  data = new Account(null);
-                }
-                insertFunc(data).then((response) => {
-                  if (response === 'duplicate key') {
-                    let options  = {
-                     buttons: ["Ok"],
-                     message: 'Failed to insert! duplicate long_name; maybe an entry with a blank long name'
-                    }
-                    const confirmed = dialog.showMessageBoxSync(options)
-                    // alert('Failed to insert! duplicate long_name; maybe an entry with a blank long name')
-                    return;
+        <br />
+        <h1 style = {{ margin: 0, marginLeft: '40%', display: "inline-block"}}> {tableName} </h1>
+        <div style ={{float: "right", width: "130px", display: "inline-block"}}>
+          <button type="button" onClick={() =>
+            {
+              let insertFunc = null;
+              let data = null;
+              if (tableName === 'Owners') {
+                insertFunc = insertOwner;
+                data = new Owner(null);
+              }
+              else if (tableName === 'Benchmarks') {
+                data = new Benchmark(null);
+                insertFunc = insertBenchmark;
+              }
+              else if (tableName === 'Asset Classes') {
+                data = new AssetClass(null);
+                insertFunc = insertAssetClass;
+              }
+              else if (tableName === 'Accounts') {
+                insertFunc = insertAccount;
+                data = new Account(null);
+              }
+              insertFunc(data).then((response) => {
+                if (response === 'duplicate key') {
+                  let options  = {
+                   buttons: ["Ok"],
+                   message: 'Failed to insert! duplicate long_name; maybe an entry with a blank long name'
                   }
-                  ref.current.table.addData(response)
-                })
-              }
-              }
-             id="myButton"
-            className="btn btn-success btn-lg">Add Row</button>
-          </div>
-          {copyButton}
-          <br />
-          <br />
+                  const confirmed = dialog.showMessageBoxSync(options)
+                  // alert('Failed to insert! duplicate long_name; maybe an entry with a blank long name')
+                  return;
+                }
+                ref.current.table.addData(response)
+              })
+            }
+           }
+           id="myButton"
+          className="btn btn-success btn-lg">Add Row</button>
+        </div>
+        {copyButton}
+        <br />
+        <br />
       </div>
       <br />
       <React15Tabulator
