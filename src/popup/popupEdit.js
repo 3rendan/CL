@@ -36,7 +36,6 @@ const browserWindow  = electron.remote.BrowserWindow;
 
 const EditPopup = (props) => {
   // for all data
-  console.log(props.initial)
   const [InvestmentData, setInvestmentData] = useState(null);
   const [InvestmentName, setInvestmentName] = useState(null);
 
@@ -47,7 +46,6 @@ const EditPopup = (props) => {
   const [dropdownOptions, setDropdownOptions] = useState(props.initial.dropdownOptions)
 
   const investmentID = props.initial.investmentID;
-  console.log(props.data)
   const [state, setState] = useState(props.data);
 
 
@@ -75,7 +73,7 @@ const EditPopup = (props) => {
       setError(e)
     )
 
-    if (state.changer === 'Date Due') {
+    if (state !== undefined && state.changer === 'Date Due') {
       state['Contra Date'] = state['Date Due']
     }
 
