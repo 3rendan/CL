@@ -238,9 +238,6 @@ function columnNameToDefintion(colName, readOnly) {
     return column;
   }
   else if (!dropdownColumns.includes(colName)) {
-    if (colName === 'Seq No' && readOnly) {
-      return undefined;
-    }
     const column = {title: colName, field: fieldName, responsive: 0};
     if (!readOnly) {
       column['editor'] = true;
@@ -254,7 +251,7 @@ function columnNameToDefintion(colName, readOnly) {
       }
     }
     if (colName === 'Name') {
-      column['minWidth'] = "140px";
+      column['minWidth'] = "180px";
     }
     else if (colName === 'Seq No') {
       column['minWidth'] = "30px"
