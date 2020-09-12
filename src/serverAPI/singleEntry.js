@@ -22,7 +22,7 @@ class SingleEntry {
       }
       else {
         this.investment = data.Investment.value.id;
-      }      
+      }
       this.notes = data.Notes;
       this.type = data.Type;
     }
@@ -44,22 +44,22 @@ SingleEntry.prototype.toString = function() {
 }
 
 const updateSingleEntry = async (singleEntry) => {
-    try {
-      const body = singleEntry.body();
-      const response = await fetch(
-        `http://${databaseHost}:5000/singleEntrys/${singleEntry.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
-      return true;
-    } catch (err) {
-      console.error(err.message);
-      return false;
-    }
-  };
+  try {
+    const body = singleEntry.body();
+    const response = await fetch(
+      `http://${databaseHost}:5000/singleEntrys/${singleEntry.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+    return true;
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
 const insertSingleEntry = async (singleEntry) => {
   try {
