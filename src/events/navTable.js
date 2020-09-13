@@ -126,39 +126,41 @@ const NAVTable = (props) => {
 
     async function getIrrEvents(data) {
       const dates = []
-      const events = data.map((event) => {
+      let events = data.map((event) => {
         let date = event.date ? event.date : event.date_due
-        date = moment(date).format('YYYY-MM-DD')
+        date = moment(date).format('MM/DD/YYYY')
         dates.push(date)
         if (event.type === 'TRANSFER') {
           if (event.to_investment === investmentID) {
-            return `${date}:${event.amount}`;
+            return event.amount;
           }
-          return `${date}:${event.amount}`; // in from_investment
+          return event.amount; // in from_investment
         }
         if (event.type === 'COMMISH') {
           if (investmentID === event.investment) {
-            return `${date}:0`;
+            return 0;
           }
-          return `${date}:${-1 * event.amount}`; // in from_investment
+          return -1 * event.amount; // in from_investment
         }
         if (event.type === 'NAV') {
-          return '';
+          dates.pop();
+          return undefined;
         }
         let amount = event.amount !== undefined ? event.amount : event.net_amount;
         if (event.type === 'DISTRIBUTION' || event.type === 'CONTRIBUTION') {
           // amount is negative for type distribution
           if (event.from_investment === investmentID) {
-            return `${date}:${amount}`;
+            return amount;
           }
-          return `${date}:${amount}`;
+          return amount;
         }
-        return `${date}:${amount}`;
-      })
-      return [events.join(' '), dates];
+        return amount;
+      });
+      events = events.filter(i => i !== undefined)
+      return [events, dates];
     }
 
-    async function calcIrr(navDates, eventString, eventDates) {
+    async function calcIrr(navDates, eventAmounts, eventDates) {
       const dateOfNavDates = navDates.map(navDate => new Date(navDate.date))
       const navOfNavDates = navDates.map(navDate => navDate.nav)
       let minDate = new Date(Math.min(...dateOfNavDates))
@@ -171,11 +173,11 @@ const NAVTable = (props) => {
       let dates = [startDate, ...dateOfNavDates]
       dates = dates.map(date => {
         const tempDate = new Date(date)
-        return moment(tempDate).format('YYYY-MM-DD')
+        return moment(tempDate).format('MM/DD/YYYY')
       })
       const navs = [startNAV, ...navOfNavDates]
 
-      return await getIrr({dates: dates, navs: navs, eventString: eventString})
+      return await getIrr({dates: dates, navs: navs, eventAmounts: eventAmounts, eventDates: eventDates})
 
     }
 
@@ -253,11 +255,11 @@ const NAVTable = (props) => {
         prev_nav = nav;
       }
 
-      const [myEventString, eventDates] = await getIrrEvents(myData);
-      const irrs = await calcIrr(navDates, myEventString, eventDates);
+      const [eventAmounts, eventDates] = await getIrrEvents(myData);
+      const irrs = await calcIrr(navDates, eventAmounts, eventDates);
       irrs.map(irr => {
         const [date, irrRate] = irr.split(' ');
-        const [year, month, day] = date.split('-');
+        const [month, day, year] = date.split('/');
 
         const formattedDate = `${month}/${day}/${year}`;
         try {
