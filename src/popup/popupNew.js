@@ -10,8 +10,8 @@ const electron = window.require('electron');
 const dialog = electron.remote.dialog
 const remote = electron.remote;
 
-const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV']
-const negativeTransactions = ['OUTFLOW', 'EXPENSE']
+const positiveTransactions = ['INFLOW', 'CREDIT', 'INT', 'DIV', 'GAIN']
+const negativeTransactions = ['OUTFLOW', 'EXPENSE', 'FEE']
 
 const browserWindow  = electron.remote.BrowserWindow;
 

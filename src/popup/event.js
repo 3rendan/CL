@@ -64,7 +64,7 @@ const Event = (props) => {
 
   if (props.match.params.data !== undefined) {
     const initial = {
-      dropdownOptions: ['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'COMMISH'],
+      dropdownOptions: ['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'FEE', 'COMMISH'],
       investmentID: props.match.params.id,
       dataID: props.match.params.data,
       transactionType: props.match.params.type
@@ -79,7 +79,7 @@ const Event = (props) => {
   }
   return (
     <NewPopup getInvestmentData={getInvestments}
-    dropdownOptions={['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'COMMISH']}
+    dropdownOptions={['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'FEE', 'COMMISH']}
     investmentID={props.match.params.id}
     linkedInvestment={props.match.params.linkedID}
     dataID={props.match.params.data}
