@@ -85,7 +85,7 @@ const SummaryReport = (props) => {
             return a + b.amount;
           }
           else if (b.type === 'CREDIT') {
-            return a - b.amount;
+            return a + b.amount;
           }
           return a;
         }, 0)
