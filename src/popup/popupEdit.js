@@ -190,7 +190,7 @@ const EditPopup = (props) => {
     }
 
     if (positiveTransactions.includes(transactionType)) {
-      if (state['Net Amount'] < 0) {
+      if (state['Net Amount'] < 0 || state['Amount'] < 0) {
         let options  = {
          buttons: ["Ok"],
          message: 'Amount must be positive!'
@@ -200,7 +200,7 @@ const EditPopup = (props) => {
       }
     }
     if (negativeTransactions.includes(transactionType)) {
-      if (state['Net Amount'] > 0) {
+      if (state['Net Amount'] > 0 || state['Amount'] > 0) {
         let options  = {
          buttons: ["Ok"],
          message: 'Amount must be negative!'

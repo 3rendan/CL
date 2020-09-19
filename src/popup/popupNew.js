@@ -33,6 +33,7 @@ const NewPopup = (props) => {
   const [dropdownOptions, setDropdownOptions] = useState(props.dropdownOptions)
 
   const investmentID = props.investmentID;
+  const contraInvestment = props.linkedInvestment;
 
   const [state, setState] = useState({'Net Amount': 0, 'From Investment ID': investmentID});
   const [error, setError] = useState(null);
@@ -43,8 +44,8 @@ const NewPopup = (props) => {
       state['Contra Date'] = state['Date Due']
     }
 
-    if (transactionType !== 'CONTRIBUTION' ||
-        transactionType !== 'DISTRIBUTION' ||
+    if (transactionType !== 'CONTRIBUTION' &&
+        transactionType !== 'DISTRIBUTION' &&
         transactionType !== 'TRANSFER') {
 
       state['Investment'] = investmentID;
@@ -52,7 +53,6 @@ const NewPopup = (props) => {
 
     async function fetchData() {
       const result = await getInvestments();
-      let linkedInvestment = undefined;
       if (!result) {
         throw 'Server Disconnected: Investment data null'
       }
@@ -88,7 +88,7 @@ const NewPopup = (props) => {
         mainColumns = ['Date', 'Amount', 'Notes', 'Investment'];
     }
 
-    const mainLengths = mainColumns.map(a => a.length );
+    const mainLengths = mainColumns.map(a => a.length);
     const maxSize = mainLengths.reduce((a, b) =>  Math.max(a, b));
 
 
@@ -181,7 +181,7 @@ const NewPopup = (props) => {
     }
 
     if(positiveTransactions.includes(transactionType)) {
-      if (state['Net Amount'] < 0) {
+      if (state['Net Amount'] < 0 || state['Amount'] < 0) {
         let options  = {
          buttons: ["Ok"],
          message: 'Amount must be positive!'
@@ -191,7 +191,7 @@ const NewPopup = (props) => {
       }
     }
     if(negativeTransactions.includes(transactionType)) {
-      if (state['Net Amount'] > 0) {
+      if (state['Net Amount'] > 0 || state['Amount'] > 0) {
         let options  = {
          buttons: ["Ok"],
          message: 'Amount must be negative!'

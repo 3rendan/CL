@@ -352,8 +352,6 @@ const RowInvestment = (props) => {
 };
 
 const RowBland = (props) => {
-  console.log('here!')
-  console.log(props)
   let placeholder = props.name;
 
 
