@@ -267,7 +267,8 @@ function calcNetContribute(group, investmentID, nav) {
       return accumulator - current.amount; // in from_investment
     }
     if (current.type === 'NAV' || current.type === 'COMMISH'
-        || current.type === 'GAIN' || current.type === 'DIV') {
+        || current.type === 'GAIN' || current.type === 'FEE'
+        || current.type === 'DIV') {
       return accumulator;
     }
     let amount = current.amount !== undefined ? current.amount : current.net_amount;
