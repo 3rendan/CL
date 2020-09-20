@@ -63,8 +63,15 @@ const Event = (props) => {
   }, [])
 
   if (props.match.params.data !== undefined) {
+    let dropdownOptions = [props.match.params.type];
+    if (props.match.params.type !== 'DISTRIBUTION' &&
+        props.match.params.type !== 'CONTRIBUTION' &&
+        props.match.params.type !== 'COMMISH') {
+
+      dropdownOptions = ['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'FEE'];
+    }
     const initial = {
-      dropdownOptions: ['INFLOW', 'OUTFLOW', 'EXPENSE', 'CREDIT', 'DIV', 'GAIN', 'FEE', 'COMMISH'],
+      dropdownOptions: dropdownOptions,
       investmentID: props.match.params.id,
       dataID: props.match.params.data,
       transactionType: props.match.params.type

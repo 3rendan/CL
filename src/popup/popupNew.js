@@ -132,6 +132,15 @@ const NewPopup = (props) => {
   }, [transactionType, state]);
 
   const onClick = (e) => {
+    if (state['Investment'] === null) {
+      let options  = {
+       buttons: ["Ok"],
+       message: 'No investment was set!'
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      e.preventDefault();
+    }
+
     if (transactionType === 'DISTRIBUTION') {
       if (state['Net Amount'] > 0) {
         let options  = {

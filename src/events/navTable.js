@@ -7,6 +7,7 @@ import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getInvestment} from '../serverAPI/investments.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 
+import { addDays } from 'date-fns';
 import {getIrr} from '../serverAPI/irr'
 
 import {calcNAV, calcPrelimNAV, calcNetContribute, myDateSort} from '../SpecialColumn'
@@ -71,6 +72,12 @@ function calcRemainingCommitment(data, remaining_commitment) {
     }
   });
   return remaining_commitment;
+}
+
+function setToMidnight(date) {
+  const midnight = new Date(date);
+  midnight.setHours(24, 0, 0, 0);
+  return midnight;
 }
 
 const NAVTable = (props) => {
@@ -186,11 +193,15 @@ const NAVTable = (props) => {
 
       const investment = await getInvestment(investmentID);
       if (investment.invest_type === 'commit') {
-        setNAVColumns(['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR', 'Remaining Commitment'])
-        setMoneyColumns(['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR', 'Remaining Commitment'])
+        setNAVColumns(['Date', 'NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR', 'Remaining Commitment', 'Float'])
+        setMoneyColumns(['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR', 'Remaining Commitment', 'Float'])
       }
 
       const groups = groupByMonth(myData);
+      const contribDistribWithMismatchedDates = myData.filter(i =>
+        (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
+        setToMidnight(i.date_due) != setToMidnight(i.date_sent)
+      );
 
       let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
 
@@ -207,6 +218,17 @@ const NAVTable = (props) => {
       let remaining_commitment = investment.invest_type === 'commit' ? investment.commitment : undefined;
       let last_pl = null;
       while (minDate <= finalMonth) {
+        let float = contribDistribWithMismatchedDates.filter(i => {
+          return (setToMidnight(i.date_sent) <= minDate && minDate < setToMidnight(i.date_due))
+        }).reduce((a,b) => {
+          return a + b.net_amount;
+        }, 0);
+        float -= contribDistribWithMismatchedDates.filter(i => {
+          return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.date_sent))
+        }).reduce((a,b) => {
+          return a + b.net_amount;
+        }, 0);
+
         nav = calcNAV(groups[minDate], investmentID, prev_nav);
         prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
@@ -232,7 +254,7 @@ const NAVTable = (props) => {
                           nav_prelim: prelim_nav, unexplained_gain: nav - prelim_nav,
                           'p/l_(ltd)': nav - netContribute,
                           'p/l_(mtd)': mtd, remaining_commitment: remaining_commitment,
-                          bold: hasEndOfMonthNAV})
+                          bold: hasEndOfMonthNAV, float: float})
         }
         else {
           const mtd = (nav - netContribute - last_pl)
@@ -243,7 +265,7 @@ const NAVTable = (props) => {
                           'p/l_(mtd)': mtd,
                           'p/l(%)_(mtd)': mtd_perc,
                           remaining_commitment: remaining_commitment,
-                          bold: hasEndOfMonthNAV})
+                          bold: hasEndOfMonthNAV, float: float})
         }
         last_pl = (nav - netContribute).valueOf()
 
@@ -269,6 +291,8 @@ const NAVTable = (props) => {
         catch (e) {
         }
       })
+
+      console.log(navDates)
       setNAVEventData(navDates)
     }
 
@@ -278,8 +302,6 @@ const NAVTable = (props) => {
 
 
   }, []);
-
-  console.log(NAVEventData)
 
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
