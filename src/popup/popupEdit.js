@@ -1,7 +1,7 @@
 import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from "react-dom";
 
-import {RowCurrencyNet, RowCurrency, RowInvestment,
+import {RowCurrencyNet, RowCurrency, RowEditInvestment,
   RowBland, MyDropdown} from './popupElements'
 
 import {createEvent, updateEvent} from '../serverAPI/eventsAndTransfers'
@@ -47,7 +47,6 @@ const EditPopup = (props) => {
 
   const investmentID = props.initial.investmentID;
   const [state, setState] = useState(props.data);
-
 
   if (props.initial['Date Sent'] !== undefined) {
     state['Contra Date'] = props.initial['Date Sent'];
@@ -118,7 +117,7 @@ const EditPopup = (props) => {
            <br />
            <br />
            <br />
-            <RowInvestment name={column} key={column + transactionType} size={maxSize}
+            <RowEditInvestment name={column} key={column + transactionType} size={maxSize}
                                   state={state} setState={setState}
                                   investmentID={investmentID}
                                   transactionType={transactionType}/>
@@ -126,7 +125,7 @@ const EditPopup = (props) => {
                                 )
        }
        else if (column.includes('Investment')) {
-         return <RowInvestment name={column} key={column + transactionType} size={maxSize}
+         return <RowEditInvestment name={column} key={column + transactionType} size={maxSize}
                                   state={state} setState={setState}
                                   investmentID={investmentID}
                                   transactionType={transactionType}/>
@@ -141,6 +140,15 @@ const EditPopup = (props) => {
   }, [transactionType, state]);
 
   const onClick = (e) => {
+    if (state['Investment'] === null) {
+      let options  = {
+       buttons: ["Ok"],
+       message: 'No investment was set!'
+      }
+      const confirmed = dialog.showMessageBoxSync(options)
+      e.preventDefault();
+    }
+
     if (transactionType === 'DISTRIBUTION') {
       if (state['Net Amount'] > 0) {
         let options  = {

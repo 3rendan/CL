@@ -351,6 +351,77 @@ const RowInvestment = (props) => {
   );
 };
 
+const RowEditInvestment = (props) => {
+  const [defaultOptions, setDefaultOptions] = useState(investmentOptions);
+  const defaultInvestment = props.state[props.name];
+
+  const [value, setValue] = useState(null);
+  let defaultInvestmentIdToValue = null;
+
+  let loadOptions = loadAllOptions;
+
+  const onChange = (inputText) => {
+    props.setState(state => {
+      const newState = {...state}
+      newState[props.name] = inputText
+      return newState;
+    });
+
+    setValue(inputText)
+  }
+
+  const size = props.size * 10 + "px";
+
+  useEffect(() => {
+    async function fetchData() {
+      let thisInvestmentLinkedInvestmentId = undefined;
+      InvestmentData = await getInvestments();
+      investmentOptions = InvestmentData.map((data) => {
+        const label = data.long_name;
+        if (data.id === defaultInvestment) {
+          defaultInvestmentIdToValue = {label: label, value: data};
+          setValue({label: label, value: data})
+          props.setState(state => {
+            const newState = {...state}
+            newState[props.name] = {label: label, value: data}
+            return newState;
+          });
+          // props.setState((state) => (props.name: {label: label, value: data} ))
+        }
+        return {label: label, value: data};
+      })
+
+      setDefaultOptions(investmentOptions);
+    }
+    fetchData();
+  }, [])
+
+  let displayName = props.name;
+  if (props.transactionType === 'CONTRIBUTION' || props.transactionType === 'DISTRIBUTION') {
+    if (props.name === 'Investment') {
+      displayName = 'Contra Investment'
+    }
+  }
+
+  return (
+    <div className="input-group" style={{width: "90%", paddingBottom: '10px', paddingLeft: '5px'}}>
+        <span style={{width: size}} className="input-group-addon" id={props.name}>{displayName}</span>
+        <AsyncSelect
+          cacheOptions
+          styles={{
+            // Fixes the overlapping problem of the component
+            menu: provided => ({ ...provided, zIndex: 9999 })
+          }}
+          loadOptions={loadOptions}
+          defaultOptions={defaultOptions}
+          value={value}
+          onChange={onChange.bind(this)}
+          required={true}
+        />
+    </div>
+  );
+};
+
 const RowBland = (props) => {
   let placeholder = props.name;
 
@@ -500,6 +571,7 @@ export {
   RowCurrencyNet,
   RowCurrency,
   RowInvestment,
+  RowEditInvestment,
   RowBland,
   MyDropdown
 }
