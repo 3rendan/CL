@@ -89,6 +89,22 @@ function setToMidnight(date) {
   return midnight;
 }
 
+function calcFloat(data, minDate) {
+  let float = data.filter(i => {
+    return (setToMidnight(i.date_sent) <= minDate && minDate < setToMidnight(i.date_due))
+  }).reduce((a,b) => {
+    return a + b.net_amount;
+  }, 0);
+
+  float -= data.filter(i => {
+    return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.date_sent))
+  }).reduce((a,b) => {
+    return a + b.net_amount;
+  }, 0);
+
+  return float;
+}
+
 const NAVTable = (props) => {
   const [NAVEventData, setNAVEventData] = useState(null);
   const [error, setError] = useState(null);
@@ -227,16 +243,7 @@ const NAVTable = (props) => {
       let remaining_commitment = investment.invest_type === 'commit' ? investment.commitment : undefined;
       let last_pl = null;
       while (minDate <= finalMonth) {
-        let float = contribDistribWithMismatchedDates.filter(i => {
-          return (setToMidnight(i.date_sent) <= minDate && minDate < setToMidnight(i.date_due))
-        }).reduce((a,b) => {
-          return a + b.net_amount;
-        }, 0);
-        float -= contribDistribWithMismatchedDates.filter(i => {
-          return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.date_sent))
-        }).reduce((a,b) => {
-          return a + b.net_amount;
-        }, 0);
+        let float = calcFloat(contribDistribWithMismatchedDates, minDate);
 
         nav = calcNAV(groups[minDate], investmentID, prev_nav, investment.invest_type);
         prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav, investment.invest_type);
