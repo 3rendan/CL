@@ -254,7 +254,7 @@ const SummaryReport = (props) => {
       allDates.map((currDate, i) => {
         if (i !== 0) {
           const prevDate = allDates[i-1];
-          gainsByDate[currDate] = sumNAVs[currDate] - sumNAVs[prevDate] - inflowsByDate[currDate] + outflowsByDate[currDate] + netExpensesByDate[currDate];
+          gainsByDate[currDate] = sumNAVs[currDate] - sumNAVs[prevDate] - (inflowsByDate[currDate] + outflowsByDate[currDate] + netExpensesByDate[currDate]);
           gainPercentByDate[currDate] = (gainsByDate[currDate] / sumNAVs[prevDate] * 100)
           gainPercentDisplayByDate[currDate] = gainPercentByDate[currDate].toFixed(2) + '%'
         }
