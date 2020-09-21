@@ -82,7 +82,7 @@ const AccountBalanceReport = (props) => {
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
         const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= new Date(date));
-        const nav = calcNAV(dataBeforeDate, investment.id, 0);
+        const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
         console.log(investment.id)
         console.log(investment)
         console.log(accountIdToName)

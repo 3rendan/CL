@@ -84,7 +84,7 @@ const AssetAllocationReport = (props) => {
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
         const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= new Date(date));
-        const nav = calcNAV(dataBeforeDate, investment.id, 0);
+        const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
 
         const assetClass = assetClassIdToName[investment.asset_class];
         const subAssetClass = assetClassIdToName[investment.sub_asset_class];

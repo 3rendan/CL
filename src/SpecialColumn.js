@@ -185,12 +185,66 @@ function myDateSort(a, b) {
   }
 }
 
+// date sorting for cash funds
+function myDateSortCash(a, b) {
+  let aDate = a.date_sent ? a.date_sent : a.date;
+  let bDate = b.date_sent ? b.date_sent : b.date;
+
+
+  if (typeof(a) === 'string') {
+    aDate = new Date(a);
+  }
+  if (typeof(b) === 'string') {
+    bDate = new Date(b);
+  }
+
+  let firstDay = null;
+  if (aDate === undefined) {
+    firstDay = "";
+  }
+  firstDay = moment.utc(aDate).format('L').toString()
+  if (firstDay === 'Invalid date') {
+    firstDay = "";
+  }
+
+  let secondDay = null;
+  if (bDate === undefined) {
+    secondDay = "";
+  }
+  secondDay = moment.utc(bDate).format('L').toString()
+  if (secondDay === 'Invalid date') {
+    secondDay = "";
+  }
+
+  if (aDate < bDate) {
+    return -1;
+  }
+  else if (aDate > bDate) {
+    return 1;
+  }
+  else {
+    if (a.type === 'NAV') {
+      return 1;
+    }
+    else if (b.type === 'NAV') {
+      return -1;
+    }
+    return 0;
+  }
+}
+
 // NAV calculation
-function calcNAV(group, investmentID, nav) {
+function calcNAV(group, investmentID, nav, invest_type) {
   if (group === undefined) {
     return nav;
   }
-  group.sort(myDateSort);
+
+  if (invest_type === 'cash') {
+    group.sort(myDateSortCash);
+  }
+  else {
+    group.sort(myDateSort);
+  }
   return group.reduce((accumulator, current) => {
     if (current.type === 'TRANSFER') {
       if (current.to_investment === investmentID) {
@@ -221,11 +275,17 @@ function calcNAV(group, investmentID, nav) {
 
 // NAV calculation
 // difference is in what to do with NAV!!
-function calcPrelimNAV(group, investmentID, nav) {
+function calcPrelimNAV(group, investmentID, nav, invest_type) {
   if (group === undefined) {
     return nav;
   }
-  group.sort(myDateSort);
+  if (invest_type === 'cash') {
+    group.sort(myDateSortCash);
+  }
+  else {
+    group.sort(myDateSort);
+  }
+
   return group.reduce((accumulator, current) => {
     if (current.type === 'TRANSFER') {
       if (current.to_investment === investmentID) {

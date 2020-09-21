@@ -16,13 +16,22 @@ import MaintenanceTable from './allTables'
 
 import moment from 'moment';
 
-function groupByMonth(array) {
+function groupByMonth(array, invest_type) {
   const result = array.reduce(function (r, a) {
     let element = a.date;
-    if (element === undefined) {
-      element = a.date_due
+    if (invest_type === 'cash') {
+      element = a.date_sent;
+      if (element === undefined) {
+        element = a.date
+      }
+      element = moment(element);
     }
-    element = moment(element);
+    else {
+      if (element === undefined) {
+        element = a.date_due
+      }
+      element = moment(element);
+    }
     const endMonth = new Date(element.year(), (element.month() + 1), 0);
     r[endMonth] = r[endMonth] || [];
     r[endMonth].push(a);
@@ -197,7 +206,7 @@ const NAVTable = (props) => {
         setMoneyColumns(['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR', 'Remaining Commitment', 'Float'])
       }
 
-      const groups = groupByMonth(myData);
+      const groups = groupByMonth(myData, investment.invest_type);
       const contribDistribWithMismatchedDates = myData.filter(i =>
         (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
         setToMidnight(i.date_due) != setToMidnight(i.date_sent)
@@ -229,8 +238,8 @@ const NAVTable = (props) => {
           return a + b.net_amount;
         }, 0);
 
-        nav = calcNAV(groups[minDate], investmentID, prev_nav);
-        prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav);
+        nav = calcNAV(groups[minDate], investmentID, prev_nav, investment.invest_type);
+        prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav, investment.invest_type);
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         remaining_commitment = calcRemainingCommitment(groups[minDate], remaining_commitment);
         const formatDate = moment(minDate).format('L')

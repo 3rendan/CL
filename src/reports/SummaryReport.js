@@ -184,7 +184,7 @@ const SummaryReport = (props) => {
           const investmentRow = {investment: investment.name}
 
           while (minDate <= finalMonth) {
-            nav = calcNAV(groups[minDate], investment.id, nav);
+            nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
             const formatDate = moment(minDate).format('L')
             const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
             investmentRow[fieldName] = nav;
