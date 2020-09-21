@@ -76,7 +76,7 @@ function calcRemainingCommitment(data, remaining_commitment) {
 
 function setToMidnight(date) {
   const midnight = new Date(date);
-  midnight.setHours(24, 0, 0, 0);
+  midnight.setHours(0, 0, 0, 0);
   return midnight;
 }
 
