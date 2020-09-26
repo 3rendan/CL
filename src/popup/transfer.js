@@ -14,6 +14,9 @@ const Transfer = (props) => {
   const [data, setData] = useState(null);
 
   async function fetchExistingData() {
+    if (props.match.params.dataID === undefined) {
+      return;
+    }
     let data = await getTransfersId(props.match.params.dataID)
     Object.keys(data).map(key => {
       const splitKey = key.replace(new RegExp('_', 'g'), ' ');
