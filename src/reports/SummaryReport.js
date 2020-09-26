@@ -13,6 +13,11 @@ import {calcNAV} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
 
+const datesAreOnSameDay = (first, second) =>
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate();
+
 function setToMidnight(date) {
   const midnight = new Date(date);
   midnight.setHours(0, 0, 0, 0);
@@ -22,10 +27,9 @@ function setToMidnight(date) {
 function calcFloat(data, minDate) {
   const contribDistribWithMismatchedDates = data.filter(i =>
     (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
-    setToMidnight(i.date_due) !== setToMidnight(i.date_sent)
+    !datesAreOnSameDay(setToMidnight(i.date_due), setToMidnight(i.date_sent))
   );
-  console.log(contribDistribWithMismatchedDates)
-  console.log(contribDistribWithMismatchedDates.map(i => { return {date_due: setToMidnight(i.date_due), date_sent: setToMidnight(i.date_sent)} }))
+
   let float = contribDistribWithMismatchedDates.filter(i => {
     return (setToMidnight(i.date_sent) <= minDate && minDate < setToMidnight(i.date_due))
   }).reduce((a,b) => {
@@ -136,8 +140,6 @@ const SummaryReport = (props) => {
     async function getTotalOutflow(groups) {
       const outflow = {}
       Object.keys(groups).map(month => {
-        // console.log(month)
-        // console.log(groups[month])
         outflow[month] = groups[month].reduce(function (a,b) {
           if (b.type === 'OUTFLOW') {
             return a + b.amount;
@@ -145,18 +147,14 @@ const SummaryReport = (props) => {
           return a;
         }, 0)
       })
-      // console.log(outflow)
       return outflow;
     }
 
     async function getAllFloat(groups) {
       const float = {}
       Object.keys(groups).map(month => {
-        // console.log(month)
-        // console.log(groups[month])
         float[month] = calcFloat(groups[month], new Date(month));
       })
-      // console.log(outflow)
       return float;
     }
 
@@ -172,7 +170,7 @@ const SummaryReport = (props) => {
       const outflowsByDate = {investment: 'Total Outflows'}
       const floatByDate = {investment: 'Float'};
 
-      const investmentData = await Promise.all(
+      const investmentsToData = await Promise.all(
         investments.map(async (investment) => {
           const data     = await fetchData(investment.id);
           const navData  = await getNAVEvents(investment.id);
@@ -183,14 +181,35 @@ const SummaryReport = (props) => {
           let outflows    = await getTotalOutflow(groups);
           let floats      = {};
           if (investment.invest_type === 'commit') {
-              console.log('getting floats for ' + investment.name)
               floats      = await getAllFloat(groups);
-              console.log(floats);
           }
+          return {
+            investment: investment,
+            data: data,
+            navData: navData,
+            groups: groups,
+            netExpenses: netExpenses,
+            inflows: inflows,
+            outflows: outflows,
+            floats: floats
+          };
+        })
+      );
+
+
+      const investmentData = investmentsToData.map((allData) => {
+          const investment = allData.investment;
+          const data = allData.data;
+          const navData = allData.navData;
+          const groups = allData.groups;
+          const netExpenses = allData.netExpenses;
+          const inflows = allData.inflows;
+          const outflows = allData.outflows;
+          const floats = allData.floats;
 
           Object.keys(netExpenses).map(date => {
             const dateFormat = moment(new Date(date)).format('L')
-            if (date in netExpensesByDate) {
+            if (dateFormat in netExpensesByDate) {
               netExpensesByDate[dateFormat] += netExpenses[date] === undefined ? 0 : netExpenses[date]
             }
             else {
@@ -217,8 +236,8 @@ const SummaryReport = (props) => {
               floatByDate[dateFormat] = floats[date] === undefined ? 0 : floats[date]
             }
           })
-          console.log(investment.name)
-          console.log({...floatByDate})
+          // console.log(investment.name)
+          // console.log({...floatByDate})
           Object.keys(outflows).map(date => {
             const dateFormat = moment(new Date(date)).format('L')
             if (dateFormat in outflowsByDate) {
@@ -256,13 +275,14 @@ const SummaryReport = (props) => {
             minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
           }
           return investmentRow;
-        })
-      )
+        });
+
 
       // sumNAVs
       const sumNAVs = {investment: 'Total NAV'}
       allDates.map(date => {
         if (!(date in netExpensesByDate)) {
+          // console.log(date);
           netExpensesByDate[date] = 0;
         }
         if (!(date in inflowsByDate)) {
@@ -339,6 +359,7 @@ const SummaryReport = (props) => {
         }
       })
 
+
       investmentData.push(gainsByDate)
       investmentData.push(gainPercentDisplayByDate)
 
@@ -351,7 +372,6 @@ const SummaryReport = (props) => {
       investmentData.push(inflowsByDate)
       investmentData.push(outflowsByDate)
       setMoneyColumns(allDates);
-      // console.log(allDates)
       setColumns(['Investment', ...allDates]);
       setData(investmentData)
     }
