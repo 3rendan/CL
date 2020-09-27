@@ -300,6 +300,12 @@ const SummaryReport = (props) => {
             sumNAVs[date] = investment[date] === undefined ? 0 : investment[date]
           }
         })
+        if (date in sumNAVs) {
+          sumNAVs[date] += floatByDate[date] === undefined ? 0 : floatByDate[date]
+        }
+        else {
+          sumNAVs[date] = floatByDate[date] === undefined ? 0 : floatByDate[date]
+        }
       })
 
       investmentData.push({investment: ' '})
