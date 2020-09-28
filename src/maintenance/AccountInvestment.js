@@ -256,7 +256,7 @@ function columnNameToDefintion(colName, readOnly) {
     else if (colName === 'Seq No') {
       column['minWidth'] = "30px"
       if (readOnly) {
-        column['title'] = 'Num'
+        column['title'] = '#';
       }
     }
     return column;
