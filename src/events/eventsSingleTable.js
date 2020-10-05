@@ -56,8 +56,11 @@ const EventTable = (props) => {
 
       distributions = distributions.map((dist) => {
         dist['type'] = 'DISTRIBUTION'
-        if (dist.investment === investmentID) {
-          dist.investment = dist.from_investment;
+        dist['date_sent'] = dist['contra_date'];
+        dist['to_investment'] = dist.contra_investment;
+        dist['from_investment'] = dist.fund_investment;
+        if (dist.contra_investment === investmentID) {
+          dist.contra_investment = dist.fund_investment;
           dist.net_amount = -1 * dist.net_amount;
         }
         return dist;
@@ -72,8 +75,8 @@ const EventTable = (props) => {
         contr['date_sent'] = contr['contra_date'];
         contr['to_investment'] = contr.contra_investment;
         contr['from_investment'] = contr.fund_investment;
-        if (contr.investment === investmentID) {
-          contr.investment = contr.from_investment
+        if (contr.contra_investment === investmentID) {
+          contr.contra_investment = contr.fund_investment
           contr.net_amount = -1 * contr.net_amount;
         }
         return contr;

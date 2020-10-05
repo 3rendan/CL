@@ -77,7 +77,8 @@ const NewPopup = (props) => {
         'Notes', 'Contra Investment'];
         break;
       case 'DISTRIBUTION':
-        mainColumns = ['Date Due', 'Contra Date', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Notes', 'Investment'];
+        mainColumns = ['Date Due', 'Contra Date', 'Net Amount', 'Main $',
+        'Withhold $',	'Recallable $', 'Notes', 'Contra Investment'];
         break;
       case 'TRANSFER':
         mainColumns = ['Date', 'From Investment', 'To Investment', 'Amount', 'Notes'];

@@ -128,7 +128,10 @@ const NAVTable = (props) => {
       let distribution = await getDistributionsInvestment(investmentID);
       distribution = distribution ? distribution : [];
       distribution = distribution.map((dist) => {
-        dist['type'] = 'DISTRIBUTION'
+        dist['type'] = 'DISTRIBUTION';
+        dist['date_sent'] = dist['contra_date'];
+        dist['to_investment'] = dist.contra_investment;
+        dist['from_investment'] = dist.fund_investment;
         return dist;
       })
 

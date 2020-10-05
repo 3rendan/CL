@@ -29,28 +29,28 @@ class Distribution {
       this.net_amount = parseFloat(this.recallable) + parseFloat(this.main) +
                         parseFloat(this.withhold);
 
-      if (data['Investment']) {
+      if (data['Fund Investment']) {
         try {
-          this.investment = data['Investment'].value.id
+          this.fund_investment = data['Fund Investment'].value.id
         }
         catch (e) {
-          this.investment = data['Investment']
+          this.fund_investment = data['Fund Investment']
         }
       }
       else {
-        this.investment = data['Investment ID']
+        this.fund_investment = data['Investment ID']
       }
 
-      if (data['From Investment']) {
+      if (data['Contra Investment']) {
         try {
-          this.from_investment = data['From Investment'].value.id
+          this.contra_investment = data['Contra Investment'].value.id
         }
         catch (e) {
-          this.from_investment = data['From Investment']
+          this.contra_investment = data['Contra Investment']
         }
       }
       else {
-        this.from_investment = data['From Investment ID']
+        this.contra_investment = data['From Investment ID']
       }
 
       this.notes = data.Notes;
@@ -60,13 +60,13 @@ class Distribution {
   body() {
     return {
       date_due: this.date_due,
-      date_sent: this.date_sent,
+      contra_date: this.date_sent,
       net_amount: this.net_amount,
       withhold: this.withhold,
       recallable: this.recallable,
       main: this.main,
-      investment: this.investment,
-      from_investment: this.from_investment,
+      contra_investment: this.contra_investment,
+      fund_investment: this.fund_investment,
       notes: this.notes
     };
   }
