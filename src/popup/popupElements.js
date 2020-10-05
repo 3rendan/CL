@@ -207,6 +207,8 @@ const RowCurrency = (props) => {
 const RowInvestment = (props) => {
   const [defaultOptions, setDefaultOptions] = useState(investmentOptions);
   const defaultInvestment = props.state[props.name] ? props.state[props.name] : props.investmentID;
+  console.log(props.state);
+  console.log(props.name);
 
   const [value, setValue] = useState(null);
   let defaultInvestmentIdToValue = null;
@@ -217,7 +219,7 @@ const RowInvestment = (props) => {
     if (props.name === 'From Investment') {
       loadOptions = loadCommitOptions;
     }
-    else if (props.name === 'Investment') {
+    else if (props.name === 'Investment' || props.name === 'Contra Investment') {
       loadOptions = loadNonCommitOptions;
     }
   }

@@ -35,7 +35,7 @@ const NewPopup = (props) => {
   const investmentID = props.investmentID;
   const contraInvestment = props.linkedInvestment;
 
-  const [state, setState] = useState({'Net Amount': 0, 'From Investment ID': investmentID});
+  const [state, setState] = useState({'Net Amount': 0, 'From Investment ID': investmentID, 'Fund Investment': investmentID});
   const [error, setError] = useState(null);
 
 
@@ -49,6 +49,7 @@ const NewPopup = (props) => {
         transactionType !== 'TRANSFER') {
 
       state['Investment'] = investmentID;
+      // state['Contra Investment'] = investmentID;
     }
 
     async function fetchData() {
@@ -73,7 +74,7 @@ const NewPopup = (props) => {
         mainColumns = ['Date Due', 'Contra Date', 'Net Amount',
         'Main $', 'Fees $', 'Tax $',
         'Outside Main $', 'Outside Fees $', 'Outside Tax $',
-        'Notes', 'Investment'];
+        'Notes', 'Contra Investment'];
         break;
       case 'DISTRIBUTION':
         mainColumns = ['Date Due', 'Contra Date', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Notes', 'Investment'];

@@ -88,6 +88,9 @@ const SummaryReport = (props) => {
       contribution = contribution ? contribution : [];
       contribution = contribution.map((contr) => {
         contr['type'] = 'CONTRIBUTION'
+        contr['date_sent'] = contr['contra_date'];
+        contr['to_investment'] = contr.contra_investment;
+        contr['from_investment'] = contr.fund_investment;
         return contr;
       })
 

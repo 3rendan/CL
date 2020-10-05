@@ -69,9 +69,10 @@ const EventTable = (props) => {
       contributions = contributions.map((contr) => {
         contr['type'] = 'CONTRIBUTION'
         console.log(contr)
+        contr['date_sent'] = contr['contra_date'];
+        contr['to_investment'] = contr.contra_investment;
+        contr['from_investment'] = contr.fund_investment;
         if (contr.investment === investmentID) {
-          console.log('HERE FOR CONTRIBUTIONS')
-          console.log(contr)
           contr.investment = contr.from_investment
           contr.net_amount = -1 * contr.net_amount;
         }

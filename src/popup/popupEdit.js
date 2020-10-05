@@ -82,7 +82,7 @@ const EditPopup = (props) => {
         mainColumns = ['Date Due', 'Contra Date', 'Net Amount',
         'Main $', 'Fees $', 'Tax $',
         'Outside Main $', 'Outside Fees $', 'Outside Tax $',
-        'Notes', 'Investment'];
+        'Notes', 'Contra Investment'];
         break;
       case 'DISTRIBUTION':
         mainColumns = ['Date Due', 'Contra Date', 'Net Amount', 'Main $', 'Withhold $',	'Recallable $', 'Notes', 'Investment'];
