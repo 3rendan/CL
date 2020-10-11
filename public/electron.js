@@ -448,6 +448,24 @@ function loadSummaryReportView() {
 
 };
 
+function loadSummaryPLReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/summaryPL',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
+  // Load html into window
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summaryPL' : fileURL);
+
+};
+
 function loadAccountBalanceReportView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
@@ -592,6 +610,12 @@ const mainMenuTemplate = [
         label: 'Summary Report',
         click() {
           loadSummaryReportView();
+        }
+      },
+      {
+        label: 'Summary P/L Report',
+        click() {
+          loadSummaryPLReportView();
         }
       },
       {
