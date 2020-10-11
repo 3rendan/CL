@@ -27,17 +27,17 @@ function setToMidnight(date) {
 function calcFloat(data, minDate) {
   const contribDistribWithMismatchedDates = data.filter(i =>
     (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
-    !datesAreOnSameDay(setToMidnight(i.date_due), setToMidnight(i.date_sent))
+      !datesAreOnSameDay(setToMidnight(i.date_due), setToMidnight(i.contra_date))
   );
 
   let float = contribDistribWithMismatchedDates.filter(i => {
-    return (setToMidnight(i.date_sent) <= minDate && minDate < setToMidnight(i.date_due))
+    return (setToMidnight(i.contra_date) <= minDate && minDate < setToMidnight(i.date_due))
   }).reduce((a,b) => {
     return a + b.net_amount;
   }, 0);
 
   float -= contribDistribWithMismatchedDates.filter(i => {
-    return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.date_sent))
+    return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.contra_date))
   }).reduce((a,b) => {
     return a + b.net_amount;
   }, 0);
@@ -45,13 +45,22 @@ function calcFloat(data, minDate) {
   return float;
 }
 
-function groupByMonth(array) {
+function groupByMonth(array, invest_type) {
   const result = array.reduce(function (r, a) {
     let element = a.date;
-    if (element === undefined) {
-      element = a.date_due
+    if (invest_type === 'cash') {
+      element = a.date_sent;
+      if (element === undefined) {
+        element = a.date
+      }
+      element = moment(element);
     }
-    element = moment(element);
+    else {
+      if (element === undefined) {
+        element = a.date_due
+      }
+      element = moment(element);
+    }
     const endMonth = new Date(element.year(), (element.month() + 1), 0);
     r[endMonth] = r[endMonth] || [];
     r[endMonth].push(a);
@@ -156,11 +165,13 @@ const SummaryReport = (props) => {
       return outflow;
     }
 
-    async function getAllFloat(groups) {
+    async function getAllFloat(data, minDate, maxDate) {
       const float = {}
-      Object.keys(groups).map(month => {
-        float[month] = calcFloat(groups[month], new Date(month));
-      })
+      while (minDate <= maxDate) {
+        float[minDate] = calcFloat(data, minDate);
+        // get next end of month
+        minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
+      }
       return float;
     }
 
@@ -180,14 +191,20 @@ const SummaryReport = (props) => {
         investments.map(async (investment) => {
           const data     = await fetchData(investment.id);
           const navData  = await getNAVEvents(investment.id);
-          const groups = groupByMonth(data);
+          const groups = groupByMonth(data, investment.invest_type);
+          let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
+
+          const today = new Date();
+          let currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+          let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
+          finalMonth = new Date(Math.max(currEndMonth, finalMonth));
 
           let netExpenses = await getNetExpenses(groups);
           let inflows     = await getTotalInflow(groups);
           let outflows    = await getTotalOutflow(groups);
           let floats      = {};
           if (investment.invest_type === 'commit') {
-              floats      = await getAllFloat(groups);
+              floats      = await getAllFloat(data, minDate, finalMonth);
           }
           return {
             investment: investment,
@@ -202,6 +219,13 @@ const SummaryReport = (props) => {
         })
       );
 
+      let finalMonth = currEndMonth;
+      investmentsToData.map((allData) => {
+        const groups = allData.groups;
+
+        let tempFinalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
+        finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
+      });
 
       const investmentData = investmentsToData.map((allData) => {
           const investment = allData.investment;
@@ -256,14 +280,13 @@ const SummaryReport = (props) => {
 
           var minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
           const today = new Date();
-          let currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-          let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
-          finalMonth = new Date(Math.max(currEndMonth, finalMonth));
 
           let nav = 0;
           const investmentRow = {investment: investment.name}
 
           while (minDate <= finalMonth) {
+            console.log(allData.investment.name);
+            console.log(groups[minDate]);
             nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
             const formatDate = moment(minDate).format('L')
             const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -296,6 +319,9 @@ const SummaryReport = (props) => {
         }
         if (!(date in outflowsByDate)) {
           outflowsByDate[date] = 0;
+        }
+        if (!(date in floatByDate)) {
+          floatByDate[date] = 0;
         }
 
         investmentData.map(investment => {
