@@ -231,7 +231,7 @@ const NAVTable = (props) => {
       const groups = groupByMonth(myData, investment.invest_type);
       const contribDistribWithMismatchedDates = myData.filter(i =>
         (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
-        setToMidnight(i.date_due) != setToMidnight(i.date_sent)
+        setToMidnight(i.date_due) !== setToMidnight(i.date_sent)
       );
 
       let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));

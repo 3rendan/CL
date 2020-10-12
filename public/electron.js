@@ -448,11 +448,11 @@ function loadSummaryReportView() {
 
 };
 
-function loadSummaryPLReportView() {
+function loadSummaryPL_LTDReportView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
       '../build/index.html'),
-      hash: 'report/summaryPL',
+      hash: 'report/summaryPL/LTD',
       protocol: 'file',
       slashes: true,
   });
@@ -462,9 +462,27 @@ function loadSummaryPLReportView() {
   }
 
   // Load html into window
-  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summaryPL' : fileURL);
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summaryPL/LTD' : fileURL);
+};
+
+function loadSummaryPL_MTDReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/summaryPL/MTD',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
+  // Load html into window
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summaryPL/MTD' : fileURL);
 
 };
+
 
 function loadAccountBalanceReportView() {
   const fileURL = url.format({
@@ -613,9 +631,15 @@ const mainMenuTemplate = [
         }
       },
       {
-        label: 'Summary P/L Report',
+        label: 'Summary P/L Report (MTD)',
         click() {
-          loadSummaryPLReportView();
+          loadSummaryPL_MTDReportView();
+        }
+      },
+      {
+        label: 'Summary P/L Report (LTD)',
+        click() {
+          loadSummaryPL_LTDReportView();
         }
       },
       {

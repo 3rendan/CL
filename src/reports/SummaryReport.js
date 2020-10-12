@@ -192,12 +192,18 @@ const SummaryReport = (props) => {
           const data     = await fetchData(investment.id);
           const navData  = await getNAVEvents(investment.id);
           const groups = groupByMonth(data, investment.invest_type);
+          console.log('ALL DATES');
+          console.log(Object.keys(groups));
           let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
 
           const today = new Date();
           let currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
           let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
           finalMonth = new Date(Math.max(currEndMonth, finalMonth));
+          console.log('Min Date:');
+          console.log(minDate);
+          console.log('Final Date:');
+          console.log(finalMonth);
 
           let netExpenses = await getNetExpenses(groups);
           let inflows     = await getTotalInflow(groups);
@@ -225,7 +231,11 @@ const SummaryReport = (props) => {
 
         let tempFinalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
         finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
+        console.log('final Month Temp: ')
+        console.log(finalMonth)
       });
+      console.log('final Month End: ')
+      console.log(finalMonth)
 
       const investmentData = investmentsToData.map((allData) => {
           const investment = allData.investment;
@@ -266,8 +276,7 @@ const SummaryReport = (props) => {
               floatByDate[dateFormat] = floats[date] === undefined ? 0 : floats[date]
             }
           })
-          // console.log(investment.name)
-          // console.log({...floatByDate})
+
           Object.keys(outflows).map(date => {
             const dateFormat = moment(new Date(date)).format('L')
             if (dateFormat in outflowsByDate) {
@@ -278,17 +287,17 @@ const SummaryReport = (props) => {
             }
           })
 
-          var minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
-          const today = new Date();
+          let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
+          console.log(investment.name +'  minDate');
+          console.log(minDate)
 
           let nav = 0;
           const investmentRow = {investment: investment.name}
 
           while (minDate <= finalMonth) {
-            console.log(allData.investment.name);
-            console.log(groups[minDate]);
             nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
             const formatDate = moment(minDate).format('L')
+            console.log('date in loop: ' + formatDate);
             const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
             investmentRow[fieldName] = nav;
 
@@ -306,7 +315,8 @@ const SummaryReport = (props) => {
           return investmentRow;
         });
 
-
+      console.log('ALL DATES!!!');
+      console.log(allDates);
       // sumNAVs
       const sumNAVs = {investment: 'Total NAV'}
       allDates.map(date => {

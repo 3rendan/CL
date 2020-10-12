@@ -113,13 +113,7 @@ const SummaryReport = (props) => {
         investments.map(async (investment) => {
           const data     = await fetchData(investment.id);
           const navData  = await getNAVEvents(investment.id);
-          const groups = groupByMonth(data, investment.invest_type);
-          let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
-
-          const today = new Date();
-          let currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-          let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
-          finalMonth = new Date(Math.max(currEndMonth, finalMonth));
+          const groups   = groupByMonth(data, investment.invest_type);
           return {
             investment: investment,
             data: data,
@@ -129,7 +123,7 @@ const SummaryReport = (props) => {
         })
       );
 
-      let finalMonth = currEndMonth;
+      let finalMonth = new Date(currEndMonth);
       investmentsToData.map((allData) => {
         const groups = allData.groups;
 
@@ -138,35 +132,41 @@ const SummaryReport = (props) => {
       });
 
       const investmentData = investmentsToData.map((allData) => {
-          const investment = allData.investment;
-          const data = allData.data;
-          const navData = allData.navData;
-          const groups = allData.groups;
+        const investment = allData.investment;
+        const data = allData.data;
+        const navData = allData.navData;
+        const groups = allData.groups;
 
-          var minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
-          const today = new Date();
+        let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
+        const today = new Date();
 
-          let nav = 0;
-          const investmentRow = {investment: investment.name}
-          let netContribute = 0;
+        let nav = 0;
+        const investmentRow = {investment: investment.name}
+        let netContribute = 0;
+        let last_pl = null;
 
-          while (minDate <= finalMonth) {
-            nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
-            netContribute = calcNetContribute(groups[minDate], investment.id, netContribute);
-            const formatDate = moment(minDate).format('L')
-            const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
-            investmentRow[fieldName] = nav - netContribute;
+        while (minDate <= finalMonth) {
+          nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
+          netContribute = calcNetContribute(groups[minDate], investment.id, netContribute);
 
-
-            if (!allDates.includes(formatDate)) {
-              allDates.push(formatDate)
-            }
-            // get next end of month
-            minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
+          let mtd = nav - netContribute;
+          if (last_pl !== null) {
+            mtd = nav - netContribute - last_pl;
           }
-          return investmentRow;
-        });
+          last_pl = (nav - netContribute).valueOf();
 
+          const formatDate = moment(minDate).format('L')
+          const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
+          investmentRow[fieldName] = mtd;
+
+          if (!allDates.includes(formatDate)) {
+            allDates.push(formatDate)
+          }
+          // get next end of month
+          minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
+        }
+        return investmentRow;
+      });
 
       // sumPLs
       const sumPLs = {investment: 'Total P/L'}
@@ -212,7 +212,7 @@ const SummaryReport = (props) => {
   if (data === null) {
     return <div> </div>;
   }
-  return (<MaintenanceTable name={"Summary P/L Report"} data={data}
+  return (<MaintenanceTable name={"Summary P/L (MTD) Report"} data={data}
             columns={columns} frozenColumns={frozenColumns}
             moneyColumns={moneyColumns}
             scrollTo={columns[columns.length - 1]}/>);
