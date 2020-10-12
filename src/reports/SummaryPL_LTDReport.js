@@ -178,8 +178,6 @@ const SummaryReport = (props) => {
           }
         })
       })
-      console.log('ALL DATES');
-      console.log(allDates);
 
       investmentData.push({investment: ' '})
       investmentData.push(sumPLs)
@@ -196,6 +194,8 @@ const SummaryReport = (props) => {
         }
         return 0;
       })
+      console.log('ALL DATES');
+      console.log(allDates);
 
       setMoneyColumns(allDates);
       setColumns(['Investment', ...allDates]);

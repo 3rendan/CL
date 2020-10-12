@@ -315,8 +315,6 @@ const SummaryReport = (props) => {
           return investmentRow;
         });
 
-      console.log('ALL DATES!!!');
-      console.log(allDates);
       // sumNAVs
       const sumNAVs = {investment: 'Total NAV'}
       allDates.map(date => {
@@ -366,6 +364,8 @@ const SummaryReport = (props) => {
         }
         return 0;
       })
+      console.log('ALL DATES!!!');
+      console.log(allDates);
 
       const gainsByDate = {investment: 'Gain ($)'}
       const gainPercentByDate = {investment: 'Gain (%)'}
