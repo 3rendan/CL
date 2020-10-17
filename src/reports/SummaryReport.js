@@ -239,82 +239,82 @@ const SummaryReport = (props) => {
         }));
 
       const investmentData = investmentsToData.map((allData) => {
-          const investment = allData.investment;
-          const data = allData.data;
-          const navData = allData.navData;
-          const groups = allData.groups;
-          const netExpenses = allData.netExpenses;
-          const inflows = allData.inflows;
-          const outflows = allData.outflows;
-          const floats = allData.floats;
+        const investment = allData.investment;
+        const data = allData.data;
+        const navData = allData.navData;
+        const groups = allData.groups;
+        const netExpenses = allData.netExpenses;
+        const inflows = allData.inflows;
+        const outflows = allData.outflows;
+        const floats = allData.floats;
 
-          Object.keys(netExpenses).map(date => {
-            const dateFormat = moment(new Date(date)).format('L')
-            if (dateFormat in netExpensesByDate) {
-              netExpensesByDate[dateFormat] += netExpenses[date] === undefined ? 0 : netExpenses[date]
-            }
-            else {
-              netExpensesByDate[dateFormat] = netExpenses[date] === undefined ? 0 : netExpenses[date]
-            }
-          })
-
-          Object.keys(inflows).map(date => {
-            const dateFormat = moment(new Date(date)).format('L')
-            if (dateFormat in inflowsByDate) {
-              inflowsByDate[dateFormat] += inflows[date] === undefined ? 0 : inflows[date]
-            }
-            else {
-              inflowsByDate[dateFormat] = inflows[date] === undefined ? 0 : inflows[date]
-            }
-          })
-
-          Object.keys(floats).map(date => {
-            const dateFormat = moment(new Date(date)).format('L')
-            if (dateFormat in floatByDate) {
-              floatByDate[dateFormat] += floats[date] === undefined ? 0 : floats[date]
-            }
-            else {
-              floatByDate[dateFormat] = floats[date] === undefined ? 0 : floats[date]
-            }
-          })
-
-          Object.keys(outflows).map(date => {
-            const dateFormat = moment(new Date(date)).format('L')
-            if (dateFormat in outflowsByDate) {
-              outflowsByDate[dateFormat] += outflows[date] === undefined ? 0 : outflows[date]
-            }
-            else {
-              outflowsByDate[dateFormat] = outflows[date] === undefined ? 0 : outflows[date]
-            }
-          })
-
-          let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
-          console.log(investment.name +'  minDate');
-          console.log(minDate)
-
-          let nav = 0;
-          const investmentRow = {investment: investment.name}
-
-          while (minDate <= finalMonth) {
-            nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
-            const formatDate = moment(minDate).format('L')
-            console.log('date in loop: ' + formatDate);
-            const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
-            investmentRow[fieldName] = nav;
-
-            investmentRow[fieldName +'Bold'] = 'normal';
-            if (navData.filter(i => moment(new Date(i.date)).format('L') === formatDate).length > 0) {
-              investmentRow[fieldName +'Bold'] = 'bold';
-            }
-
-            if (!allDates.includes(formatDate)) {
-              allDates.push(formatDate)
-            }
-            // get next end of month
-            minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
+        Object.keys(netExpenses).map(date => {
+          const dateFormat = moment(new Date(date)).format('L')
+          if (dateFormat in netExpensesByDate) {
+            netExpensesByDate[dateFormat] += netExpenses[date] === undefined ? 0 : netExpenses[date]
           }
-          return investmentRow;
-        });
+          else {
+            netExpensesByDate[dateFormat] = netExpenses[date] === undefined ? 0 : netExpenses[date]
+          }
+        })
+
+        Object.keys(inflows).map(date => {
+          const dateFormat = moment(new Date(date)).format('L')
+          if (dateFormat in inflowsByDate) {
+            inflowsByDate[dateFormat] += inflows[date] === undefined ? 0 : inflows[date]
+          }
+          else {
+            inflowsByDate[dateFormat] = inflows[date] === undefined ? 0 : inflows[date]
+          }
+        })
+
+        Object.keys(floats).map(date => {
+          const dateFormat = moment(new Date(date)).format('L')
+          if (dateFormat in floatByDate) {
+            floatByDate[dateFormat] += floats[date] === undefined ? 0 : floats[date]
+          }
+          else {
+            floatByDate[dateFormat] = floats[date] === undefined ? 0 : floats[date]
+          }
+        })
+
+        Object.keys(outflows).map(date => {
+          const dateFormat = moment(new Date(date)).format('L')
+          if (dateFormat in outflowsByDate) {
+            outflowsByDate[dateFormat] += outflows[date] === undefined ? 0 : outflows[date]
+          }
+          else {
+            outflowsByDate[dateFormat] = outflows[date] === undefined ? 0 : outflows[date]
+          }
+        })
+
+        let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
+        console.log(investment.name +'  minDate');
+        console.log(minDate)
+
+        let nav = 0;
+        const investmentRow = {investment: investment.name}
+
+        while (minDate <= finalMonth) {
+          nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
+          const formatDate = moment(minDate).format('L')
+          console.log('date in loop: ' + formatDate);
+          const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
+          investmentRow[fieldName] = nav;
+
+          investmentRow[fieldName +'Bold'] = 'normal';
+          if (navData.filter(i => moment(new Date(i.date)).format('L') === formatDate).length > 0) {
+            investmentRow[fieldName +'Bold'] = 'bold';
+          }
+
+          if (!allDates.includes(formatDate)) {
+            allDates.push(formatDate)
+          }
+          // get next end of month
+          minDate = new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0);
+        }
+        return investmentRow;
+      });
 
       // sumNAVs
       const sumNAVs = {investment: 'Total NAV'}

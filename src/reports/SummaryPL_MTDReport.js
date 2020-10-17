@@ -41,8 +41,10 @@ function groupByMonth(array, invest_type) {
       element = moment(element);
     }
     const endMonth = new Date(element.year(), (element.month() + 1), 0);
-    r[endMonth] = r[endMonth] || [];
-    r[endMonth].push(a);
+    if (!isNaN(endMonth)) {
+      r[endMonth] = r[endMonth] || [];
+      r[endMonth].push(a);
+    }
     return r;
   }, Object.create(null));
   return result;
@@ -128,7 +130,9 @@ const SummaryReport = (props) => {
         const groups = allData.groups;
 
         let tempFinalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
-        finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
+        if (!isNaN(tempFinalMonth)) {
+          finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
+        }
       });
 
       const investmentData = investmentsToData.map((allData) => {

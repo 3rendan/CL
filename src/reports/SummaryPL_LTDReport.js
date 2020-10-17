@@ -41,8 +41,22 @@ function groupByMonth(array, invest_type) {
       element = moment(element);
     }
     const endMonth = new Date(element.year(), (element.month() + 1), 0);
-    r[endMonth] = r[endMonth] || [];
-    r[endMonth].push(a);
+    if (!isNaN(endMonth)) {
+      r[endMonth] = r[endMonth] || [];
+      r[endMonth].push(a);
+    }
+    else {
+      console.log('this is the element that broke it')
+      console.log('element')
+      console.log(element)
+      console.log(invest_type)
+      console.log('a')
+      console.log(a)
+      console.log('a.date ' + a.date);
+      console.log('a.date_sent ' + a.date_sent);
+      console.log('a.date_due ' + a.date_due);
+      console.log('end element that brooke it')
+    }
     return r;
   }, Object.create(null));
   return result;
@@ -130,7 +144,14 @@ const SummaryReport = (props) => {
         const groups = allData.groups;
 
         let tempFinalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
-        finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
+        if (!isNaN(tempFinalMonth)) {
+            finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
+        }
+        else {
+          console.log('this is what is broken ');
+          console.log(tempFinalMonth)
+          console.log(Math.max(...Object.keys(groups).map(date => new Date(date))))
+        }
       });
       console.log('final final month');
       console.log(finalMonth);
@@ -153,7 +174,7 @@ const SummaryReport = (props) => {
           nav = calcNAV(groups[minDate], investment.id, nav, investment.invest_type);
           netContribute = calcNetContribute(groups[minDate], investment.id, netContribute);
           const formatDate = moment(minDate).format('L')
-          console.log('date in loop: ' + formatDate);
+          // console.log('date in loop: ' + formatDate);
           const fieldName = formatDate.toLowerCase().replace(new RegExp(' ', 'g'), '_');
           investmentRow[fieldName] = nav - netContribute;
 
