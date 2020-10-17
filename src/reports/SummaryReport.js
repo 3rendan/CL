@@ -62,8 +62,10 @@ function groupByMonth(array, invest_type) {
       element = moment(element);
     }
     const endMonth = new Date(element.year(), (element.month() + 1), 0);
-    r[endMonth] = r[endMonth] || [];
-    r[endMonth].push(a);
+    if (!isNaN(endMonth)) {
+      r[endMonth] = r[endMonth] || [];
+      r[endMonth].push(a);
+    }
     return r;
   }, Object.create(null));
   return result;
@@ -187,7 +189,8 @@ const SummaryReport = (props) => {
       const outflowsByDate = {investment: 'Total Outflows'}
       const floatByDate = {investment: 'Float'};
 
-      const investmentsToData = await Promise.all(
+      let finalMonth = new Date(currEndMonth);
+      let investmentsToData = await Promise.all(
         investments.map(async (investment) => {
           const data     = await fetchData(investment.id);
           const navData  = await getNAVEvents(investment.id);
@@ -196,22 +199,10 @@ const SummaryReport = (props) => {
           console.log(Object.keys(groups));
           let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
 
-          const today = new Date();
-          let currEndMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-          let finalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
-          finalMonth = new Date(Math.max(currEndMonth, finalMonth));
-          console.log('Min Date:');
-          console.log(minDate);
-          console.log('Final Date:');
-          console.log(finalMonth);
-
           let netExpenses = await getNetExpenses(groups);
           let inflows     = await getTotalInflow(groups);
           let outflows    = await getTotalOutflow(groups);
-          let floats      = {};
-          if (investment.invest_type === 'commit') {
-              floats      = await getAllFloat(data, minDate, finalMonth);
-          }
+
           return {
             investment: investment,
             data: data,
@@ -220,22 +211,32 @@ const SummaryReport = (props) => {
             netExpenses: netExpenses,
             inflows: inflows,
             outflows: outflows,
-            floats: floats
           };
         })
       );
 
-      let finalMonth = currEndMonth;
       investmentsToData.map((allData) => {
         const groups = allData.groups;
 
         let tempFinalMonth = new Date(Math.max(...Object.keys(groups).map(date => new Date(date))));
-        finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
-        console.log('final Month Temp: ')
-        console.log(finalMonth)
+        if (!isNaN(tempFinalMonth)) {
+          finalMonth = new Date(Math.max(tempFinalMonth, finalMonth));
+        }
       });
-      console.log('final Month End: ')
-      console.log(finalMonth)
+
+      investmentsToData = await Promise.all(investmentsToData.map(async (allData) => {
+          const data = allData.data;
+          const groups = allData.groups;
+          const investment = allData.investment;
+          let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
+          let floats      = {};
+          if (investment.invest_type === 'commit') {
+              floats      = await getAllFloat(data, minDate, finalMonth);
+          }
+
+          allData.floats = floats;
+          return allData;
+        }));
 
       const investmentData = investmentsToData.map((allData) => {
           const investment = allData.investment;
