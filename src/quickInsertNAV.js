@@ -29,17 +29,18 @@ const dialog = remote.dialog;
 function updateRow(cell) {
   async function updateEntry(investment) {
     const navEvent = await getNAVEvents(investment);
-    navEvent.filter(event => moment(event.date).format('L') === cell.getField())
+    navEvent.map(event => console.log(moment(event.date).format('L')))
+    const navEventFilter = navEvent.filter(event => moment(event.date).format('L') === cell.getField())
 
     const singleEntryData = {Date: cell.getField(), Notes: "", Amount: cell.getValue(), Type: 'NAV'};
     singleEntryData.Investment = {value: {id: investment}}
 
     const singleEntry = new SingleEntry(singleEntryData)
-    if (navEvent.length === 0) {
+    if (navEventFilter.length === 0) {
       insertSingleEntry(singleEntry)
     }
     else {
-      singleEntry['id'] = navEvent[0].id
+      singleEntry['id'] = navEventFilter[0].id
       updateSingleEntry(singleEntry)
     }
   }
