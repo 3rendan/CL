@@ -25,6 +25,7 @@ const TransfersTable = lazy(() => import("./events/transfersTable"));
 const AccountBalanceReport = lazy(() => import('./reports/AccountBalanceReport'));
 const AssetAllocationReport = lazy(() => import('./reports/AssetAllocationReport'));
 const SummaryReport = lazy(() => import('./reports/SummaryReport'));
+const SummaryUnexplainedGainReport = lazy(() => import('./reports/SummaryUnexplainedGainReport'));
 const SummaryPL_LTDReport = lazy(() => import('./reports/SummaryPL_LTDReport'));
 const SummaryPL_MTDReport = lazy(() => import('./reports/SummaryPL_MTDReport'));
 const Calendar = lazy(() => import('./calendar/calendar'));
@@ -97,6 +98,7 @@ ReactDOM.render(
         <Route path="/report/summary"         component={SummaryReport} />
         <Route path="/report/summaryPL/LTD"         component={SummaryPL_LTDReport} />
         <Route path="/report/summaryPL/MTD"         component={SummaryPL_MTDReport} />
+        <Route path="/report/summaryUnexplainedGainReport"  component={SummaryUnexplainedGainReport} />
         <Route path="/" component={NoMatch} />
       </Switch>
     </Suspense>

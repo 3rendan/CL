@@ -448,6 +448,24 @@ function loadSummaryReportView() {
 
 };
 
+function loadSummaryUnexplainedGainReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/summaryUnexplainedGainReport',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
+  // Load html into window
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/summaryUnexplainedGainReport' : fileURL);
+
+};
+
 function loadSummaryPL_LTDReportView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
@@ -628,6 +646,12 @@ const mainMenuTemplate = [
         label: 'Summary Report',
         click() {
           loadSummaryReportView();
+        }
+      },
+      {
+        label: 'Summary Unexplained Gain Report',
+        click() {
+          loadSummaryUnexplainedGainReportView();
         }
       },
       {
