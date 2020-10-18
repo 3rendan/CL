@@ -649,12 +649,6 @@ const mainMenuTemplate = [
         }
       },
       {
-        label: 'Summary Unexplained Gain Report',
-        click() {
-          loadSummaryUnexplainedGainReportView();
-        }
-      },
-      {
         label: 'Summary P/L Report (MTD)',
         click() {
           loadSummaryPL_MTDReportView();
@@ -664,6 +658,12 @@ const mainMenuTemplate = [
         label: 'Summary P/L Report (LTD)',
         click() {
           loadSummaryPL_LTDReportView();
+        }
+      },
+      {
+        label: 'Summary Unexplained Gain Report',
+        click() {
+          loadSummaryUnexplainedGainReportView();
         }
       },
       {

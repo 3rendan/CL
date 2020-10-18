@@ -153,6 +153,13 @@ const SummaryReport = (props) => {
         })
       );
 
+      investmentsToData.sort(function (a, b) {
+        const investmentA = a.investment;
+        const investmentB = b.investment;
+
+        return investmentA.seq_no - investmentB.seq_no;
+      });
+
       const investmentData = investmentsToData.map((allData) => {
         const investment = allData.investment;
         const investmentID = investment.id;
@@ -233,7 +240,7 @@ const SummaryReport = (props) => {
   if (data === null) {
     return <div> </div>;
   }
-  return (<MaintenanceTable name={"Summary Report"} data={data}
+  return (<MaintenanceTable name={"Summary Unexplained Gain Report"} data={data}
             columns={columns} frozenColumns={frozenColumns}
             moneyColumns={moneyColumns}
             scrollTo={columns[columns.length - 1]}/>);

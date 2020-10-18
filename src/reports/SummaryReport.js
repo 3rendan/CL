@@ -215,6 +215,13 @@ const SummaryReport = (props) => {
         })
       );
 
+      investmentsToData.sort(function (a, b) {
+        const investmentA = a.investment;
+        const investmentB = b.investment;
+
+        return investmentA.seq_no - investmentB.seq_no;
+      });
+
       investmentsToData.map((allData) => {
         const groups = allData.groups;
 

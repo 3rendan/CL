@@ -119,15 +119,19 @@ const InvestmentNAVReport = (props) => {
       const investments = await getInvestments();
 
       let total_remaining_commitment = 0;
-      const investmentNAVS = await Promise.all(investments.map(async (investment) => {
+      let investmentNAVS = await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
 
         const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= new Date(date).setHours(24,0,0,0));
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
         const remaining_commitment = calcRemainingCommitment(dataBeforeDate, investment);
         total_remaining_commitment += remaining_commitment ? remaining_commitment : 0;
-        return {investment: investment.name, nav: nav, remaining_commitment: remaining_commitment}
+        return {investment: investment.name, nav: nav, remaining_commitment: remaining_commitment, seq_no: investment.seq_no}
       }));
+
+      investmentNAVS.sort(function (a, b) {
+        return a.seq_no - b.seq_no;
+      });
 
       const totalNAV = investmentNAVS.reduce((a,b) => a + b.nav, 0);
       const investmentData = investmentNAVS.map((investment) => {
