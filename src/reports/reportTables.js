@@ -62,10 +62,21 @@ const MaintenanceTable = (props) => {
   if (data === null) {
     return <h1> Loading Summary Table... </h1>
   }
+
+  const copyButton = (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName}.csv`) }}
+          className="btn btn-success btn-lg">Copy Data</button>
+  </div>)
+
   return (
     <div>
-      <br />
-      <h1 style = {{ margin: 0, display: "inline-block"}}> {tableName} Table </h1>
+      <div className="w3-show-inline-block" style= {{width: "100%"}}>
+        <br />
+        <h1 style = {{margin: 0, marginLeft: '40%', display: "inline-block"}}> {tableName} Table </h1>
+        {copyButton}
+        <br />
+        <br />
+      </div>
       <br />
       <br />
       <React15Tabulator
@@ -74,6 +85,8 @@ const MaintenanceTable = (props) => {
         data={data}
         options={{layout: "fitData",
                   dataTree: true,
+                  downloadDataFormatter: (data) => data,
+                  downloadReady: (fileContents, blob) => blob,
                   maxHeight: parseInt(remote.getCurrentWindow().getSize()[1] * 0.7) + 'px',
                   initialSort: [{column: "date_due", dir:'asc'},
                                 {column: "name", dir:'asc'}],
