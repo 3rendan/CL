@@ -209,7 +209,6 @@ const Calendar = () => {
     )
   }, [])
 
-
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
@@ -307,10 +306,10 @@ const CalendarListElement = (props) => {
   useEffect(() => {
     async function getEventData() {
       const contributionNames = contributions ? await Promise.all(
-        contributions.map(event => getInvestmentNames(event.investment))
+        contributions.map(event => getInvestmentNames(event.fund_investment))
       ) : [];
       const distributionNames = distributions ? await Promise.all(
-        distributions.map(event => getInvestmentNames(event.investment))
+        distributions.map(event => getInvestmentNames(event.contra_investment))
       ) : [];
 
 
@@ -322,7 +321,6 @@ const CalendarListElement = (props) => {
       }, 0) : 0;
 
       let name = "";
-      console.log(contributionNames)
       if (contributionNames.length === 1) {
         name = `Contribution ($${totalContribution}) Due to ${contributionNames[0]}`;
       }
