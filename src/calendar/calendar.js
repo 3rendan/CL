@@ -9,6 +9,7 @@ import {getDistributionEventsTime as getDistributions, getAllDistributionEvents 
 import {getContributionEventsTime as getContributions, getAllContributionEvents as getAllContributions} from '../serverAPI/contributions'
 
 import {getInvestment} from '../serverAPI/investments'
+import {myMoneyFormatter} from '../SpecialColumn';
 
 const electron = window.require('electron');
 const dialog = electron.remote.dialog
@@ -297,47 +298,23 @@ const CalendarListElement = (props) => {
   }
 
   const getInvestmentNames = props.getInvestmentNames;
-  const distributions = props.distributions;
-  const contributions = props.contributions;
+  const event = props.event;
   const date = props.date;
+  const formatted_amount = myMoneyFormatter(event.net_amount);
 
   const [eventString, setEventString] = useState(null);
 
   useEffect(() => {
     async function getEventData() {
-      const contributionNames = contributions ? await Promise.all(
-        contributions.map(event => getInvestmentNames(event.fund_investment))
-      ) : [];
-      const distributionNames = distributions ? await Promise.all(
-        distributions.map(event => getInvestmentNames(event.contra_investment))
-      ) : [];
-
-
-      const totalContribution = contributions ? contributions.reduce(function(a,b) {
-        return a + b.net_amount;
-      }, 0) : 0;
-      const totalDistribution = distributions ? distributions.reduce(function(a,b) {
-        return a + b.net_amount;
-      }, 0) : 0;
+      const fundName = await getInvestmentNames(event.fund_investment);
+      const contraName = await getInvestmentNames(event.contra_investment);
 
       let name = "";
-      if (contributionNames.length === 1) {
-        name = `Contribution ($${totalContribution}) Due to ${contributionNames[0]}`;
+      if (event.type === 'contribution') {
+        name = `Contribution ${formatted_amount} Due to ${fundName}`;
       }
-      else if (contributionNames.length > 1) {
-        name = `${contributionNames.length} Contributions ($${totalContribution} Due to ${contributionNames.join(', ')}`;
-      }
-
-      // separate contribution string with ; if necessary
-      if (name !== '') {
-        name += '; ';
-      }
-
-      if (distributionNames.length === 1) {
-        name += `Distribution ($${totalDistribution}) Due to ${distributionNames[0]}`;
-      }
-      else if (distributionNames.length > 1) {
-        name += `${distributionNames.length} Distributions ($${totalDistribution}) Due to ${distributionNames.join(', ')}`;
+      else {
+        name = `Distribution ${formatted_amount} Due from ${contraName}`;
       }
       setEventString(name)
     }
@@ -386,48 +363,57 @@ const CalendarListElement = (props) => {
 
 const CalenderListView = (props) => {
   const distributionArray = Object.keys(props.distributions).map(function(key){
-      return props.distributions[key];
+    const a = props.distributions[key]
+    a.type = 'distribution';
+    return a;
   });
-  const distributionsByDate = groupBy(distributionArray, 'date_due');
-
   const contributionArray = Object.keys(props.contributions).map(function(key){
-      return props.contributions[key];
+    const a = props.contributions[key];
+    a.type = 'contribution';
+    return a;
   });
-  const contributionsByDate = groupBy(contributionArray, 'date_due');
+
+  let contrAndDistribArray = distributionArray.concat(contributionArray);
+
+  console.log(contrAndDistribArray)
+  contrAndDistribArray = contrAndDistribArray.sort(function (a,b) {
+      console.log(new Date(a['date_due']))
+      console.log(new Date(b['date_due']))
+      console.log(new Date(a['date_due']) - new Date(b['date_due']))
+      return new Date(a['date_due']) - new Date(b['date_due']);
+  });
+  console.log(contrAndDistribArray)
 
   const startDate = props.state.startDate;
   const endDate = props.state.endDate;
-
-  const listCalendarDatesBefore = [];
-
-  for (var d = addDays(startDate, 1); d < midnight; d.setDate(d.getDate() + 1)) {
-    if (d > endDate) {
-      break;
+  console.log(contrAndDistribArray)
+  contrAndDistribArray = contrAndDistribArray.filter(function (event) {
+    const date_due = new Date(event.date_due);
+    if (date_due >= startDate && date_due <= endDate) {
+      return true;
     }
-    const distributions = distributionsByDate[moment(d).format('L')]
-    const contributions = contributionsByDate[moment(d).format('L')]
-    if (distributions !== undefined || contributions !== undefined) {
-      listCalendarDatesBefore.push(<CalendarListElement key={d} date={new Date(d)}
-                                    distributions={distributions}
-                                    contributions={contributions}
-                                    getInvestmentNames={props.getInvestmentNames}/>);
-    }
-  }
+    return false;
+  });
+  console.log(contrAndDistribArray)
 
+  var listCalendarDatesBefore = [];
   var listCalendarDatesAfter= [];
-  for (d = new Date(midnight); d <= endDate; d.setDate(d.getDate() + 1)) {
-    if (d < startDate) {
-      break;
+  for (var event of contrAndDistribArray) {
+    console.log(event)
+    const date_due = new Date(event.date_due);
+    const element = <CalendarListElement date={date_due}
+                                  event={event}
+                                  getInvestmentNames={props.getInvestmentNames}/>;
+    if (date_due < midnight) {
+      console.log('before ' + event);
+      listCalendarDatesBefore.push(element);
     }
-    const distributions = distributionsByDate[moment(d).format('L')]
-    const contributions = contributionsByDate[moment(d).format('L')]
-    if (distributions !== undefined || contributions !== undefined) {
-      listCalendarDatesAfter.push(<CalendarListElement key={d} date={new Date(d)}
-                                    distributions={distributions}
-                                    contributions={contributions}
-                                    getInvestmentNames={props.getInvestmentNames}/>);
+    else {
+      console.log('after ' + event);
+      listCalendarDatesAfter.push(element);
     }
   }
+
 
   return (
     <div>
