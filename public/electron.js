@@ -45,7 +45,7 @@ function createMainWindow() {
     },
     minWidth: 780,
     width: 1500,
-    height: 800
+    height: 900
   });
 
   const fileURL = url.format({
