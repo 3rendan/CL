@@ -311,10 +311,10 @@ const CalendarListElement = (props) => {
 
       let name = "";
       if (event.type === 'contribution') {
-        name = `Contribution ${formatted_amount} Due to ${fundName}`;
+        name = `Contribution ${formatted_amount} due to ${fundName}`;
       }
       else {
-        name = `Distribution ${formatted_amount} Due from ${contraName}`;
+        name = `Distribution ${formatted_amount} due from ${fundName}`;
       }
       setEventString(name)
     }
