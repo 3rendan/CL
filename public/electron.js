@@ -91,7 +91,7 @@ function createReportWindow() {
       nodeIntegration: true
     },
     minWidth: 780,
-    width: 1500,
+    width: 1700,
     height: 1000
   });
 
