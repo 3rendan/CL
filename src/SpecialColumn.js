@@ -142,30 +142,11 @@ function myDateSort(a, b) {
   let aDate = a.date ? a.date : a.date_due;
   let bDate = b.date ? b.date : b.date_due;
 
-
   if (typeof(a) === 'string') {
     aDate = new Date(a);
   }
   if (typeof(b) === 'string') {
     bDate = new Date(b);
-  }
-
-  let firstDay = null;
-  if (aDate === undefined) {
-    firstDay = "";
-  }
-  firstDay = moment.utc(aDate).format('L').toString()
-  if (firstDay === 'Invalid date') {
-    firstDay = "";
-  }
-
-  let secondDay = null;
-  if (bDate === undefined) {
-    secondDay = "";
-  }
-  secondDay = moment.utc(bDate).format('L').toString()
-  if (secondDay === 'Invalid date') {
-    secondDay = "";
   }
 
   if (aDate < bDate) {
@@ -187,34 +168,21 @@ function myDateSort(a, b) {
 
 // date sorting for cash funds
 function myDateSortCash(a, b) {
-  let aDate = a.date_sent ? a.date_sent : a.date;
-  let bDate = b.date_sent ? b.date_sent : b.date;
+  let aDate = a.date_sent ? a.date_sent : a.contra_date;
+  aDate = aDate ? aDate : a.date;
+  let bDate = b.date_sent ? b.date_sent : b.contra_date;
+  bDate = bDate ? bDate : b.date;
 
-
-  if (typeof(a) === 'string') {
-    aDate = new Date(a);
+  let formattedADate = aDate;
+  if (typeof(a) !== 'string') {
+    formattedADate = moment.utc(aDate).format('L').toString()
   }
-  if (typeof(b) === 'string') {
-    bDate = new Date(b);
+  aDate = new Date(formattedADate);
+  let formattedBDate = bDate;
+  if (typeof(b) !== 'string') {
+    formattedBDate = moment.utc(bDate).format('L').toString()
   }
-
-  let firstDay = null;
-  if (aDate === undefined) {
-    firstDay = "";
-  }
-  firstDay = moment.utc(aDate).format('L').toString()
-  if (firstDay === 'Invalid date') {
-    firstDay = "";
-  }
-
-  let secondDay = null;
-  if (bDate === undefined) {
-    secondDay = "";
-  }
-  secondDay = moment.utc(bDate).format('L').toString()
-  if (secondDay === 'Invalid date') {
-    secondDay = "";
-  }
+  bDate = new Date(formattedBDate);
 
   if (aDate < bDate) {
     return -1;
@@ -245,6 +213,7 @@ function calcNAV(group, investmentID, nav, invest_type) {
   else {
     group.sort(myDateSort);
   }
+
   return group.reduce((accumulator, current) => {
     if (current.type === 'TRANSFER') {
       if (current.to_investment === investmentID) {
