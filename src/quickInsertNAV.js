@@ -132,6 +132,11 @@ const DetailInvestmentTable = (props) => {
       }
       const formattedDate = moment(date).format('L');
 
+      let prevMonthEnd = new Date(date); // current date
+      prevMonthEnd.setDate(1); // going to 1st of the month
+      prevMonthEnd.setHours(-1); // going to last hour before this date even started.
+      const formattedPrevMonthEnd = moment(prevMonthEnd).format('L');
+
 
       const updateTableData = investments.map(investment => {
         const navsForDate = investmentIdToNAVEvents[investment.id];
@@ -146,6 +151,15 @@ const DetailInvestmentTable = (props) => {
         const tableRow = {id: investment.id, investment: investment.name};
         tableRow[formattedDate] = nav
 
+        const navList2 = navsForDate.filter(i => moment(new Date(i.date)).format('L') === formattedPrevMonthEnd);
+        let nav2 = undefined;
+        if (navList2.length > 0) {
+          nav2 = navList2[0].amount;
+        }
+
+
+        tableRow[formattedPrevMonthEnd] = nav2;
+
         return tableRow;
       })
       console.log(updateTableData)
@@ -156,8 +170,15 @@ const DetailInvestmentTable = (props) => {
 
     if (date !== undefined) {
       const formattedDate = moment(date).format('L');
+      let prevMonthEnd = new Date(date); // current date
+      prevMonthEnd.setDate(1); // going to 1st of the month
+      prevMonthEnd.setHours(-1); // going to last hour before this date even started.
+      const formattedPrevMonthEnd = moment(prevMonthEnd).format('L');
       setColumns([
         {title: "Investment", field: "investment", responsive: 0},
+        {title: formattedPrevMonthEnd + ' NAV', field: formattedPrevMonthEnd, responsive: 0,
+          formatter: initialMoneyFormatter
+        },
         {title: formattedDate + ' NAV', field: formattedDate, responsive: 0,
           formatter: initialMoneyFormatter, editor: "number",
           cellEdited:updateRow
