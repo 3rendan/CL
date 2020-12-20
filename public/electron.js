@@ -631,21 +631,27 @@ const mainMenuTemplate = [
   {label: 'Reports',
     submenu: [
       {
+        label: 'Investment NAV Report',
+        click() {
+          loadInvestmentNAVReportView();
+        }
+      },
+      {
         label: 'Asset Allocation Report',
         click() {
           loadAssetAllocationReportView();
         }
       },
       {
-        label: 'Account Balance Report',
-        click() {
-          loadAccountBalanceReportView();
-        }
-      },
-      {
         label: 'Summary Report',
         click() {
           loadSummaryReportView();
+        }
+      },
+      {
+        label: 'Account Balance Report',
+        click() {
+          loadAccountBalanceReportView();
         }
       },
       {
@@ -664,12 +670,6 @@ const mainMenuTemplate = [
         label: 'Summary Unexplained Gain Report',
         click() {
           loadSummaryUnexplainedGainReportView();
-        }
-      },
-      {
-        label: 'Investment NAV Report',
-        click() {
-          loadInvestmentNAVReportView();
         }
       },
       {
