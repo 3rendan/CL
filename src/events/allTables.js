@@ -100,7 +100,7 @@ const MaintenanceTable = (props) => {
 
   // manual transforms
     // 1) Date -> Date Due
-    // turn other money fileds into money
+    // turn other money fields into money
   useEffect(() => {
     // setBrowserWindow()
     async function fetchInvestments() {
