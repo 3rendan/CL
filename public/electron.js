@@ -672,14 +672,18 @@ const mainMenuTemplate = [
           loadSummaryUnexplainedGainReportView();
         }
       },
-      {
-        label: 'View Contrib. And Distrib. in Calendar',
-        click() {
-          loadCalendarView();
-        }
-      },
     ]
   },
+  {label: 'Calendar',
+   submenu: [
+     {
+       label: 'View Contrib. And Distrib. in Calendar',
+       click() {
+         loadCalendarView();
+       }
+     },
+   ]
+ },
   { label: 'Maintenance',
     submenu: [
       {
