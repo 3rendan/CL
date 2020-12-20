@@ -104,6 +104,11 @@ const MaintenanceTable = (props) => {
                     if(["Total NAV"].includes(data.account)){
                         row.getElement().style.fontWeight = "bold"; //apply css change to row element
                     }
+                    if (tableName === 'Investment NAV') {
+                      if (!isNaN(data['nav']) && data['nav'] < 0) { // if it is a negative number
+                        row.getCell('nav').getElement().style.color = 'red';
+                      }
+                    }
                   }
             }}
         data-custom-attr="test-custom-attribute"
