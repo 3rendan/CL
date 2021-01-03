@@ -136,6 +136,15 @@ function rightClickMoneyPercent(e, column){
   });
 }
 
+function reportColumnSort(a, b) {
+  if (a.includes('Total')) {
+    return 1;
+  }
+  else if (b.includes('Total')) {
+    return -1;
+  }
+  return a < b;
+}
 
 // date sorting
 function myDateSort(a, b) {
@@ -337,4 +346,4 @@ const defaultTabulatorSettings = {
 
 export {copyCol, myMoneyFormatter, initialMoneyFormatter, initialMoneyPercentFormatter,
   rightClickMoneyPercent, rightClickMoney, calcPrelimNAV, calcNetContribute,
-  eventsCol, defaultTabulatorSettings, calcNAV, myDateSort};
+  eventsCol, defaultTabulatorSettings, calcNAV, myDateSort, reportColumnSort};

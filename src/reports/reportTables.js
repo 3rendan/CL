@@ -9,7 +9,7 @@ import 'font-awesome/css/font-awesome.css';
 import '../centerHeaders.css';
 import '../shrinkFontSize.css';
 
-import {initialMoneyPercentFormatter, rightClickMoneyPercent} from '../SpecialColumn';
+import {initialMoneyPercentFormatter, rightClickMoneyPercent, reportColumnSort} from '../SpecialColumn';
 
 // for React 16.4.x use: import { ReactTabulator } - example in github repo.
 import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React 15.x
@@ -56,7 +56,7 @@ const MaintenanceTable = (props) => {
               sorter: 'string', headerSort:true, frozen: frozen};
     }
     return {title: colName, field: fieldName, responsive: 0,
-            sorter: 'string', headerSort:true, frozen: frozen};
+            sorter: reportColumnSort, headerSort:true, frozen: frozen};
   });
 
   if (error) {
