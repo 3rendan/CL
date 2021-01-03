@@ -20,6 +20,7 @@ app.commandLine.appendSwitch("disable-software-rasterizer");
 
 let mainWindow;
 let reportWindow;
+let maintenanceWindow;
 
 ipcMain.on("setDatabase", ( event, databaseVars ) => {
   global.database = databaseVars;
@@ -96,6 +97,20 @@ function createReportWindow() {
   });
 
   reportWindow.on('closed', ()=> reportWindow=null);
+}
+
+function createMaintenanceWindow() {
+  // Create new window
+  maintenanceWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
+    minWidth: 780,
+    width: 1700,
+    height: 1000
+  });
+
+  maintenanceWindow.on('closed', ()=> maintenanceWindow=null);
 }
 
 function redirectToLogin() {
@@ -350,8 +365,12 @@ function loadMaintenanceAccountInvestmentView() {
       slashes: true,
   });
 
+  if (maintenanceWindow === null || maintenanceWindow === undefined) {
+    createMaintenanceWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/maintenance/accountInvestment' : fileURL);
+  maintenanceWindow.loadURL(isDev ? 'http://localhost:3000/#/maintenance/accountInvestment' : fileURL);
 
 };
 
@@ -364,8 +383,12 @@ function loadMaintenanceAssetsBenchmarksOwnersView() {
       slashes: true,
   });
 
+  if (maintenanceWindow === null || maintenanceWindow === undefined) {
+    createMaintenanceWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/maintenance/AssetsBenchmarksOwners' : fileURL);
+  maintenanceWindow.loadURL(isDev ? 'http://localhost:3000/#/maintenance/AssetsBenchmarksOwners' : fileURL);
 
 };
 
@@ -383,8 +406,12 @@ function loadBackupView() {
       slashes: true,
   });
 
+  if (maintenanceWindow === null || maintenanceWindow === undefined) {
+    createMaintenanceWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/backup' : fileURL);
+  maintenanceWindow.loadURL(isDev ? 'http://localhost:3000/#/backup' : fileURL);
 
 };
 
@@ -596,8 +623,12 @@ function loadQuickInsertNAVView() {
       slashes: true,
   });
 
+  if (maintenanceWindow === null || maintenanceWindow === undefined) {
+    createMaintenanceWindow();
+  }
+
   // Load html into window
-  mainWindow.loadURL(isDev ? 'http://localhost:3000/#/quickNAV' : fileURL);
+  maintenanceWindow.loadURL(isDev ? 'http://localhost:3000/#/quickNAV' : fileURL);
 };
 
 
