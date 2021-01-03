@@ -39,8 +39,6 @@ const MaintenanceTable = (props) => {
   }, [props.data])
 
 
-
-
   let columns = columnNames.map((colName) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -51,6 +49,11 @@ const MaintenanceTable = (props) => {
         headerSort:true, sorter:'number',
         headerContext:rightClickMoneyPercent};
       return column;
+    }
+    if (tableName.includes('Summary')) {
+      // minWidth of investment column of Summary Tables
+      return {title: colName, field: fieldName, responsive: 0, minWidth: 200,
+              sorter: 'string', headerSort:true, frozen: frozen};
     }
     return {title: colName, field: fieldName, responsive: 0,
             sorter: 'string', headerSort:true, frozen: frozen};
