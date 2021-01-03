@@ -520,6 +520,24 @@ function loadAccountBalanceReportView() {
 
 };
 
+function loadOwnerBalanceReportView() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'report/ownerBalance',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  if (reportWindow === null || reportWindow === undefined) {
+    createReportWindow();
+  }
+
+  // Load html into window
+  reportWindow.loadURL(isDev ? 'http://localhost:3000/#/report/ownerBalance' : fileURL);
+
+};
+
 function loadInvestmentNAVReportView() {
   const fileURL = url.format({
       pathname: path.join(__dirname,
@@ -652,6 +670,12 @@ const mainMenuTemplate = [
         label: 'Account Balance Report',
         click() {
           loadAccountBalanceReportView();
+        }
+      },
+      {
+        label: 'Owner Balance Report',
+        click() {
+          loadOwnerBalanceReportView();
         }
       },
       {
