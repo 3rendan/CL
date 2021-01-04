@@ -52,7 +52,7 @@ const MaintenanceTable = (props) => {
     }
     if (tableName.includes('Summary')) {
       // minWidth of investment column of Summary Tables
-      return {title: colName, field: fieldName, responsive: 0, minWidth: 200,
+      return {title: colName, field: fieldName, responsive: 0, minWidth: 300,
               sorter: 'string', headerSort:true, frozen: frozen};
     }
     return {title: colName, field: fieldName, responsive: 0,
