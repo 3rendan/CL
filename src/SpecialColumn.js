@@ -143,7 +143,7 @@ function reportColumnSort(a, b) {
   else if (b.includes('Total')) {
     return -1;
   }
-  return a < b;
+  return a.toLowerCase().localeCompare(b.toLowerCase());
 }
 
 // date sorting
