@@ -103,6 +103,10 @@ const MaintenanceTable = (props) => {
                     if(["Total NAV"].includes(data.asset)){
                         row.getElement().style.fontWeight = "bold"; //apply css change to row element
                     }
+                    // owner nav report
+                    if(["Total NAV"].includes(data.owner)){
+                        row.getElement().style.fontWeight = "bold"; //apply css change to row element
+                    }
                     // Accont Balance
                     if(["Total NAV"].includes(data.account)){
                         row.getElement().style.fontWeight = "bold"; //apply css change to row element
