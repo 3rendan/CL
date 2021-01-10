@@ -55,6 +55,10 @@ const MaintenanceTable = (props) => {
       return {title: colName, field: fieldName, responsive: 0, minWidth: 300,
               sorter: 'string', headerSort:true, frozen: frozen};
     }
+    else if (tableName === 'Investment NAV') {
+      return {title: colName, field: fieldName, responsive: 0, minWidth: 150,
+              sorter: reportColumnSort, headerSort:true, frozen: frozen};
+    }
     return {title: colName, field: fieldName, responsive: 0,
             sorter: reportColumnSort, headerSort:true, frozen: frozen};
   });
