@@ -267,6 +267,13 @@ function columnNameToDefintion(colName, readOnly) {
     column['sorter'] = 'string';
   }
 
+  // define column widths for these columns
+  if (colName === 'Account') {
+    column['minWidth'] = 180;
+  }
+  else if (colName === 'Owner') {
+    column['minWidth'] = 120;
+  }
   if (!readOnly) {
     column['editor'] = 'autocomplete';
     column['cellEdited'] = cellEdit;
