@@ -251,7 +251,7 @@ function columnNameToDefintion(colName, readOnly) {
       }
     }
     if (colName === 'Name') {
-      column['minWidth'] = "300px";
+      column['minWidth'] = "270px";
     }
     else if (colName === 'Seq No') {
       column['minWidth'] = "30px"
