@@ -43,8 +43,15 @@ const MaintenanceTable = (props) => {
     const frozen = props.frozenColumns ? props.frozenColumns.includes(colName) : false;
     let fieldName = colName.toLowerCase().replace(new RegExp(' ', 'g'), '_');
     if (props.moneyColumns !== undefined && props.moneyColumns.includes(colName)) {
+      let minWidth = 130;
+      if (tableName === 'Investment NAV' && colName === 'NAV (%)') {
+        minWidth = 100;
+      }
+      else if (tableName === 'Investment NAV' && colName === 'Remaining Commitment') {
+        minWidth = 110;
+      }
       const column = {title: colName, align: 'right',
-        field: fieldName, responsive: 0, minWidth: 130,
+        field: fieldName, responsive: 0, minWidth: minWidth,
         formatter: initialMoneyPercentFormatter, headerTooltip: 'Right Click to toggle cents',
         headerSort:true, sorter:'number',
         headerContext:rightClickMoneyPercent};
@@ -56,7 +63,15 @@ const MaintenanceTable = (props) => {
               sorter: 'string', headerSort:true, frozen: frozen};
     }
     else if (tableName === 'Investment NAV') {
-      return {title: colName, field: fieldName, responsive: 0, minWidth: 150,
+      let minWidth = 250; // Investment
+      if (colName === 'Account') {
+        minWidth = 280;
+      }
+      else if (colName === 'Owner') {
+        minWidth = 160;
+      }
+      // NAV% 25% shorter
+      return {title: colName, field: fieldName, responsive: 0, minWidth: minWidth,
               sorter: reportColumnSort, headerSort:true, frozen: frozen};
     }
     return {title: colName, field: fieldName, responsive: 0,

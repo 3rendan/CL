@@ -250,8 +250,9 @@ function columnNameToDefintion(colName, readOnly) {
         values:true
       }
     }
+    // for maintenance table, account = 20% longer, owner = 33% longer, benchmarks = 20% shorter
     if (colName === 'Name') {
-      column['minWidth'] = "270px";
+      column['minWidth'] = "240px";
     }
     else if (colName === 'Seq No') {
       column['minWidth'] = "30px"
@@ -269,10 +270,13 @@ function columnNameToDefintion(colName, readOnly) {
 
   // define column widths for these columns
   if (colName === 'Account') {
-    column['minWidth'] = 180;
+    column['minWidth'] = 225;
   }
   else if (colName === 'Owner') {
     column['minWidth'] = 120;
+  }
+  else if (colName.includes('Benchmark')) {
+    column['minWidth'] = 150;
   }
   if (!readOnly) {
     column['editor'] = 'autocomplete';
