@@ -9,7 +9,9 @@ import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 import {getInvestments} from '../serverAPI/investments'
 
-import {getAccounts} from '../serverAPI/accounts'
+import {getAccount} from '../serverAPI/accounts'
+import {getAssetClass} from '../serverAPI/assetClass'
+import {getOwner} from '../serverAPI/owners'
 
 import {calcNAV, calcNetContribute} from '../SpecialColumn'
 
@@ -122,6 +124,10 @@ const InvestmentNAVReport = (props) => {
       let investmentNAVS = await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
 
+        const account = investment.account ? (await getAccount(investment.account)).name : '';
+        const asset_class = investment.asset_class ? (await getAssetClass(investment.asset_class)).name : '';
+        const owner = investment.owner ? (await getOwner(investment.owner)).name : '';
+
         const dataBeforeDate = data.filter(i => {
           let iDate = null;
           if (investment.invest_type === 'cash') {
@@ -137,7 +143,8 @@ const InvestmentNAVReport = (props) => {
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
         const remaining_commitment = calcRemainingCommitment(dataBeforeDate, investment);
         total_remaining_commitment += remaining_commitment ? remaining_commitment : 0;
-        return {investment: investment.name, nav: nav, remaining_commitment: remaining_commitment, seq_no: investment.seq_no}
+        return {investment: investment.name, nav: nav, remaining_commitment: remaining_commitment, seq_no: investment.seq_no,
+                asset_class: asset_class, account: account, owner: owner}
       }));
 
       investmentNAVS.sort(function (a, b) {
@@ -146,7 +153,9 @@ const InvestmentNAVReport = (props) => {
 
       const totalNAV = investmentNAVS.reduce((a,b) => a + b.nav, 0);
       const investmentData = investmentNAVS.map((investment) => {
-        return {investment: investment.investment, nav: investment.nav, remaining_commitment: investment.remaining_commitment,
+        return {investment: investment.investment, account: investment.account,
+              owner: investment.owner, asset_class: investment.asset_class,
+              nav: investment.nav, remaining_commitment: investment.remaining_commitment,
                 'nav_(%)': (investment.nav/totalNAV * 100).toFixed(2) + '%'}
       })
 
@@ -175,7 +184,8 @@ const InvestmentNAVReport = (props) => {
       <br />
       <br />
       <MaintenanceTable name={"Investment NAV"} data={data}
-            columns={['Investment', 'NAV', 'NAV (%)', 'Remaining Commitment']}
+            columns={['Investment', 'Asset Class', 'Account', 'Owner',
+                      'NAV', 'NAV (%)', 'Remaining Commitment']}
             moneyColumns={['NAV', 'NAV (%)', 'Remaining Commitment']}
             noButton={true}/>
     </Fragment>
