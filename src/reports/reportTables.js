@@ -62,6 +62,11 @@ const MaintenanceTable = (props) => {
       return {title: colName, field: fieldName, responsive: 0, minWidth: 300,
               sorter: 'string', headerSort:true, frozen: frozen};
     }
+    else if (tableName === 'Asset NAV') {
+      // AssetNAV double size of Asset
+      return {title: colName, field: fieldName, responsive: 0, minWidth: 200,
+              sorter: reportColumnSort, headerSort:true, frozen: frozen};
+    }
     else if (tableName === 'Investment NAV') {
       let minWidth = 250; // Investment
       if (colName === 'Account') {
