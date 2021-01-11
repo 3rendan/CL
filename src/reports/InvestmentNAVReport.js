@@ -128,6 +128,7 @@ const InvestmentNAVReport = (props) => {
         const asset_class = investment.asset_class ? (await getAssetClass(investment.asset_class)).name : '';
         const owner = investment.owner ? (await getOwner(investment.owner)).name : '';
 
+        const midnightEndOfDate = new Date(date).setHours(24,0,0,0);
         const dataBeforeDate = data.filter(i => {
           let iDate = null;
           if (investment.invest_type === 'cash') {
@@ -138,7 +139,7 @@ const InvestmentNAVReport = (props) => {
             iDate = i.date ? i.date : i.date_due;
           }
           iDate = new Date(iDate);
-          return iDate <= new Date(date).setHours(24,0,0,0);
+          return iDate <= midnightEndOfDate;
         });
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
         const remaining_commitment = calcRemainingCommitment(dataBeforeDate, investment);
