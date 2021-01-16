@@ -9,6 +9,8 @@ import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 import {getInvestments} from '../serverAPI/investments'
 
+import {stringDateConvertLocalTimezone} from '../timezoneOffset';
+
 import {getAccount} from '../serverAPI/accounts'
 import {getAssetClass} from '../serverAPI/assetClass'
 import {getOwner} from '../serverAPI/owners'
@@ -128,7 +130,8 @@ const InvestmentNAVReport = (props) => {
         const asset_class = investment.asset_class ? (await getAssetClass(investment.asset_class)).name : '';
         const owner = investment.owner ? (await getOwner(investment.owner)).name : '';
 
-        const midnightEndOfDate = new Date(date).setHours(24,0,0,0);
+        const midnightEndOfDate = stringDateConvertLocalTimezone(date);
+        console.log(midnightEndOfDate)
         const dataBeforeDate = data.filter(i => {
           let iDate = null;
           if (investment.invest_type === 'cash') {
@@ -138,7 +141,9 @@ const InvestmentNAVReport = (props) => {
           else {
             iDate = i.date ? i.date : i.date_due;
           }
+          // console.log(iDate);
           iDate = new Date(iDate);
+          // console.log(iDate <= midnightEndOfDate)
           return iDate <= midnightEndOfDate;
         });
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
