@@ -45,10 +45,10 @@ const MaintenanceTable = (props) => {
     if (props.moneyColumns !== undefined && props.moneyColumns.includes(colName)) {
       let minWidth = 130;
       if (tableName === 'Investment NAV' && colName === 'NAV (%)') {
-        minWidth = 100;
+        minWidth = 80;
       }
       else if (tableName === 'Investment NAV' && colName === 'Remaining Commitment') {
-        minWidth = 110;
+        minWidth = 90;
       }
       const column = {title: colName, align: 'right',
         field: fieldName, responsive: 0, minWidth: minWidth,
@@ -70,10 +70,13 @@ const MaintenanceTable = (props) => {
     else if (tableName === 'Investment NAV') {
       let minWidth = 250; // Investment
       if (colName === 'Account') {
-        minWidth = 280;
+        minWidth = 250;
       }
       else if (colName === 'Owner') {
-        minWidth = 160;
+        minWidth = 130;
+      }
+      else if (colName === 'Asset Class') {
+        minWidth = 125;
       }
       // NAV% 25% shorter
       return {title: colName, field: fieldName, responsive: 0, minWidth: minWidth,
