@@ -2,6 +2,8 @@ import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
+import {stringDateConvertLocalTimezone} from '../timezoneOffset';
+
 import {getSingleEntrys, getNAVEvents} from '../serverAPI/singleEntry.js'
 import {getDistributionsInvestment} from '../serverAPI/distributions.js'
 import {getContributionsInvestment} from '../serverAPI/contributions.js'

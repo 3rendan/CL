@@ -2,6 +2,8 @@ import React, {Fragment, useState, useEffect} from "react";
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
+import {stringDateConvertLocalTimezone} from '../timezoneOffset';
+
 import {getSingleEntrys, getNAVEvents} from '../serverAPI/singleEntry.js'
 import {getDistributionsInvestment} from '../serverAPI/distributions.js'
 import {getContributionsInvestment} from '../serverAPI/contributions.js'
@@ -85,9 +87,9 @@ const OwnerBalanceReport = (props) => {
       const [investments, ownerIdToName] = await Promise.all([getInvestments(), getOwnerIdToName()]);
 
       const owners = {}
+      const midnightEndOfDate = stringDateConvertLocalTimezone(date);
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
-        const midnightEndOfDate = new Date(date).setHours(24,0,0,0);
         const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= midnightEndOfDate);
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
         console.log(investment.id)
