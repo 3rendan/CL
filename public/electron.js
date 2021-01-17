@@ -93,7 +93,7 @@ function createReportWindow() {
     },
     minWidth: 780,
     width: 1700,
-    height: 1080
+    height: 1011
   });
 
   reportWindow.on('closed', ()=> reportWindow=null);
