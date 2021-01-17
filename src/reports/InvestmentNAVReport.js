@@ -15,7 +15,7 @@ import {getAccount} from '../serverAPI/accounts'
 import {getAssetClass} from '../serverAPI/assetClass'
 import {getOwner} from '../serverAPI/owners'
 
-import {calcNAV, calcNetContribute} from '../SpecialColumn'
+import {calcNAV, calcNetContribute, calcFloat} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
 
@@ -123,6 +123,7 @@ const InvestmentNAVReport = (props) => {
       const investments = await getInvestments();
 
       let total_remaining_commitment = 0;
+      let float = 0;
       let investmentNAVS = await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
 
@@ -148,6 +149,7 @@ const InvestmentNAVReport = (props) => {
           return iDate <= midnightEndOfDate;
         });
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
+        float += investment.invest_type === 'commit' ? calcFloat(data, midnightEndOfDate) : 0;
         const remaining_commitment = calcRemainingCommitment(dataBeforeDate, investment);
         total_remaining_commitment += remaining_commitment ? remaining_commitment : 0;
         return {investment: investment.name, nav: nav, remaining_commitment: remaining_commitment, seq_no: investment.seq_no,
@@ -158,13 +160,14 @@ const InvestmentNAVReport = (props) => {
         return a.seq_no - b.seq_no;
       });
 
-      const totalNAV = investmentNAVS.reduce((a,b) => a + b.nav, 0);
+      const totalNAV = investmentNAVS.reduce((a,b) => a + b.nav, float);
       const investmentData = investmentNAVS.map((investment) => {
         return {investment: investment.investment, account: investment.account,
               owner: investment.owner, asset_class: investment.asset_class,
               nav: investment.nav, remaining_commitment: investment.remaining_commitment,
                 'nav_(%)': (investment.nav/totalNAV * 100).toFixed(2) + '%'}
       })
+      investmentData.push({investment: 'Float', nav: float, 'nav_(%)': (float/totalNAV * 100).toFixed(2) + '%'})
 
       investmentData.push({investment: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%',
                             remaining_commitment: total_remaining_commitment})

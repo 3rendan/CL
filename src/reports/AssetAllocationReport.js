@@ -13,7 +13,7 @@ import {getInvestments} from '../serverAPI/investments'
 
 import {getAssetClasses} from '../serverAPI/assetClass'
 
-import {calcNAV} from '../SpecialColumn'
+import {calcNAV, calcFloat} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
 
@@ -88,6 +88,7 @@ const AssetAllocationReport = (props) => {
       const [investments, assetClassIdToName] = await Promise.all([getInvestments(), getAssetClassIdToName()]);
       const assets = {}
       const subAssets = {}
+      let float = 0;
 
       const midnightEndOfDate = stringDateConvertLocalTimezone(date);
 
@@ -109,6 +110,7 @@ const AssetAllocationReport = (props) => {
           return iDate <= midnightEndOfDate;
         });
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
+        float += investment.invest_type === 'commit' ? calcFloat(data, midnightEndOfDate) : 0;
 
         const assetClass = assetClassIdToName[investment.asset_class];
         const subAssetClass = assetClassIdToName[investment.sub_asset_class];
@@ -137,7 +139,7 @@ const AssetAllocationReport = (props) => {
       }));
 
       const allAssets = Object.keys(assets);
-      let totalNAV = allAssets.reduce((a,b) => a+assets[b], 0);
+      let totalNAV = allAssets.reduce((a,b) => a+assets[b], float);
       const assetData = allAssets.map((asset) => {
         subAssets[asset].map(subAsset => {
           subAsset['nav_(%)'] = (subAsset.nav/totalNAV * 100).toFixed(2) + '%'
@@ -147,6 +149,7 @@ const AssetAllocationReport = (props) => {
                 'nav_(%)': (assets[asset]/totalNAV * 100).toFixed(2) + '%'
         }
       })
+      assetData.push({asset: 'Float', nav: float, 'nav_(%)': (float/totalNAV * 100).toFixed(2) + '%'})
       assetData.push({asset: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%'})
       setAsset(assetData);
     }

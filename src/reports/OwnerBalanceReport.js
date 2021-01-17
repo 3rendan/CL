@@ -13,7 +13,7 @@ import {getInvestments} from '../serverAPI/investments'
 
 import {getOwners} from '../serverAPI/owners'
 
-import {calcNAV} from '../SpecialColumn'
+import {calcNAV, calcFloat} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
 
@@ -87,6 +87,7 @@ const OwnerBalanceReport = (props) => {
       const [investments, ownerIdToName] = await Promise.all([getInvestments(), getOwnerIdToName()]);
 
       const owners = {}
+      owners['float'] = 0;
       const midnightEndOfDate = stringDateConvertLocalTimezone(date);
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
@@ -106,6 +107,8 @@ const OwnerBalanceReport = (props) => {
           return iDate <= midnightEndOfDate;
         });
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
+        const float = investment.invest_type === 'commit' ? calcFloat(data, midnightEndOfDate) : 0;
+        owners['float'] += float;
         console.log(investment.id)
         console.log(investment)
         const owner = ownerIdToName[investment.owner];
