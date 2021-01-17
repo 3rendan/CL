@@ -93,7 +93,11 @@ function createReportWindow() {
     },
     minWidth: 780,
     width: 1700,
+<<<<<<< HEAD
     height: 1080
+=======
+    height: 1070
+>>>>>>> 189f1a81a08aab6f927402ad533ca30884b28ef0
   });
 
   reportWindow.on('closed', ()=> reportWindow=null);
