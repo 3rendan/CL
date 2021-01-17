@@ -132,6 +132,7 @@ const InvestmentNAVReport = (props) => {
 
         const midnightEndOfDate = stringDateConvertLocalTimezone(date);
         console.log(midnightEndOfDate)
+        // uses nav, forgets float
         const dataBeforeDate = data.filter(i => {
           let iDate = null;
           if (investment.invest_type === 'cash') {

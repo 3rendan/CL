@@ -91,7 +91,21 @@ const AccountBalanceReport = (props) => {
       const accounts = {}
       await Promise.all(investments.map(async (investment) => {
         const data = await fetchData(investment.id);
-        const dataBeforeDate = data.filter(i => new Date(i.date ? i.date : i.date_due) <= midnightEndOfDate);
+        // uses nav, forgets float
+        const dataBeforeDate = data.filter(i => {
+          let iDate = null;
+          if (investment.invest_type === 'cash') {
+            iDate = i.date_sent ? i.date_sent : i.contra_date;
+            iDate = iDate ? iDate : i.date;
+          }
+          else {
+            iDate = i.date ? i.date : i.date_due;
+          }
+          // console.log(iDate);
+          iDate = new Date(iDate);
+          // console.log(iDate <= midnightEndOfDate)
+          return iDate <= midnightEndOfDate;
+        });
         const nav = calcNAV(dataBeforeDate, investment.id, 0, investment.invest_type);
         console.log(investment.id)
         console.log(investment)
