@@ -10,7 +10,7 @@ import {getTransfers} from '../serverAPI/transfers.js'
 import { addDays } from 'date-fns';
 import {getIrr} from '../serverAPI/irr'
 
-import {calcNAV, calcPrelimNAV, calcNetContribute, myDateSort} from '../SpecialColumn'
+import {calcNAV, calcPrelimNAV, calcNetContribute, myDateSort, calcFloat} from '../SpecialColumn'
 
 import MaintenanceTable from './allTables'
 
@@ -87,22 +87,6 @@ function setToMidnight(date) {
   const midnight = new Date(date);
   midnight.setHours(0, 0, 0, 0);
   return midnight;
-}
-
-function calcFloat(data, minDate) {
-  let float = data.filter(i => {
-    return (setToMidnight(i.date_sent) <= minDate && minDate < setToMidnight(i.date_due))
-  }).reduce((a,b) => {
-    return a + b.net_amount;
-  }, 0);
-
-  float -= data.filter(i => {
-    return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.date_sent))
-  }).reduce((a,b) => {
-    return a + b.net_amount;
-  }, 0);
-
-  return float;
 }
 
 const NAVTable = (props) => {
@@ -229,11 +213,6 @@ const NAVTable = (props) => {
       }
 
       const groups = groupByMonth(myData, investment.invest_type);
-      const contribDistribWithMismatchedDates = myData.filter(i =>
-        (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
-        setToMidnight(i.date_due) !== setToMidnight(i.date_sent)
-      );
-
       let minDate = new Date(Math.min(...Object.keys(groups).map(date => new Date(date))));
 
       const today = new Date();
@@ -249,7 +228,7 @@ const NAVTable = (props) => {
       let remaining_commitment = investment.invest_type === 'commit' ? investment.commitment : undefined;
       let last_pl = null;
       while (minDate <= finalMonth) {
-        let float = calcFloat(contribDistribWithMismatchedDates, minDate);
+        let float = calcFloat(myData, minDate);
 
         nav = calcNAV(groups[minDate], investmentID, prev_nav, investment.invest_type);
         prelim_nav = calcPrelimNAV(groups[minDate], investmentID, prev_nav, investment.invest_type);

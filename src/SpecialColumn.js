@@ -115,6 +115,27 @@ function initialMoneyPercentFormatter(cell, formatterParams, onRendered){
   return initialMoneyFormatter(cell, formatterParams, onRendered);
 }
 
+function calcFloat(data, minDate) {
+  const contribDistribWithMismatchedDates = data.filter(i =>
+    (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
+      !datesAreOnSameDay(setToMidnight(i.date_due), setToMidnight(i.contra_date))
+  );
+
+  let float = contribDistribWithMismatchedDates.filter(i => {
+    return (setToMidnight(i.contra_date) <= minDate && minDate < setToMidnight(i.date_due))
+  }).reduce((a,b) => {
+    return a + b.net_amount;
+  }, 0);
+
+  float -= contribDistribWithMismatchedDates.filter(i => {
+    return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.contra_date))
+  }).reduce((a,b) => {
+    return a + b.net_amount;
+  }, 0);
+
+  return float;
+}
+
 function rightClickMoneyPercent(e, column){
   if (column.getCells().length === 0) {
     return;
@@ -346,4 +367,5 @@ const defaultTabulatorSettings = {
 
 export {copyCol, myMoneyFormatter, initialMoneyFormatter, initialMoneyPercentFormatter,
   rightClickMoneyPercent, rightClickMoney, calcPrelimNAV, calcNetContribute,
-  eventsCol, defaultTabulatorSettings, calcNAV, myDateSort, reportColumnSort};
+  eventsCol, defaultTabulatorSettings, calcNAV, myDateSort, reportColumnSort,
+  calcFloat};

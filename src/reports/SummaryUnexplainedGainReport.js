@@ -11,7 +11,7 @@ import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 import {getInvestments} from '../serverAPI/investments'
 
-import {calcNAV, calcPrelimNAV} from '../SpecialColumn'
+import {calcNAV, calcPrelimNAV, calcFloat} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
 
@@ -24,27 +24,6 @@ function setToMidnight(date) {
   const midnight = new Date(date);
   midnight.setHours(0, 0, 0, 0);
   return midnight;
-}
-
-function calcFloat(data, minDate) {
-  const contribDistribWithMismatchedDates = data.filter(i =>
-    (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
-      !datesAreOnSameDay(setToMidnight(i.date_due), setToMidnight(i.contra_date))
-  );
-
-  let float = contribDistribWithMismatchedDates.filter(i => {
-    return (setToMidnight(i.contra_date) <= minDate && minDate < setToMidnight(i.date_due))
-  }).reduce((a,b) => {
-    return a + b.net_amount;
-  }, 0);
-
-  float -= contribDistribWithMismatchedDates.filter(i => {
-    return (setToMidnight(i.date_due) <= minDate && minDate < setToMidnight(i.contra_date))
-  }).reduce((a,b) => {
-    return a + b.net_amount;
-  }, 0);
-
-  return float;
 }
 
 function groupByMonth(array, invest_type) {
