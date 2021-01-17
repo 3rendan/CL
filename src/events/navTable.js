@@ -83,12 +83,6 @@ function calcRemainingCommitment(data, remaining_commitment) {
   return remaining_commitment;
 }
 
-function setToMidnight(date) {
-  const midnight = new Date(date);
-  midnight.setHours(0, 0, 0, 0);
-  return midnight;
-}
-
 const NAVTable = (props) => {
   const [NAVEventData, setNAVEventData] = useState(null);
   const [error, setError] = useState(null);

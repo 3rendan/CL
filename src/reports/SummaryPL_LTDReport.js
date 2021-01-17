@@ -15,11 +15,6 @@ import {calcNAV, calcNetContribute} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
 
-const datesAreOnSameDay = (first, second) =>
-    first.getFullYear() === second.getFullYear() &&
-    first.getMonth() === second.getMonth() &&
-    first.getDate() === second.getDate();
-
 function groupByMonth(array, invest_type) {
   const result = array.reduce(function (r, a) {
     let element = a.date;

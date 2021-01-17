@@ -15,17 +15,6 @@ import {calcNAV, calcPrelimNAV, calcFloat} from '../SpecialColumn'
 
 import MaintenanceTable from './reportTables'
 
-const datesAreOnSameDay = (first, second) =>
-    first.getFullYear() === second.getFullYear() &&
-    first.getMonth() === second.getMonth() &&
-    first.getDate() === second.getDate();
-
-function setToMidnight(date) {
-  const midnight = new Date(date);
-  midnight.setHours(0, 0, 0, 0);
-  return midnight;
-}
-
 function groupByMonth(array, invest_type) {
   const result = array.reduce(function (r, a) {
     let element = a.date;

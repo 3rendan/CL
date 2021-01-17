@@ -115,6 +115,18 @@ function initialMoneyPercentFormatter(cell, formatterParams, onRendered){
   return initialMoneyFormatter(cell, formatterParams, onRendered);
 }
 
+
+const datesAreOnSameDay = (first, second) =>
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate();
+
+function setToMidnight(date) {
+  const midnight = new Date(date);
+  midnight.setHours(0, 0, 0, 0);
+  return midnight;
+}
+
 function calcFloat(data, minDate) {
   const contribDistribWithMismatchedDates = data.filter(i =>
     (i.type === 'CONTRIBUTION' || i.type === 'DISTRIBUTION') &&
