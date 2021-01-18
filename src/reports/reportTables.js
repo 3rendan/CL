@@ -98,11 +98,25 @@ const MaintenanceTable = (props) => {
           className="btn btn-success btn-lg">Copy Data</button>
   </div>)
 
+  let date = null;
+  if (props.date) {
+    date = (
+      <Fragment>
+        <h1 className="text" style={{display: "inline-block", marginLeft: '5%'}}>
+        Date:
+        </h1>
+        <input type="date" style={{display: "inline-block", marginLeft: '2%'}}
+            onChange ={props.date.onChange} defaultValue={props.date.defaultValue} />
+      </Fragment>
+    );
+  }
+
   return (
     <div>
       <div className="w3-show-inline-block" style= {{width: "100%"}}>
+        {date}
+        <h1 style = {{margin: 0, marginLeft: props.date ? '10%' : '25%', display: "inline-block"}}> {tableName} Table </h1>
         <br />
-        <h1 style = {{margin: 0, marginLeft: '40%', display: "inline-block"}}> {tableName} Table </h1>
         {copyButton}
         <br />
         <br />

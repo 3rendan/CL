@@ -184,21 +184,18 @@ const InvestmentNAVReport = (props) => {
     return <div> </div>;
   }
 
+  const dateInfo = {
+    onChange: handleChange.bind(this),
+    defaultValue: date
+  };
+
   return (
-    <Fragment>
-      <br />
-      <h1 className="text">
-      Date:
-      </h1>
-      <input type="date" onChange={handleChange.bind(this)} defaultValue={date} />
-      <br />
-      <br />
-      <MaintenanceTable name={"Investment NAV"} data={data}
-            columns={['Investment', 'Asset Class', 'Account', 'Owner',
-                      'NAV', 'NAV (%)', 'Remaining Commitment']}
-            moneyColumns={['NAV', 'NAV (%)', 'Remaining Commitment']}
-            noButton={true}/>
-    </Fragment>
+    <MaintenanceTable name={"Investment NAV"} data={data}
+          columns={['Investment', 'Asset Class', 'Account', 'Owner',
+                    'NAV', 'NAV (%)', 'Remaining Commitment']}
+          moneyColumns={['NAV', 'NAV (%)', 'Remaining Commitment']}
+          noButton={true}
+          date={dateInfo}/>
     );
 }
 

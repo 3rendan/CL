@@ -135,6 +135,11 @@ const AccountBalanceReport = (props) => {
 
   }, [date]);
 
+  const dateInfo = {
+    onChange: handleChange.bind(this),
+    defaultValue: date
+  };
+
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }
@@ -143,17 +148,11 @@ const AccountBalanceReport = (props) => {
   }
   return (
     <Fragment>
-      <br />
-      <h1 className="text">
-      Date:
-      </h1>
-      <input type="date" onChange={handleChange.bind(this)} defaultValue={date} />
-      <br />
-      <br />
       <MaintenanceTable name={"Account NAV"} data={data}
             columns={['Account', 'NAV', 'NAV (%)']}
             moneyColumns={['NAV', 'NAV (%)']}
-            noButton={true}/>
+            noButton={true}
+            date={dateInfo}/>
     </Fragment>
   );
 }
