@@ -392,6 +392,24 @@ function loadMaintenanceAssetsBenchmarksOwnersView() {
 
 };
 
+function loadMaintenanceBenchmarkReturns() {
+  const fileURL = url.format({
+      pathname: path.join(__dirname,
+      '../build/index.html'),
+      hash: 'maintenance/AssetsBenchmarksOwners',
+      protocol: 'file',
+      slashes: true,
+  });
+
+  if (maintenanceWindow === null || maintenanceWindow === undefined) {
+    createMaintenanceWindow();
+  }
+
+  // Load html into window
+  maintenanceWindow.loadURL(isDev ? 'http://localhost:3000/#/maintenance/BenchmarkReturns' : fileURL);
+
+}
+
 function takeScreenshot() {
   let window = BrowserWindow.getFocusedWindow();
   window.webContents.executeJavaScript("window.print()")
@@ -751,6 +769,12 @@ const mainMenuTemplate = [
         label: 'Maintain Benchmarks and Asset Classes',
         click() {
           loadMaintenanceAssetsBenchmarksOwnersView();
+        }
+      },
+      {
+        label: 'Maintain Benchmark Returns',
+        click() {
+          loadMaintenanceBenchmarkReturns();
         }
       },
       {

@@ -13,6 +13,7 @@ const NoMatch = () => {
 const AssetClassTable = lazy(() => import('./tables/AssetClassTable'));
 const AccountTable = lazy(() => import('./tables/AccountTable'));
 const BenchmarkTable = lazy(() => import('./tables/BenchmarkTable'));
+const BenchmarkReturnsTable = lazy(() => import('./tables/BenchmarkReturns'));
 const InvestmentTable = lazy(() => import('./tables/InvestmentTable'));
 const OwnerTable = lazy(() => import('./tables/OwnerTable'));
 
@@ -81,6 +82,10 @@ ReactDOM.render(
           <AssetClassTable />
           <BenchmarkTable  />
           <br />
+          <br />
+        </Route>
+        <Route path="/maintenance/BenchmarkReturns">
+          <BenchmarkReturnsTable />
           <br />
         </Route>
         // POPUPs
