@@ -75,6 +75,15 @@ const BenchmarkReturnTable = (props) => {
     fetchData().catch(e => setError(e))
 
   }, [benchmark]);
+  if (benchmark === 'Select Benchmark') {
+    return (
+      <>
+        <BenchmarkDropdown dropdownOptions={Object.keys(benchmarksToID)}
+            setSelected={setSelected} setTransactionType={setBenchmark}/>
+        <br/>
+      </>
+      );
+  }
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
   }

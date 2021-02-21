@@ -7,6 +7,8 @@ require('electron-reload')(__dirname);
 
 const isDev = require('electron-is-dev');
 
+const fs = require('fs');
+
 const path = require('path');
 const url = require('url');
 
@@ -34,6 +36,12 @@ ipcMain.on("setDatabase", ( event, databaseVars ) => {
   });
   // Load html into window
   mainWindow.loadURL(isDev ? `http://localhost:3000/#/investments` : fileURL);
+
+} );
+
+ipcMain.on("readFile", ( event, path ) => {
+  const fileContent = fs.readFileSync(path).toString();
+  console.log(fileContent);
 
 } );
 

@@ -16,6 +16,14 @@ import { React15Tabulator, reactFormatter } from "react-tabulator"; // for React
 
 const electron = window.require('electron');
 const remote   = electron.remote;
+const ipcRenderer  = electron.ipcRenderer;
+
+const path = require('path');
+
+// Importing dialog module using remote
+const dialog = remote.dialog;
+const fs = require('fs');
+
 
 const MaintenanceTable = (props) => {
   const [error, setError] = useState(null);
@@ -27,13 +35,49 @@ const MaintenanceTable = (props) => {
 
   const ref = useRef();
 
+  const copyButton = (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName}.csv`) }}
+          className="btn btn-success btn-lg">Copy Data</button>
+  </div>);
+
+
+  const onClick = (filepath) => {
+    console.log('filepath')
+    console.log(filepath)
+    dialog.showOpenDialog({
+        title: 'Select the File to be uploaded',
+        defaultPath: path.join(__dirname, '../assets/'),
+        buttonLabel: 'Upload',
+        // Restricting the user to only Text Files.
+        filters: [
+            {
+                name: 'Text Files',
+                extensions: ['txt', 'docx']
+            }, ],
+        // Specifying the File Selector Property
+        properties: ['openFile']
+    }).then(file => {
+      if (!file.canceled) {
+        // Updating the GLOBAL filepath variable
+        // to user-selected file.
+        global.filepath = file.filePaths[0].toString();
+        console.log(global.filepath)
+        ipcRenderer.send('readFile', global.filepath);
+      }
+    });
+    }
+
+  const addButton = <div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button className="btn btn-success btn-lg" onClick={(event) => {onClick(event.target.value)}}> Upload File </button>
+  </div>;
+
   useEffect(() => {
+    console.log(addButton);
     async function fetchInvestments() {
       setData(props.data);
     }
     fetchInvestments().catch(e => setError(e))
-  }, [props.data])
-
+  }, [props.data, addButton]);
 
   if (error) {
     return (<Fragment> <h1> Error!! Server Likely Disconnected </h1> <div> {error.toString()} </div> </Fragment>)
@@ -41,17 +85,6 @@ const MaintenanceTable = (props) => {
   if (data === null) {
     return <h1> Loading Summary Table... </h1>
   }
-
-  const copyButton = (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
-    <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName}.csv`) }}
-          className="btn btn-success btn-lg">Copy Data</button>
-  </div>);
-
-
-  const addButton = (
-    <div style ={{float: "right", width: "130px", display: "inline-block"}}>
-      <input type="file" id="myFile" name="filename" className="btn btn-success btn-lg"/>
-    </div>);
 
   return (
     <div>
