@@ -7,8 +7,10 @@ import {getCommissionsInvestment} from '../serverAPI/commissions.js'
 import {getInvestment} from '../serverAPI/investments.js'
 import {getTransfers} from '../serverAPI/transfers.js'
 
+import {getBenchmark} from '../serverAPI/benchmarks'
+
 import { addDays } from 'date-fns';
-import {getIrr} from '../serverAPI/irr'
+import {getIrr, getIrrBenchmark} from '../serverAPI/irr'
 
 import {calcNAV, calcPrelimNAV, calcNetContribute, myDateSort, calcFloat} from '../SpecialColumn'
 
@@ -90,8 +92,6 @@ const NAVTable = (props) => {
   const [moneyColumns, setMoneyColumns] = useState(['NAV', 'Net Contribution', 'P/L (LTD)', 'P/L (MTD)', 'P/L(%) (MTD)', 'Unexplained Gain', 'IRR']);
 
   const investmentID = props.investmentID;
-
-
 
   useEffect(() => {
     async function fetchData() {
@@ -176,12 +176,15 @@ const NAVTable = (props) => {
       return [events, dates];
     }
 
-    async function calcIrr(navDates, eventAmounts, eventDates) {
+    async function calcIrrBenchmark(navDates, eventAmounts, eventDates, benchmark) {
+      if (benchmark == undefined) {
+        return [];
+      }
       const dateOfNavDates = navDates.map(navDate => new Date(navDate.date))
       const navOfNavDates = navDates.map(navDate => navDate.nav)
       let minDate = new Date(Math.min(...dateOfNavDates))
       let minEventDate = new Date(Math.min(...eventDates.map(date => new Date(date))))
-      let startDate = new Date(Math.min(minDate, minEventDate))
+      let startDate = minEventDate != 'Invalid Date' ? new Date(Math.min(minDate, minEventDate)) : minDate;
       startDate.setDate(startDate.getDate() - 1)
 
       const startNAV = 0;
@@ -192,6 +195,33 @@ const NAVTable = (props) => {
         return moment(tempDate).format('MM/DD/YYYY')
       })
       const navs = [startNAV, ...navOfNavDates]
+
+      const data = {dates: dates, navs: navs, eventAmounts: eventAmounts, eventDates: eventDates};
+      console.log(data);
+
+      return await getIrrBenchmark(benchmark, {dates: dates, navs: navs, eventAmounts: eventAmounts, eventDates: eventDates})
+
+    }
+
+    async function calcIrr(navDates, eventAmounts, eventDates) {
+      const dateOfNavDates = navDates.map(navDate => new Date(navDate.date))
+      const navOfNavDates = navDates.map(navDate => navDate.nav)
+      let minDate = new Date(Math.min(...dateOfNavDates))
+      let minEventDate = new Date(Math.min(...eventDates.map(date => new Date(date))))
+      let startDate = minEventDate != 'Invalid Date' ? new Date(Math.min(minDate, minEventDate)) : minDate;
+      startDate.setDate(startDate.getDate() - 1)
+
+      const startNAV = 0;
+
+      let dates = [startDate, ...dateOfNavDates]
+      dates = dates.map(date => {
+        const tempDate = new Date(date)
+        return moment(tempDate).format('MM/DD/YYYY')
+      })
+      const navs = [startNAV, ...navOfNavDates]
+
+      const data = {dates: dates, navs: navs, eventAmounts: eventAmounts, eventDates: eventDates};
+      console.log(data);
 
       return await getIrr({dates: dates, navs: navs, eventAmounts: eventAmounts, eventDates: eventDates})
 
@@ -274,6 +304,51 @@ const NAVTable = (props) => {
 
       const [eventAmounts, eventDates] = await getIrrEvents(myData);
       const irrs = await calcIrr(navDates, eventAmounts, eventDates);
+
+      const primary_benchmark = investment.primary_benchmark == null ? undefined :  await getBenchmark(investment.primary_benchmark);
+      const primary_benchmark_name = investment.primary_benchmark == null ? undefined : primary_benchmark.name;
+      console.log(investment.primary_benchmark);
+      let irrs_primary = []
+      if (investment.primary_benchmark != undefined) {
+          irrs_primary = await calcIrrBenchmark(navDates, eventAmounts, eventDates, investment.primary_benchmark);
+      }
+
+      setNAVColumns((NAVColumns) => {
+        console.log(NAVColumns)
+        if (NAVColumns != undefined && primary_benchmark != undefined) {
+          NAVColumns.push('IRR ('+primary_benchmark_name+')')
+        }
+        return NAVColumns;
+      })
+      setMoneyColumns((moneyColumns) => {
+        console.log(moneyColumns)
+        if (moneyColumns != undefined && primary_benchmark != undefined) {
+          moneyColumns.push('IRR ('+primary_benchmark_name+')')
+        }
+        return moneyColumns;
+      })
+
+      const secondary_benchmark = investment.secondary_benchmark == null ? undefined : await getBenchmark(investment.secondary_benchmark);
+      const secondary_benchmark_name = investment.secondary_benchmark == null ? undefined : secondary_benchmark.name;
+      let irrs_secondary = []
+      if (investment.secondary_benchmark != undefined) {
+          irrs_secondary = await calcIrrBenchmark(navDates, eventAmounts, eventDates, investment.secondary_benchmark);
+      }
+      setNAVColumns((NAVColumns) => {
+        console.log(NAVColumns)
+        if (NAVColumns != undefined && secondary_benchmark != undefined) {
+          NAVColumns.push('IRR ('+secondary_benchmark_name+')')
+        }
+        return NAVColumns;
+      })
+      setMoneyColumns((moneyColumns) => {
+        console.log(moneyColumns)
+        if (moneyColumns != undefined && secondary_benchmark != undefined) {
+          moneyColumns.push('IRR ('+secondary_benchmark_name+')')
+        }
+        return moneyColumns;
+      })
+      console.log(irrs);
       irrs.map(irr => {
         const [date, irrRate] = irr.split(' ');
         const [month, day, year] = date.split('/');
@@ -282,6 +357,32 @@ const NAVTable = (props) => {
         try {
           const navDate = navDates.filter(navDate => navDate.date === formattedDate)
           navDate[0].irr = parseFloat(irrRate).toFixed(2) + '%'
+        }
+        catch (e) {
+        }
+      })
+      irrs_primary.map(irr => {
+        const [date, irrRate] = irr.split(' ');
+        const [month, day, year] = date.split('/');
+
+        const formattedDate = `${month}/${day}/${year}`;
+        try {
+          const navDate = navDates.filter(navDate => navDate.date === formattedDate)
+          const navDate0 = navDate[0];
+          console.log(navDate0);
+          navDate0['irr_(' + primary_benchmark_name.toLowerCase().replace(new RegExp(' ', 'g'), '_') + ')'] = parseFloat(irrRate).toFixed(2) + '%'
+        }
+        catch (e) {
+        }
+      })
+      irrs_secondary.map(irr => {
+        const [date, irrRate] = irr.split(' ');
+        const [month, day, year] = date.split('/');
+
+        const formattedDate = `${month}/${day}/${year}`;
+        try {
+          const navDate = navDates.filter(navDate => navDate.date === formattedDate)
+          navDate[0]['irr_(' + secondary_benchmark_name.toLowerCase().replace(new RegExp(' ', 'g'), '_') + ')'] = parseFloat(irrRate).toFixed(2) + '%'
         }
         catch (e) {
         }

@@ -224,7 +224,6 @@ const MaintenanceTable = (props) => {
           datum.remaining_commitment = remaining_commitment;
         });
       }
-      console.log(manipulatedData)
       setData(manipulatedData)
     }
     fetchInvestments().catch(e =>
@@ -385,7 +384,6 @@ const MaintenanceTable = (props) => {
     columns.push(editCol)
     columns.push(trashCol)
   }
-  console.log(props.data)
 
   let addRow = tableName === 'NAV' ? null :
   (<div style ={{float: "right", width: "130px", display: "inline-block"}}>
