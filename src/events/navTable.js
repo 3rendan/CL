@@ -93,6 +93,12 @@ const NAVTable = (props) => {
 
   const investmentID = props.investmentID;
 
+  // LOGIC FOR getIRREvents signage is done in calcNetContribute in SpecialColumn
+  // done transfer
+  // done NAV, GAIN, FEE, DIV
+  // COMMISH HAS LOGIC WRITTEN BUT FOR P/L IT'S CONSIDERED 0?
+  // done contribution, distribution
+
   useEffect(() => {
     async function fetchData() {
       let singleEntry = await getSingleEntrys(investmentID);
@@ -140,6 +146,7 @@ const NAVTable = (props) => {
         ...transfers];
     }
 
+    // here is where i get the data
     async function getIrrEvents(data) {
       const dates = []
       let events = data.map((event) => {
@@ -150,15 +157,19 @@ const NAVTable = (props) => {
           if (event.to_investment === investmentID) {
             return event.amount;
           }
-          return event.amount; // in from_investment
+          return -1 * event.amount; // in from_investment
         }
-        if (event.type === 'COMMISH') {
+        // this may be what we want for commish and fee,
+        // for now, we just ignore for both P/L and cash flow for IRRs
+        if (false) {
           if (investmentID === event.investment) {
             return 0;
           }
           return -1 * event.amount; // in from_investment
         }
-        if (event.type === 'NAV') {
+        if (event.type === 'NAV' || event.type === 'COMMISH'
+            || event.type === 'GAIN' || event.type === 'FEE'
+            || event.type === 'DIV') {
           dates.pop();
           return undefined;
         }
@@ -168,8 +179,9 @@ const NAVTable = (props) => {
           if (event.from_investment === investmentID) {
             return amount;
           }
-          return amount;
+          return -1 * amount;
         }
+        // inflow, outflow, credit, expense is handled here
         return amount;
       });
       events = events.filter(i => i !== undefined)
@@ -313,20 +325,31 @@ const NAVTable = (props) => {
           irrs_primary = await calcIrrBenchmark(navDates, eventAmounts, eventDates, investment.primary_benchmark);
       }
 
+      let irrColumnIndex = NAVColumns.findIndex(i => i === 'IRR');
+      irrColumnIndex+=1;
+      let hasPrimaryBenchmark = investment.primary_benchmark != undefined;
+
+
       setNAVColumns((NAVColumns) => {
         console.log(NAVColumns)
+
         if (NAVColumns != undefined && primary_benchmark != undefined) {
-          NAVColumns.push('IRR ('+primary_benchmark_name+')')
+          NAVColumns.splice(irrColumnIndex, 0, 'IRR ('+primary_benchmark_name+')')
+          console.log(NAVColumns)
         }
         return NAVColumns;
       })
       setMoneyColumns((moneyColumns) => {
         console.log(moneyColumns)
         if (moneyColumns != undefined && primary_benchmark != undefined) {
-          moneyColumns.push('IRR ('+primary_benchmark_name+')')
+          moneyColumns.splice(irrColumnIndex, 0, 'IRR ('+primary_benchmark_name+')')
         }
         return moneyColumns;
       })
+
+      if (hasPrimaryBenchmark) {
+        irrColumnIndex += 1;
+      }
 
       const secondary_benchmark = investment.secondary_benchmark == null ? undefined : await getBenchmark(investment.secondary_benchmark);
       const secondary_benchmark_name = investment.secondary_benchmark == null ? undefined : secondary_benchmark.name;
@@ -337,14 +360,14 @@ const NAVTable = (props) => {
       setNAVColumns((NAVColumns) => {
         console.log(NAVColumns)
         if (NAVColumns != undefined && secondary_benchmark != undefined) {
-          NAVColumns.push('IRR ('+secondary_benchmark_name+')')
+          NAVColumns.splice(irrColumnIndex, 0, 'IRR ('+secondary_benchmark_name+')')
         }
         return NAVColumns;
       })
       setMoneyColumns((moneyColumns) => {
         console.log(moneyColumns)
         if (moneyColumns != undefined && secondary_benchmark != undefined) {
-          moneyColumns.push('IRR ('+secondary_benchmark_name+')')
+          moneyColumns.splice(irrColumnIndex, 0, 'IRR ('+secondary_benchmark_name+')')
         }
         return moneyColumns;
       })
