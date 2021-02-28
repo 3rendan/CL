@@ -245,6 +245,10 @@ const MaintenanceTable = (props) => {
         headerTooltip: 'Right Click to toggle cents',
         headerSort:headerSort, sorter:'number',
         headerContext: rightClickMoneyPercent};
+
+      if (fieldName.includes('irr')) {
+        column.minWidth = 50;
+      }
       return column;
     }
     else if (fieldName === 'contra_date') {
