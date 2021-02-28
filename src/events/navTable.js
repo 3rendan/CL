@@ -151,6 +151,10 @@ const NAVTable = (props) => {
       const dates = []
       let events = data.map((event) => {
         let date = event.date ? event.date : event.date_due
+        if (investmentID === event.contra_investment) {
+          date = event.contra_date ? event.contra_date : event.date_sent;
+          date = date ? date : event.date;
+        }
         date = moment(date).format('MM/DD/YYYY')
         dates.push(date)
         if (event.type === 'TRANSFER') {
