@@ -81,6 +81,9 @@ function calcRemainingCommitment(data, remaining_commitment) {
       catch (e) {}
       remaining_commitment -= recallable;
     }
+    else if (datum.type === 'COMMITRESET') {
+      remaining_commitment = datum.amount;
+    }
   });
   return remaining_commitment;
 }
@@ -275,7 +278,6 @@ const NAVTable = (props) => {
         netContribute = calcNetContribute(groups[minDate], investmentID, netContribute);
         remaining_commitment = calcRemainingCommitment(groups[minDate], remaining_commitment);
         const formatDate = moment(minDate).format('L')
-
 
         const hasEndOfMonthNAV = groups[minDate] ? groups[minDate].filter(event => {
           if (event.type === 'NAV') {

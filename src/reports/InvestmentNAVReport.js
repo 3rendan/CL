@@ -59,6 +59,9 @@ function calcRemainingCommitment(data, investment) {
       catch (e) {}
       remaining_commitment -= recallable;
     }
+    else if (datum.type === 'COMMITRESET') {
+      remaining_commitment = datum.amount;
+    }
   });
   return remaining_commitment;
 }

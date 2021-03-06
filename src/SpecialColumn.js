@@ -204,6 +204,12 @@ function myDateSort(a, b) {
     else if (b.type === 'NAV') {
       return -1;
     }
+    else if (a.type === 'COMMITRESET') {
+      return 1;
+    }
+    else if (b.type === 'COMMITRESET') {
+      return -1;
+    }
     return 0;
   }
 }

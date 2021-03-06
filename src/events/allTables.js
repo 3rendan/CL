@@ -79,8 +79,10 @@ function typeSort(a, b) {
         return 8;
       case 'COMMISH':
         return 9;
-      default:
+      case 'COMMITRESET':
         return 10;
+      default:
+        return 11;
     }
   }
 
@@ -178,6 +180,7 @@ const MaintenanceTable = (props) => {
 
         return datum;
       });
+      // calcRemainingCommitment
       // calculate net commitment after each transaction
       if (props.hasCommitment) {
         manipulatedData = manipulatedData.sort(function(a, b) {
@@ -220,6 +223,9 @@ const MaintenanceTable = (props) => {
             }
             catch (e) {}
             remaining_commitment -= recallable;
+          }
+          else if (datum.type === 'COMMITRESET') {
+            remaining_commitment = datum.amount;
           }
           datum.remaining_commitment = remaining_commitment;
         });
