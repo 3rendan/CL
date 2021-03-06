@@ -124,9 +124,9 @@ const AssetAllocationReport = (props) => {
         }
 
         if (assetClass in subAssets) {
-          const possibleSubAsset = subAssets[assetClass].filter(i => i.asset === subAssetClass);
+          const possibleSubAsset = subAssets[assetClass].filter(i => i.asset_class === subAssetClass);
           if (possibleSubAsset.length === 0) { // has asset but not this subAsset
-            subAssets[assetClass].push({asset: subAssetClass, nav: nav});
+            subAssets[assetClass].push({asset_class: subAssetClass, nav: nav});
           }
           else { // already has subAsset for this asset
             possibleSubAsset[0].nav += nav;
@@ -134,7 +134,7 @@ const AssetAllocationReport = (props) => {
 
         }
         else {
-          subAssets[assetClass] = [{asset: subAssetClass, nav: nav}];
+          subAssets[assetClass] = [{asset_class: subAssetClass, nav: nav}];
         }
       }));
 
@@ -145,12 +145,12 @@ const AssetAllocationReport = (props) => {
           subAsset['nav_(%)'] = (subAsset.nav/totalNAV * 100).toFixed(2) + '%'
           return subAsset
         })
-        return {asset: asset, nav: assets[asset], _children: subAssets[asset],
+        return {asset_class: asset, nav: assets[asset], _children: subAssets[asset],
                 'nav_(%)': (assets[asset]/totalNAV * 100).toFixed(2) + '%'
         }
       })
-      assetData.push({asset: 'Float', nav: float, 'nav_(%)': (float/totalNAV * 100).toFixed(2) + '%'})
-      assetData.push({asset: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%'})
+      assetData.push({asset_class: 'Float', nav: float, 'nav_(%)': (float/totalNAV * 100).toFixed(2) + '%'})
+      assetData.push({asset_class: 'Total NAV', nav: totalNAV, 'nav_(%)': '100.00%'})
       setAsset(assetData);
     }
 
@@ -170,8 +170,8 @@ const AssetAllocationReport = (props) => {
     return <div> </div>;
   }
   return (
-      <MaintenanceTable name={"Asset NAV"} data={asset}
-            columns={['Asset', 'NAV', 'NAV (%)']}
+      <MaintenanceTable name={"Asset Class NAV"} data={asset}
+            columns={['Asset Class', 'NAV', 'NAV (%)']}
             moneyColumns={['NAV', 'NAV (%)']}
             noButton={true}
             date={dateInfo}/>
