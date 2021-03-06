@@ -53,8 +53,8 @@ function createMainWindow() {
       nodeIntegration: true
     },
     minWidth: 780,
-    width: 1650,
-    height: 1125,
+    width: 1800,
+    height: 1225,
   });
 
   const fileURL = url.format({
