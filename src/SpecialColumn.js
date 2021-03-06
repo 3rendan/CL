@@ -375,7 +375,7 @@ const defaultTabulatorSettings = {
   layout: "fitData",
   movableRows: false,
   columnMinWidth:100,
-  maxHeight: "720px",
+  maxHeight: "950px",
   resizableColumns:false,
   resizableRows:true,
   layoutColumnsOnNewData:true,
