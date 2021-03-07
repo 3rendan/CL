@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 import '../mainWindow.css'
@@ -296,8 +296,10 @@ function columnNameToDefintion(colName, readOnly) {
 const DetailInvestmentTable = (props) => {
   const InvestmentData = props.data;
   const readOnly = props.readOnly;
+  const [showClosed, setShowClosed] = useState(!props.readOnly);
 
   const [tableData, setTableData] = useState(props.data);
+  const [allTableData, setAllTableData] = useState(props.data);
   const [hasAdded, setHasAdded] = useState(false);
 
   const tableName = props.name;
@@ -334,11 +336,23 @@ const DetailInvestmentTable = (props) => {
     return i.name;
   })
 
-  console.log('render table!')
-
   let columns = columnNames.map((colName) => {
     return columnNameToDefintion(colName, readOnly);
   }).filter(i => i !== undefined);
+
+  useEffect(() => {
+    if (showClosed) {
+      setTableData(allTableData);
+    }
+    else {
+      setTableData(allTableData.filter(investment => {
+        if (investment.notes != null && investment.notes.includes("*CLOSED*")) {
+          return false;
+        }
+        return true;
+      }));
+    }
+  }, [showClosed])
 
 
   const addButton = readOnly ? null : (
@@ -369,6 +383,17 @@ const DetailInvestmentTable = (props) => {
     <button type="button" onClick={() => { ref.current.table.download("csv", `${tableName}.csv`)}}
           className="btn btn-success btn-lg">Copy Data</button>
   </div>)
+
+  const toggleClosedButtonTitle = showClosed ? 'Hide Closed Investments' : 'Show Closed Investments';
+  const toggleClosedInvestmentsButton = readOnly ? (
+  <div style ={{float: "right", width: "130px", display: "inline-block"}}>
+    <button type="button" onClick={() =>
+      {
+        setShowClosed(!showClosed);
+      }
+      }
+    className="btn btn-success btn-lg">{toggleClosedButtonTitle}</button>
+  </div>) : null;
 
   if (readOnly) {
     columns = [eventsCol, ...columns];
@@ -416,9 +441,10 @@ const DetailInvestmentTable = (props) => {
   //add table holder element to DOM
   return (
     <div>
-      <div className="w3-show-inline-block" style= {{width: "100%"}}>
+      <div className="w3-show-inline-block" style= {{width: readOnly ? "80%" : "100%"}}>
           <br />
           <h1 style = {{margin: 0, marginLeft: '40%', display: "inline-block"}}> {tableName} </h1>
+          {toggleClosedInvestmentsButton}
           {addButton}
           {copyButton}
           <br />
