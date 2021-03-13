@@ -164,8 +164,8 @@ ipcMain.on('viewEvents', (event, args) => {
       nodeIntegration: true
     },
     minWidth: 780,
-    width: 1500,
-    height: 800
+    width: 1650,
+    height: 1200
   });
 
   const fileURL = url.format({
