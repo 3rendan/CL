@@ -8,6 +8,7 @@ const createWindow = () => {
         contextIsolation: false
     }
   })
+  console.log('running from root')
   win.loadFile('./index.html');
 };
 app.whenReady().then(() => {

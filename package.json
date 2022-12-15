@@ -1,5 +1,5 @@
 {
-  "name": "InvestTracker",
+  "name": "invest-tracker",
   "author": "Matthew Yeh",
   "homepage": "./",
   "version": "0.1.0",
@@ -14,6 +14,7 @@
     "electron-is-dev": "^1.2.0",
     "electron-packager": "^15.0.0",
     "electron-reload": "^1.5.0",
+    "eslint": "^6.8.0",
     "filestream": "^5.0.0",
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
@@ -38,7 +39,7 @@
     }
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "electron .",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -67,7 +68,7 @@
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
-    "electron": "^9.1.2",
+    "electron": "^22.0.0",
     "electron-builder": "^22.7.0",
     "wait-on": "^5.0.1"
   }
