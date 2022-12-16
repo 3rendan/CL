@@ -8,15 +8,16 @@ const createWindow = () => {
         contextIsolation: false
     }
   })
+  console.log('error')
   win.loadFile('./index.html');
 };
+
 app.whenReady().then(() => {
   createWindow()
 })
 
-const {ipcMain} = require('electron');
 
-require('electron-reload')(__dirname);
+const {ipcMain} = require('electron');
 
 const isDev = require('electron-is-dev');
 
